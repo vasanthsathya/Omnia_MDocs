@@ -1,0 +1,152 @@
+Storage Config 
+
+[ ](javascript:void\(0\) "Share")
+
+
+
+ * [ Home ](../../index.md)
+
+[ ![logo](../../assets/omnia-logo.png) ](../../index.md "Dell Omnia") Dell Omnia 
+
+
+
+ * [ Home ](../../index.md)
+
+Overview 
+ * [ Architecture ](../../Overview/architecture.md)
+
+Get Started 
+ * [ Prerequisites Checklist ](../../GetStarted/prerequisites_checklist.md)
+
+How-to Guides 
+ * Setup Setup 
+ * [ Prepare OIM ](../../HowTo/Setup/prepare_oim.md)
+ * Slurm Slurm 
+ * [ Set Up Slurm ](../../HowTo/Slurm/setup_slurm.md)
+ * Kubernetes Kubernetes 
+ * [ Set Up Kubernetes ](../../HowTo/Kubernetes/setup_service_k8s.md)
+ * Storage Storage 
+ * [ Configure NFS ](../../HowTo/Storage/configure_nfs.md)
+ * Networking Networking 
+ * [ Configure InfiniBand ](../../HowTo/Networking/configure_infiniband.md)
+ * Authentication Authentication 
+ * [ Set Up OpenLDAP ](../../HowTo/Authentication/setup_openldap.md)
+ * Telemetry Telemetry 
+ * [ Set Up Telemetry ](../../HowTo/Telemetry/setup_telemetry.md)
+ * Containers Containers 
+ * [ Use Apptainer ](../../HowTo/Containers/use_apptainer.md)
+ * BuildStreaM BuildStreaM 
+ * [ Deploy GitLab ](../../HowTo/BuildStreaM/deploy_gitlab.md)
+
+Reference 
+ * Support Matrix Support Matrix 
+ * [ Servers ](../SupportMatrix/servers.md)
+ * Configuration Configuration 
+ * [ Omnia Config ](omnia_config.md)
+ * Storage Config [ Storage Config ](storage_config.md) Table of contents 
+ * [ NFS configuration ](#nfs-configuration)
+ * Sample Files Sample Files 
+ * [ PXE Mapping File ](../SampleFiles/pxe_mapping_file.md)
+ * Cluster Requirements Cluster Requirements 
+ * [ Minimum Nodes ](../ClusterRequirements/minimum_nodes.md)
+ * Playbooks Playbooks 
+ * [ Playbook Reference ](../Playbooks/playbook_reference.md)
+ * Metrics Metrics 
+ * [ iDRAC Metrics ](../Metrics/idrac_metrics.md)
+ * Appendices Appendices 
+ * [ Hostname Requirements ](../Appendices/hostname_requirements.md)
+
+Operations 
+ * [ Add / Remove Nodes ](../../Operations/add_remove_nodes.md)
+
+Troubleshooting 
+ * [ General ](../../Troubleshooting/general.md)
+
+Contributing 
+ * [ Pull Requests ](../../Contributing/pull_requests.md)
+
+Table of contents 
+
+ * [ NFS configuration ](#nfs-configuration)
+
+ 1. [ Home ](../../index.md)
+ 2. [ Reference ](../index.md)
+ 3. [ Configuration ](omnia_config.md)
+
+# storage_config.yml Reference[¶](#storage_configyml-reference "Permanent link")
+
+File path: `/opt/omnia/input/project_default/storage_config.yml`
+
+This file configures shared storage for the cluster, including NFS mounts, BeeGFS parallel filesystem settings, and Dell PowerScale/PowerVault integration.
+
+## NFS configuration[¶](#nfs-configuration "Permanent link")
+
+Parameter | Type | Required | Default | Description 
+---|---|---|---|--- 
+`nfs_client_params` | String | No | `nosuid,rw,sync,hard,intr` | Default NFS mount options applied to all NFS client mounts. 
+`nfs_shares` | List | No | `[]` | List of NFS export definitions. Each entry defines a server path, client mount point, and options. 
+`nfs_shares[].server` | String | Yes | (none) | IP address or hostname of the NFS server (e.g., `10.5.0.100` or `nfs.hpc.example.com`). 
+`nfs_shares[].server_path` | String | Yes | (none) | Export path on the NFS server (e.g., `/exports/home`). 
+`nfs_shares[].client_mount_path` | String | Yes | (none) | Mount point on the cluster nodes (e.g., `/home`). 
+`nfs_shares[].mount_options` | String | No | Value of `nfs_client_params` | Per-share mount options that override the global default. 
+ 
+## BeeGFS configuration[¶](#beegfs-configuration "Permanent link")
+
+Parameter | Type | Required | Default | Description 
+---|---|---|---|--- 
+`beegfs_enabled` | Boolean | No | `false` | Enable BeeGFS client installation and configuration on cluster nodes. 
+`beegfs_mgmt_server` | String | Conditional | (none) | IP address or hostname of the BeeGFS management server. Required when `beegfs_enabled` is `true`. 
+`beegfs_mount_path` | String | No | `/mnt/beegfs` | Local mount point for the BeeGFS filesystem on client nodes. 
+`beegfs_client_config_path` | String | No | `/etc/beegfs/beegfs-client.conf` | Path to the BeeGFS client configuration file. 
+`beegfs_connInterfacesFile` | String | No | (none) | Path to a file listing network interfaces for BeeGFS communication (one interface per line). 
+`beegfs_connNetFilterFile` | String | No | (none) | Path to a file listing allowed subnets for BeeGFS traffic. 
+ 
+## PowerScale configuration[¶](#powerscale-configuration "Permanent link")
+
+Parameter | Type | Required | Default | Description 
+---|---|---|---|--- 
+`powerscale_enabled` | Boolean | No | `false` | Enable PowerScale NFS export mounting on cluster nodes. 
+`powerscale_server` | String | Conditional | (none) | SmartConnect zone name or IP of the PowerScale cluster. Required when `powerscale_enabled` is `true`. 
+`powerscale_exports` | List | Conditional | `[]` | List of PowerScale NFS exports to mount. Each entry uses the same schema as `nfs_shares[]`. 
+ 
+## PowerVault ME5 configuration[¶](#powervault-me5-configuration "Permanent link")
+
+Parameter | Type | Required | Default | Description 
+---|---|---|---|--- 
+`powervault_enabled` | Boolean | No | `false` | Enable PowerVault ME5 iSCSI volume mapping on cluster nodes. 
+`powervault_mgmt_ip` | String | Conditional | (none) | Management IP address of the PowerVault ME5 controller. Required when `powervault_enabled` is `true`. 
+`powervault_volumes` | List | Conditional | `[]` | List of volume-to-host mappings. Each entry specifies a LUN, target nodes, and a mount point. 
+`powervault_volumes[].volume_name` | String | Yes | (none) | Name of the pre-created PowerVault volume/LUN. 
+`powervault_volumes[].mount_path` | String | Yes | (none) | Local mount point on the target node(s). 
+ 
+## Usage example[¶](#usage-example "Permanent link")
+
+File: /opt/omnia/input/project_default/storage_config.yml
+ 
+ 
+ nfs_client_params: "nosuid,rw,sync,hard,intr"
+ nfs_shares:
+ - server: "10.5.0.100"
+ server_path: "/exports/home"
+ client_mount_path: "/home"
+ - server: "10.5.0.100"
+ server_path: "/exports/scratch"
+ client_mount_path: "/scratch"
+ mount_options: "rw,sync,noatime"
+ 
+ beegfs_enabled: false
+ 
+ powerscale_enabled: true
+ powerscale_server: "powerscale-sc.hpc.example.com"
+ powerscale_exports:
+ - server_path: "/ifs/data/hpc"
+ client_mount_path: "/data"
+ 
+ powervault_enabled: false
+ 
+
+Info
+
+ * [Storage](../SupportMatrix/storage.md) \-- Supported storage platforms.
+ * [Beegfs Server Setup](../Appendices/beegfs_server_setup.md) \-- BeeGFS server setup.
+ * [Disk Space](../ClusterRequirements/disk_space.md) \-- Disk space requirements.
