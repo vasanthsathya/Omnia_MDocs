@@ -19,7 +19,7 @@ The project is hosted on [GitHub](https://github.com/dell/omnia), where you can:
 
 <li>
 
-<p><strong><a href="Overview/index.md">Overview</a></strong></p>
+<p><strong><a href="Overview/index.html">:material-book: Overview</a></strong></p>
 
 <hr />
 
@@ -29,7 +29,7 @@ The project is hosted on [GitHub](https://github.com/dell/omnia), where you can:
 
 <li>
 
-<p><strong><a href="GetStarted/index.md">Get Started</a></strong></p>
+<p><strong><a href="GetStarted/index.html">:material-book: Get Started</a></strong></p>
 
 <hr />
 
@@ -39,7 +39,7 @@ The project is hosted on [GitHub](https://github.com/dell/omnia), where you can:
 
 <li>
 
-<p><strong><a href="HowTo/index.md">How-to Guides</a></strong></p>
+<p><strong><a href="HowTo/index.html">:material-book: How-to Guides</a></strong></p>
 
 <hr />
 
@@ -49,7 +49,7 @@ The project is hosted on [GitHub](https://github.com/dell/omnia), where you can:
 
 <li>
 
-<p><strong><a href="Reference/index.md">Reference</a></strong></p>
+<p><strong><a href="Reference/index.html">:material-book: Reference</a></strong></p>
 
 <hr />
 
@@ -59,7 +59,7 @@ The project is hosted on [GitHub](https://github.com/dell/omnia), where you can:
 
 <li>
 
-<p><strong><a href="Operations/index.md">Operations & Maintenance</a></strong></p>
+<p><strong><a href="Operations/index.html">:material-book: Operations & Maintenance</a></strong></p>
 
 <hr />
 
@@ -69,7 +69,7 @@ The project is hosted on [GitHub](https://github.com/dell/omnia), where you can:
 
 <li>
 
-<p><strong><a href="Troubleshooting/index.md">Troubleshooting</a></strong></p>
+<p><strong><a href="Troubleshooting/index.html">:material-book: Troubleshooting</a></strong></p>
 
 <hr />
 
@@ -94,9 +94,8 @@ Resource | Description
 
 Omnia is made available under the [Apache 2.0 license](https://opensource.org/licenses/Apache-2.0).
 
-Note
-
-Omnia playbooks are licensed under the Apache 2.0 license. Once an end-user initiates Omnia, that end-user will deploy other open-source and/or third-party software that is licensed separately by their respective developer communities and/or third parties. For a comprehensive list of software and their licenses, [click here](Reference/SupportMatrix/installed_software.md). Dell (or any other contributors) shall have no liability regarding (and no responsibility to provide support for) an end-user's use of any open-source and/or third-party software and Omnia users are solely responsible for ensuring that they are complying with all such licenses. Omnia is provided "as is" without any warranty, express or implied. Dell (or any other contributors) shall have no liability for any direct, indirect, incidental, punitive, special, or consequential damages for an end-user's use of Omnia.
+!!! note
+    Omnia playbooks are licensed under the Apache 2.0 license. Once an end-user initiates Omnia, that end-user will deploy other open-source and/or third-party software that is licensed separately by their respective developer communities and/or third parties. For a comprehensive list of software and their licenses, [click here](Reference/SupportMatrix/installed_software.md). Dell (or any other contributors) shall have no liability regarding (and no responsibility to provide support for) an end-user's use of any open-source and/or third-party software and Omnia users are solely responsible for ensuring that they are complying with all such licenses. Omnia is provided "as is" without any warranty, express or implied. Dell (or any other contributors) shall have no liability for any direct, indirect, incidental, punitive, special, or consequential damages for an end-user's use of Omnia.
 
 ## Previous Versions[¶](#previous-versions "Permanent link")
 
@@ -105,9 +104,8 @@ _For a better understanding of what Omnia does, check out the following:_
  * [1.x documentation](https://omnia-doc.readthedocs.io/en/latest/index.md): supports diskful provisioning.
  * [2.x documentation](https://omnia.readthedocs.io/en/latest/index.md): supports diskless provisioning and containerized deployment.
 
-Note
-
-Upgrade from Omnia 1.x to 2.x is not supported due to architectural changes.
+!!! note
+    Upgrade from Omnia 1.x to 2.x is not supported due to architectural changes.
 
 ## Omnia Community Members[¶](#omnia-community-members "Permanent link")
 

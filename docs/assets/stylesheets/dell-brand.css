@@ -433,15 +433,31 @@
 }
 
 /* ── Permalink anchors ────────────────────────────────────── */
-.md-typeset .headerlink {
+.md-typeset .headerlink,
+.md-nav .headerlink {
   color: var(--md-default-fg-color--lighter);
-  opacity: 0;
-  transition: color 0.15s ease, opacity 0.15s ease;
+  opacity: 0 !important;
+  visibility: hidden;
+  transition: color 0.15s ease, opacity 0.15s ease, visibility 0.15s ease;
 }
 
-.md-typeset :hover > .headerlink {
+.md-typeset .headerlink svg,
+.md-nav .headerlink svg {
+  opacity: 0 !important;
+  visibility: hidden;
+}
+
+.md-typeset :hover > .headerlink,
+.md-nav :hover > .headerlink {
   color: var(--md-accent-fg-color);
-  opacity: 1;
+  opacity: 1 !important;
+  visibility: visible;
+}
+
+.md-typeset :hover > .headerlink svg,
+.md-nav :hover > .headerlink svg {
+  opacity: 1 !important;
+  visibility: visible;
 }
 
 /* ── Smooth scrolling ─────────────────────────────────────── */
