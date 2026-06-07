@@ -20,7 +20,7 @@ By default, Omnia installs Slurm from pre-built RPM packages in the local Pulp r
 
 ## Procedure[¶](#procedure "Permanent link")
 
- 1. **Install build dependencies** on the build host:
+ 1. **Install build dependencies** on the build hosts:
 
 ```bash title="Run on: build host (OIM or dedicated build server)"
 dnf groupinstall -y "Development Tools"
