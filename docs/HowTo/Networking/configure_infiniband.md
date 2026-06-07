@@ -22,54 +22,54 @@ InfiniBand provides the lowest latency and highest bandwidth interconnect for HP
 
  1. **Enter the omnia_core container** :
 
-```bash title="Run on: OIM host"
-ssh omnia_core
-```
+    ```bash title="Run on: OIM host"
+    ssh omnia_core
+    ```
  
 
  2. **Configure InfiniBand settings** in the network specification:
 
-```bash title="Run on: omnia_core container"
-vi /opt/omnia/input/project_default/network_spec.yml
-```
+    ```bash title="Run on: omnia_core container"
+    vi /opt/omnia/input/project_default/network_spec.yml
+    ```
  
 
 Add the IB network configuration:
 
-```yaml title="File: /opt/omnia/input/project_default/network_spec.yml
----
-ib_network:
- ib_nic_name: "ib0"
- static_range: "10.230.0.101-10.230.0.200"
- subnet: "10.230.0.0"
- netmask: "255.255.255.0"
-```
+    ```yaml title="File: /opt/omnia/input/project_default/network_spec.yml
+    ---
+    ib_network:
+     ib_nic_name: "ib0"
+     static_range: "10.230.0.101-10.230.0.200"
+     subnet: "10.230.0.0"
+     netmask: "255.255.255.0"
+    ```
  
 
  3. **Ensure OFED is listed in software_config.json** :
 
-```bash title="Run on: omnia_core container"
-cat /opt/omnia/input/project_default/software_config.json | python3 -m json.tool
-```
+    ```bash title="Run on: omnia_core container"
+    cat /opt/omnia/input/project_default/software_config.json | python3 -m json.tool
+    ```
  
 
 Verify the `softwares` list includes:
 
-```json title="File: /opt/omnia/input/project_default/software_config.json
-{
- "softwares": [
- {"name": "doca_ofed"}
- ]
-}
-```
+    ```json title="File: /opt/omnia/input/project_default/software_config.json
+    {
+     "softwares": [
+     {"name": "doca_ofed"}
+     ]
+    }
+    ```
  
 
  4. **Run the omnia.yml playbook** to deploy InfiniBand:
 
-```bash title="Run on: omnia_core container"
-cd /omnia
-ansible-playbook omnia.yml --ask-vault-pass
-```
+    ```bash title="Run on: omnia_core container"
+    cd /omnia
+    ansible-playbook omnia.yml --ask-vault-pass
+    ```
  
 
 The playbook will:

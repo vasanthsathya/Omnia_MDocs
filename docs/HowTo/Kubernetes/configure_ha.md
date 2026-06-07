@@ -18,39 +18,39 @@ Omnia uses **kube-vip** or **keepalived** to manage the virtual IP, depending on
 
  1. **Enter the omnia_core container** :
 
-```bash title="Run on: OIM host"
-ssh omnia_core
-```
+    ```bash title="Run on: OIM host"
+    ssh omnia_core
+    ```
  
 
  2. **Configure the virtual IP** in `omnia_config.yml`:
 
-```bash title="Run on: omnia_core container"
-vi /opt/omnia/input/project_default/omnia_config.yml
-```
+    ```bash title="Run on: omnia_core container"
+    vi /opt/omnia/input/project_default/omnia_config.yml
+    ```
  
 
 Add or update the HA parameters:
 
-```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml
----
-# Kubernetes HA configuration
-k8s_ha_enabled: true
-k8s_vip: "10.5.0.200"
-k8s_vip_interface: "eno1"
-```
+    ```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml
+    ---
+    # Kubernetes HA configuration
+    k8s_ha_enabled: true
+    k8s_vip: "10.5.0.200"
+    k8s_vip_interface: "eno1"
+    ```
  
 
-!!! warning
-    The `k8s_vip` must be a free IP address on the same subnet as the
-    control-plane nodes. Do **not** use an IP from the MetalLB range.
+    !!! warning
+        The `k8s_vip` must be a free IP address on the same subnet as the
+        control-plane nodes. Do **not** use an IP from the MetalLB range.
 
  3. **Run the omnia.yml playbook** (or re-run to apply HA changes):
 
-```bash title="Run on: omnia_core container"
-cd /omnia
-ansible-playbook omnia.yml --ask-vault-pass
-```
+    ```bash title="Run on: omnia_core container"
+    cd /omnia
+    ansible-playbook omnia.yml --ask-vault-pass
+    ```
  
 
 If the cluster is already deployed, the playbook will:
@@ -208,3 +208,5 @@ firewall-cmd --reload
 ss -tlnp | grep 6443
 ```
  
+
+

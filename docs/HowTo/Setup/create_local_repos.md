@@ -24,34 +24,34 @@ This ensures all cluster nodes install packages from a consistent, local mirror,
 
  1. **Enter the omnia_core container** :
 
-```bash title="Run on: OIM host"
-ssh omnia_core
-```
+    ```bash title="Run on: OIM host"
+    ssh omnia_core
+    ```
  
 
  2. **Verify software_config.json is configured** with the desired software stacks:
 
-```bash title="Run on: omnia_core container"
-cat /opt/omnia/input/project_default/software_config.json | python3 -m json.tool
-```
+    ```bash title="Run on: omnia_core container"
+    cat /opt/omnia/input/project_default/software_config.json | python3 -m json.tool
+    ```
  
 
 Confirm the `softwares` list includes all packages you need (e.g., `slurm`, `cuda`, `openldap`, `apptainer`).
 
  3. **Run the local_repo playbook** :
 
-```bash title="Run on: omnia_core container"
-cd /omnia/local_repo
-ansible-playbook local_repo.yml
-```
+    ```bash title="Run on: omnia_core container"
+    cd /omnia/local_repo
+    ansible-playbook local_repo.yml
+    ```
  
 
-!!! note
-    If credentials are Vault-encrypted:
+    !!! note
+        If credentials are Vault-encrypted:
 
-    ```bash title="Run on: omnia_core container"
-    ansible-playbook local_repo.yml --ask-vault-pass
-    ```
+        ```bash title="Run on: omnia_core container"
+        ansible-playbook local_repo.yml --ask-vault-pass
+        ```
 
 The playbook will:
 
@@ -67,18 +67,18 @@ The playbook will:
 
  4. **Monitor synchronization progress** (in a separate terminal):
 
-```bash title="Run on: OIM host"
-podman logs -f pulp
-```
+    ```bash title="Run on: OIM host"
+    podman logs -f pulp
+    ```
  
 
 ## Verification[¶](#verification "Permanent link")
 
  1. **Check Pulp repository status** via the API:
 
-```bash title="Run on: OIM host"
-curl -s http://localhost:8080/pulp/api/v3/distributions/rpm/rpm/ | python3 -m json.tool
-```
+    ```bash title="Run on: OIM host"
+    curl -s http://localhost:8080/pulp/api/v3/distributions/rpm/rpm/ | python3 -m json.tool
+    ```
  
 
 Each synced repository should have a distribution with a `base_url`.

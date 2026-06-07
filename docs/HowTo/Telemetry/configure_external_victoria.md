@@ -22,52 +22,52 @@ Benefits:
 
  1. **Enter the omnia_core container** :
 
-```bash title="Run on: OIM host"
-ssh omnia_core
-```
+    ```bash title="Run on: OIM host"
+    ssh omnia_core
+    ```
  
 
  2. **Configure external VictoriaMetrics** in `omnia_config.yml`:
 
-```bash title="Run on: omnia_core container"
-vi /opt/omnia/input/project_default/omnia_config.yml
-```
+    ```bash title="Run on: omnia_core container"
+    vi /opt/omnia/input/project_default/omnia_config.yml
+    ```
  
 
-```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml
----
-# External VictoriaMetrics configuration
-victoriametrics_external: true
-victoriametrics_write_url: "http://victoria.example.com:8428/api/v1/write"
-victoriametrics_read_url: "http://victoria.example.com:8428"
+    ```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml
+    ---
+    # External VictoriaMetrics configuration
+    victoriametrics_external: true
+    victoriametrics_write_url: "http://victoria.example.com:8428/api/v1/write"
+    victoriametrics_read_url: "http://victoria.example.com:8428"
 
-# Optional: authentication
-victoriametrics_auth_enabled: false
-victoriametrics_username: ""
-victoriametrics_password: ""
+    # Optional: authentication
+    victoriametrics_auth_enabled: false
+    victoriametrics_username: ""
+    victoriametrics_password: ""
 
-# Optional: custom labels added to all metrics
-victoriametrics_extra_labels:
-cluster: "omnia-prod"
-datacenter: "dc1"
-```
+    # Optional: custom labels added to all metrics
+    victoriametrics_extra_labels:
+    cluster: "omnia-prod"
+    datacenter: "dc1"
+    ```
  
 
  3. **Verify connectivity** to the external VictoriaMetrics:
 
-```bash title="Run on: K8s control plane node"
-curl -s http://victoria.example.com:8428/api/v1/status/tsdb
-```
+    ```bash title="Run on: K8s control plane node"
+    curl -s http://victoria.example.com:8428/api/v1/status/tsdb
+    ```
  
 
 Expected: JSON response with database statistics.
 
  4. **Run the telemetry playbook** to reconfigure:
 
-```bash title="Run on: omnia_core container"
-cd /omnia
-ansible-playbook telemetry.yml --ask-vault-pass
-```
+    ```bash title="Run on: omnia_core container"
+    cd /omnia
+    ansible-playbook telemetry.yml --ask-vault-pass
+    ```
  
 
 The playbook will:

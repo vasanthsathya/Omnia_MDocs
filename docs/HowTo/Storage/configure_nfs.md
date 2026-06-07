@@ -31,27 +31,27 @@ Both models use:
 
  1. **Configure NFS in omnia_config.yml** :
 
-```bash title="Run on: omnia_core container"
-vi /opt/omnia/input/project_default/omnia_config.yml
-```
+    ```bash title="Run on: omnia_core container"
+    vi /opt/omnia/input/project_default/omnia_config.yml
+    ```
 
 Set the NFS parameters:
 
-```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml
----
-enable_omnia_nfs: true
-nfs_node_group: "slurm_control_node"
-omnia_nfs_path: "/home"
-omnia_nfs_opts: "rw,sync,no_root_squash,no_subtree_check"
-```
+    ```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml
+    ---
+    enable_omnia_nfs: true
+    nfs_node_group: "slurm_control_node"
+    omnia_nfs_path: "/home"
+    omnia_nfs_opts: "rw,sync,no_root_squash,no_subtree_check"
+    ```
  
 
  2. **Run the omnia.yml playbook** to deploy NFS:
 
-```bash title="Run on: omnia_core container"
-cd /omnia
-ansible-playbook omnia.yml --ask-vault-pass
-```
+    ```bash title="Run on: omnia_core container"
+    cd /omnia
+    ansible-playbook omnia.yml --ask-vault-pass
+    ```
 
 The playbook will:
 
@@ -66,68 +66,70 @@ The playbook will:
 
  1. **Configure external NFS in omnia_config.yml** :
 
-```bash title="Run on: omnia_core container"
-vi /opt/omnia/input/project_default/omnia_config.yml
-```
+    ```bash title="Run on: omnia_core container"
+    vi /opt/omnia/input/project_default/omnia_config.yml
+    ```
 
-```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml
----
-enable_omnia_nfs: false
-external_nfs_server: "10.5.1.100"
-external_nfs_path: "/ifs/omnia/home"
-external_nfs_mount_point: "/home"
-external_nfs_opts: "rw,hard,intr,nfsvers=3"
-```
+    ```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml
+    ---
+    enable_omnia_nfs: false
+    external_nfs_server: "10.5.1.100"
+    external_nfs_path: "/ifs/omnia/home"
+    external_nfs_mount_point: "/home"
+    external_nfs_opts: "rw,hard,intr,nfsvers=3"
+    ```
  
 
  2. **Run the omnia.yml playbook** :
 
-```bash title="Run on: omnia_core container"
-cd /omnia
-ansible-playbook omnia.yml --ask-vault-pass
-```
+    ```bash title="Run on: omnia_core container"
+    cd /omnia
+    ansible-playbook omnia.yml --ask-vault-pass
+    ```
 
  3. **(Alternative) Manual NFS mount** on a specific node:
 
-```bash title="Run on: compute node"
-dnf install -y nfs-utils
-mkdir -p /home
-mount -t nfs -o rw,hard,intr,nfsvers=3 10.5.1.100:/ifs/omnia/home /home
-```
+    ```bash title="Run on: compute node"
+    dnf install -y nfs-utils
+    mkdir -p /home
+    mount -t nfs -o rw,hard,intr,nfsvers=3 10.5.1.100:/ifs/omnia/home /home
+    ```
  
 
 Add to `/etc/fstab` for persistence:
 
-```bash title="Run on: compute node"
-echo "10.5.1.100:/ifs/omnia/home /home nfs rw,hard,intr,nfsvers=3 0 0" >> /etc/fstab
-```
+    ```bash title="Run on: compute node"
+    echo "10.5.1.100:/ifs/omnia/home /home nfs rw,hard,intr,nfsvers=3 0 0" >> /etc/fstab
+    ```
  
 
 ## Verification[¶](#verification "Permanent link")
 
  1. **Verify the NFS server is exporting** (internal NFS):
 
-```bash title="Run on: NFS server node"
-exportfs -v
-```
+    ```bash title="Run on: NFS server node"
+    exportfs -v
+    ```
 
 Expected output:
 
-```text title="Expected output on: NFS server node
-/home <network>(rw,sync,wdelay,no_root_squash,no_subtree_check,...)
-```
+    ```text title="Expected output on: NFS server node
+    /home <network>(rw,sync,wdelay,no_root_squash,no_subtree_check,...)
+    ```
  
 
  1. **Verify NFS is mounted on compute nodes** :
 
-```bash title="Run on: omnia_core container"
+
+    ```bash title="Run on: omnia_core container"
 ansible slurm_node -m shell -a "df -h /home"
 ```
  
 
  1. **Test read/write from a compute node** :
 
-```bash title="Run on: compute node"
+
+    ```bash title="Run on: compute node"
 echo "NFS test $(date)" > /home/nfs_test.txt
 cat /home/nfs_test.txt
 rm /home/nfs_test.txt
@@ -136,7 +138,8 @@ rm /home/nfs_test.txt
 
  1. **Verify permissions** :
 
-```bash title="Run on: NFS server node"
+
+    ```bash title="Run on: NFS server node"
 ls -ld /home
 # Expected: drwxr-xr-x (755)
 ```
@@ -197,3 +200,6 @@ mount /home
  10.5.1.100:/ifs/omnia/home /home nfs rw,hard,intr,nfsvers=3,rsize=1048576,wsize=1048576 0 0
  ```
  
+
+
+

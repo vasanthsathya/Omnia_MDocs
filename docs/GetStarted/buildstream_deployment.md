@@ -46,7 +46,6 @@ bash omnia.sh --install
 # Verify
 systemctl status omnia_core
 ```
- 
 
 ```bash title="Run on OIM (as root)"
 ssh omnia_core

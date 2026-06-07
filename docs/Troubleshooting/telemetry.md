@@ -19,42 +19,42 @@ Resolution
 
  1. **Verify the iDRAC license** includes Datacenter features:
 
-```bash title="Run on: BMC via racadm
-racadm -r <bmc_ip> -u <user> -p <pass> license view
-```
+    ```bash title="Run on: BMC via racadm
+    racadm -r <bmc_ip> -u <user> -p <pass> license view
+    ```
 
 Look for `iDRAC Datacenter License` in the output. If not present, install the appropriate license.
 
  2. **Check Redfish telemetry support:**
 
-```bash title="Run on: OIM host
-curl -k -u <user>:<pass> \
-https://<bmc_ip>/redfish/v1/TelemetryService
-```
+    ```bash title="Run on: OIM host
+    curl -k -u <user>:<pass> \
+    https://<bmc_ip>/redfish/v1/TelemetryService
+    ```
 
 A `404` response indicates the firmware does not support telemetry. Update iDRAC firmware to the latest version.
 
  3. **Verify telemetry subscriptions:**
 
-```bash title="Run on: OIM host
-curl -k -u <user>:<pass> \
-https://<bmc_ip>/redfish/v1/EventService/Subscriptions
-```
+    ```bash title="Run on: OIM host
+    curl -k -u <user>:<pass> \
+    https://<bmc_ip>/redfish/v1/EventService/Subscriptions
+    ```
 
  4. **Test network connectivity** from the OIM to the BMC:
 
-```bash title="Run on: OIM host
-ping <bmc_ip>
-curl -k https://<bmc_ip>/redfish/v1/
-```
+    ```bash title="Run on: OIM host
+    ping <bmc_ip>
+    curl -k https://<bmc_ip>/redfish/v1/
+    ```
 
  5. If subscriptions are missing, re-run the telemetry playbook:
 
-```bash title="Run on: OIM host
-ssh omnia_core
-cd /omnia
-ansible-playbook playbooks/telemetry.yml
-```
+    ```bash title="Run on: OIM host
+    ssh omnia_core
+    cd /omnia
+    ansible-playbook playbooks/telemetry.yml
+    ```
 
 ## LDMS sampler failures[¶](#ldms-sampler-failures "Permanent link")
 
@@ -72,33 +72,33 @@ Resolution
 
  1. Check `ldmsd` status on the compute node:
 
-```bash title="Run on: compute node
-ssh <compute_node> systemctl status ldmsd
-```
+    ```bash title="Run on: compute node
+    ssh <compute_node> systemctl status ldmsd
+    ```
 
  2. Review LDMS logs:
 
-```bash title="Run on: compute node
-ssh <compute_node> cat /var/log/ldmsd.log
-```
+    ```bash title="Run on: compute node
+    ssh <compute_node> cat /var/log/ldmsd.log
+    ```
 
  3. Verify the sampler configuration:
 
-```bash title="Run on: compute node
-ssh <compute_node> cat /etc/ldms/ldmsd.conf
-```
+    ```bash title="Run on: compute node
+    ssh <compute_node> cat /etc/ldms/ldmsd.conf
+    ```
 
  4. Test connectivity to the aggregator:
 
-```bash title="Run on: compute node
-ssh <compute_node> nc -zv <aggregator_ip> <aggregator_port>
-```
+    ```bash title="Run on: compute node
+    ssh <compute_node> nc -zv <aggregator_ip> <aggregator_port>
+    ```
 
  5. Restart the LDMS daemon:
 
-```bash title="Run on: compute node
-ssh <compute_node> systemctl restart ldmsd
-```
+    ```bash title="Run on: compute node
+    ssh <compute_node> systemctl restart ldmsd
+    ```
 
 ## Kafka connection issues[¶](#kafka-connection-issues "Permanent link")
 
@@ -117,46 +117,46 @@ Resolution
 
  1. Verify Kafka is running:
 
-```bash title="Run on: OIM host
-# If Kafka runs as a Podman container
-podman ps | grep kafka
+    ```bash title="Run on: OIM host
+    # If Kafka runs as a Podman container
+    podman ps | grep kafka
 
-# If Kafka runs as a Kubernetes pod
-kubectl get pods -n telemetry | grep kafka
-```
+    # If Kafka runs as a Kubernetes pod
+    kubectl get pods -n telemetry | grep kafka
+    ```
 
  2. Check Kafka logs:
 
-```bash title="Run on: OIM host
-podman logs kafka 2>&1 | tail -50
-```
+    ```bash title="Run on: OIM host
+    podman logs kafka 2>&1 | tail -50
+    ```
 
  3. Verify Kafka listeners:
 
-```bash title="Run on: OIM host
-# Test Kafka port
-nc -zv <kafka_host> 9092
-```
+    ```bash title="Run on: OIM host
+    # Test Kafka port
+    nc -zv <kafka_host> 9092
+    ```
 
  4. Check ZooKeeper status:
 
-```bash title="Run on: OIM host
-podman ps | grep zookeeper
-podman logs zookeeper 2>&1 | tail -50
-```
+    ```bash title="Run on: OIM host
+    podman ps | grep zookeeper
+    podman logs zookeeper 2>&1 | tail -50
+    ```
 
  5. If Kafka's advertised listeners are wrong, update the configuration:
 
-```bash title="File: Kafka configuration
-# In Kafka's server.properties or environment variables
-KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://<oim_ip>:9092
-```
+    ```bash title="File: Kafka configuration
+    # In Kafka's server.properties or environment variables
+    KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://<oim_ip>:9092
+    ```
 
  6. Restart Kafka:
 
-```bash title="Run on: OIM host
-podman restart kafka
-```
+    ```bash title="Run on: OIM host
+    podman restart kafka
+    ```
 
 ## VictoriaMetrics not receiving data[¶](#victoriametrics-not-receiving-data "Permanent link")
 
@@ -175,43 +175,43 @@ Resolution
 
  1. Verify VictoriaMetrics is running:
 
-```bash title="Run on: OIM host
-podman ps | grep victoria
-# or
-kubectl get pods -n telemetry | grep victoria
-```
+    ```bash title="Run on: OIM host
+    podman ps | grep victoria
+    # or
+    kubectl get pods -n telemetry | grep victoria
+    ```
 
  2. Check VictoriaMetrics health:
 
-```bash title="Run on: OIM host
-curl http://<victoria_host>:8428/health
-```
+    ```bash title="Run on: OIM host
+    curl http://<victoria_host>:8428/health
+    ```
 
  3. Verify data is being ingested:
 
-```bash title="Run on: OIM host
-# Check the number of active time series
-curl http://<victoria_host>:8428/api/v1/status/tsdb
-```
+    ```bash title="Run on: OIM host
+    # Check the number of active time series
+    curl http://<victoria_host>:8428/api/v1/status/tsdb
+    ```
 
  4. Check disk space:
 
-```bash title="Run on: OIM host
-df -h <victoria_data_dir>
-```
+    ```bash title="Run on: OIM host
+    df -h <victoria_data_dir>
+    ```
 
  5. Check the Kafka consumer that feeds VictoriaMetrics:
 
-```bash title="Run on: OIM host
-podman logs <kafka_consumer_container> 2>&1 | tail -50
-```
+    ```bash title="Run on: OIM host
+    podman logs <kafka_consumer_container> 2>&1 | tail -50
+    ```
 
  6. If disk is full, increase storage or reduce retention:
 
-```bash title="VictoriaMetrics configuration
-# Adjust retention period (e.g., 30 days)
-# Add to VictoriaMetrics startup flags: -retentionPeriod=30d
-```
+    ```bash title="VictoriaMetrics configuration
+    # Adjust retention period (e.g., 30 days)
+    # Add to VictoriaMetrics startup flags: -retentionPeriod=30d
+    ```
 
 ## Grafana dashboards empty[¶](#grafana-dashboards-empty "Permanent link")
 
@@ -237,31 +237,31 @@ Resolution
 
  5. If no data source exists, add one:
 
-```bash title="Run on: OIM host
-curl -X POST http://admin:admin@<grafana_host>:3000/api/datasources \
--H 'Content-Type: application/json' \
--d '{
-"name": "VictoriaMetrics",
-"type": "prometheus",
-"url": "http://<victoria_host>:8428",
-"access": "proxy",
-"isDefault": true
-}'
-```
+    ```bash title="Run on: OIM host
+    curl -X POST http://admin:admin@<grafana_host>:3000/api/datasources \
+    -H 'Content-Type: application/json' \
+    -d '{
+    "name": "VictoriaMetrics",
+    "type": "prometheus",
+    "url": "http://<victoria_host>:8428",
+    "access": "proxy",
+    "isDefault": true
+    }'
+    ```
 
  6. Verify metrics exist in VictoriaMetrics:
 
-```bash title="Run on: OIM host
-curl 'http://<victoria_host>:8428/api/v1/label/__name__/values' | jq '.'
-```
+    ```bash title="Run on: OIM host
+    curl 'http://<victoria_host>:8428/api/v1/label/__name__/values' | jq '.'
+    ```
 
  7. Re-import Omnia default dashboards if they are missing:
 
-```bash title="Run on: OIM host
-ssh omnia_core
-cd /omnia
-ansible-playbook playbooks/telemetry.yml --tags grafana_dashboards
-```
+    ```bash title="Run on: OIM host
+    ssh omnia_core
+    cd /omnia
+    ansible-playbook playbooks/telemetry.yml --tags grafana_dashboards
+    ```
 
 Info
 

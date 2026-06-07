@@ -22,23 +22,23 @@ The `get_config_credentials.yml` playbook interactively prompts for these creden
 
  1. **Enter the omnia_core container** :
 
-```bash title="Run on: OIM host"
-ssh omnia_core
-```
+    ```bash title="Run on: OIM host"
+    ssh omnia_core
+    ```
  
 
  2. **Navigate to the credential utility directory** :
 
-```bash title="Run on: omnia_core container"
-cd /omnia/utils/credential_utility
-```
+    ```bash title="Run on: omnia_core container"
+    cd /omnia/utils/credential_utility
+    ```
  
 
  3. **Run the credential configuration playbook** with the `provision` tag:
 
-```bash title="Run on: omnia_core container"
-ansible-playbook get_config_credentials.yml --tags provision
-```
+    ```bash title="Run on: omnia_core container"
+    ansible-playbook get_config_credentials.yml --tags provision
+    ```
  
 
 The playbook will prompt you for:
@@ -71,9 +71,9 @@ The playbook will prompt you for:
 
  4. **Verify the encrypted file was created** :
 
-```bash title="Run on: omnia_core container"
-ls -la /opt/omnia/input/project_default/omnia_config_credentials.yml
-```
+    ```bash title="Run on: omnia_core container"
+    ls -la /opt/omnia/input/project_default/omnia_config_credentials.yml
+    ```
  
 
  5. **(Optional) View the encrypted credentials** to confirm values:

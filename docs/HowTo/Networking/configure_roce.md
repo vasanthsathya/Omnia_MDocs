@@ -25,35 +25,35 @@ Omnia supports:
 
  1. **Enter the omnia_core container** :
 
-```bash title="Run on: OIM host"
-ssh omnia_core
-```
+    ```bash title="Run on: OIM host"
+    ssh omnia_core
+    ```
  
 
  2. **Configure the RoCE network** in the network specification:
 
-```bash title="Run on: omnia_core container"
-vi /opt/omnia/input/project_default/network_spec.yml
-```
+    ```bash title="Run on: omnia_core container"
+    vi /opt/omnia/input/project_default/network_spec.yml
+    ```
  
 
-```yaml title="File: /opt/omnia/input/project_default/network_spec.yml
----
-roce_network:
- nic_name: "ens10f0"
- static_range: "10.231.0.101-10.231.0.200"
- subnet: "10.231.0.0"
- netmask: "255.255.255.0"
- mtu: 9000
-```
+    ```yaml title="File: /opt/omnia/input/project_default/network_spec.yml
+    ---
+    roce_network:
+     nic_name: "ens10f0"
+     static_range: "10.231.0.101-10.231.0.200"
+     subnet: "10.231.0.0"
+     netmask: "255.255.255.0"
+     mtu: 9000
+    ```
  
 
  3. **Run the omnia.yml playbook** :
 
-```bash title="Run on: omnia_core container"
-cd /omnia
-ansible-playbook omnia.yml --ask-vault-pass
-```
+    ```bash title="Run on: omnia_core container"
+    cd /omnia
+    ansible-playbook omnia.yml --ask-vault-pass
+    ```
  
 
  4. **(If needed) Manually configure RoCE on a compute node** :
@@ -257,3 +257,5 @@ mstconfig -d mlx5_0 set LINK_TYPE_P1=ETH
  
 
 Reboot the node for the change to take effect.
+
+

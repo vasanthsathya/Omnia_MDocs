@@ -35,44 +35,44 @@ Slurm is configured with **GRES (Generic RESource)** definitions so jobs can req
 
  1. **Enter the omnia_core container** :
 
-```bash title="Run on: OIM host"
-ssh omnia_core
-```
+    ```bash title="Run on: OIM host"
+    ssh omnia_core
+    ```
  
 
  2. **Verify GPU software is listed in software_config.json** :
 
-```bash title="Run on: omnia_core container"
-cat /opt/omnia/input/project_default/software_config.json | python3 -m json.tool
-```
+    ```bash title="Run on: omnia_core container"
+    cat /opt/omnia/input/project_default/software_config.json | python3 -m json.tool
+    ```
  
 
  3. **Configure GPU-related parameters in omnia_config.yml** :
 
-```bash title="Run on: omnia_core container"
-vi /opt/omnia/input/project_default/omnia_config.yml
-```
+    ```bash title="Run on: omnia_core container"
+    vi /opt/omnia/input/project_default/omnia_config.yml
+    ```
  
 
 GPU-related parameters:
 
-```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml
----
-# GPU configuration
-cuda_toolkit_path: "/usr/local/cuda"
-rocm_install_path: "/opt/rocm"
+    ```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml
+    ---
+    # GPU configuration
+    cuda_toolkit_path: "/usr/local/cuda"
+    rocm_install_path: "/opt/rocm"
 
-# Slurm GRES configuration (auto-detected if left empty)
-slurm_gres_config: ""
-```
+    # Slurm GRES configuration (auto-detected if left empty)
+    slurm_gres_config: ""
+    ```
  
 
  4. **Run the omnia.yml playbook** (or re-run if Slurm is already deployed):
 
-```bash title="Run on: omnia_core container"
-cd /omnia
-ansible-playbook omnia.yml --ask-vault-pass
-```
+    ```bash title="Run on: omnia_core container"
+    cd /omnia
+    ansible-playbook omnia.yml --ask-vault-pass
+    ```
  
 
 The playbook will:

@@ -26,50 +26,50 @@ The telemetry services run as pods on the Kubernetes service cluster.
 
  1. **Enter the omnia_core container** :
 
-```bash title="Run on: OIM host"
-ssh omnia_core
-```
+    ```bash title="Run on: OIM host"
+    ssh omnia_core
+    ```
  
 
  2. **Configure telemetry parameters** in `omnia_config.yml`:
 
-```bash title="Run on: omnia_core container"
-vi /opt/omnia/input/project_default/omnia_config.yml
-```
+    ```bash title="Run on: omnia_core container"
+    vi /opt/omnia/input/project_default/omnia_config.yml
+    ```
  
 
-```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml
----
-# Telemetry configuration
-enable_telemetry: true
-telemetry_collection_interval: 60 # seconds
-grafana_admin_password: "" # Set via credentials utility
+    ```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml
+    ---
+    # Telemetry configuration
+    enable_telemetry: true
+    telemetry_collection_interval: 60 # seconds
+    grafana_admin_password: "" # Set via credentials utility
 
-# iDRAC telemetry
-idrac_telemetry_enabled: true
-idrac_telemetry_metrics:
-- "SystemBoardInletTemp"
-- "SystemBoardExhaustTemp"
-- "TotalPower"
-- "CPUUsage"
-- "MemoryUsage"
-- "FanSpeed"
+    # iDRAC telemetry
+    idrac_telemetry_enabled: true
+    idrac_telemetry_metrics:
+    - "SystemBoardInletTemp"
+    - "SystemBoardExhaustTemp"
+    - "TotalPower"
+    - "CPUUsage"
+    - "MemoryUsage"
+    - "FanSpeed"
 
-# LDMS configuration
-ldms_enabled: true
-ldms_samplers:
-- "meminfo"
-- "vmstat"
-- "procstat"
-```
+    # LDMS configuration
+    ldms_enabled: true
+    ldms_samplers:
+    - "meminfo"
+    - "vmstat"
+    - "procstat"
+    ```
  
 
  3. **Run the telemetry playbook** :
 
-```bash title="Run on: omnia_core container"
-cd /omnia
-ansible-playbook telemetry.yml --ask-vault-pass
-```
+    ```bash title="Run on: omnia_core container"
+    cd /omnia
+    ansible-playbook telemetry.yml --ask-vault-pass
+    ```
  
 
 The playbook performs:

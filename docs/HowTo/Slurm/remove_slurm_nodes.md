@@ -22,62 +22,62 @@ Removing a node from a Slurm cluster involves:
 
  1. **Drain the target node** to prevent new jobs from being scheduled:
 
-```bash title="Run on: Slurm control node"
-scontrol update nodename=<node-to-remove> state=drain reason="Decommissioning"
-```
+    ```bash title="Run on: Slurm control node"
+    scontrol update nodename=<node-to-remove> state=drain reason="Decommissioning"
+    ```
  
 
  2. **Verify the node is draining** and check for running jobs:
 
-```bash title="Run on: Slurm control node"
-sinfo -n <node-to-remove>
-squeue -w <node-to-remove>
-```
+    ```bash title="Run on: Slurm control node"
+    sinfo -n <node-to-remove>
+    squeue -w <node-to-remove>
+    ```
  
 
 Wait for all jobs on the node to complete. If immediate removal is needed, cancel running jobs:
 
-```bash title="Run on: Slurm control node"
-# Cancel all jobs on the target node
-scancel -w <node-to-remove>
-```
+    ```bash title="Run on: Slurm control node"
+    # Cancel all jobs on the target node
+    scancel -w <node-to-remove>
+    ```
  
 
  3. **Set the node to down** :
 
-```bash title="Run on: Slurm control node"
-scontrol update nodename=<node-to-remove> state=down reason="Removed from cluster"
-```
+    ```bash title="Run on: Slurm control node"
+    scontrol update nodename=<node-to-remove> state=down reason="Removed from cluster"
+    ```
  
 
  4. **Stop Slurm services on the target node** :
 
-```bash title="Run on: node being removed"
-systemctl stop slurmd
-systemctl disable slurmd
-systemctl stop munge
-systemctl disable munge
-```
+    ```bash title="Run on: node being removed"
+    systemctl stop slurmd
+    systemctl disable slurmd
+    systemctl stop munge
+    systemctl disable munge
+    ```
  
 
  5. **Remove the node from slurm.conf** on the control node:
 
-```bash title="Run on: Slurm control node"
-vi /etc/slurm/slurm.conf
-```
+    ```bash title="Run on: Slurm control node"
+    vi /etc/slurm/slurm.conf
+    ```
  
 
 Remove or comment out the `NodeName=` line for the target node. Also update the `PartitionName=` line to remove the node from the `Nodes=` list.
 
  6. **Reconfigure Slurm** to apply changes:
 
-```bash title="Run on: Slurm control node"
-scontrol reconfigure
-```
+    ```bash title="Run on: Slurm control node"
+    scontrol reconfigure
+    ```
 
  7. **(Optional) Remove the node from the mapping file** :
 
-```bash title="Run on: omnia_core container"
+    ```bash title="Run on: omnia_core container"
 vi /opt/omnia/input/project_default/pxe_mapping_file.csv
 ```
  

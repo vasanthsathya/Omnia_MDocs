@@ -28,56 +28,56 @@ Omnia configures:
 
  1. **Install iSCSI and multipath packages** on the Slurm controller:
 
-```bash title="Run on: Slurm control node"
-dnf install -y iscsi-initiator-utils device-mapper-multipath
-```
+    ```bash title="Run on: Slurm control node"
+    dnf install -y iscsi-initiator-utils device-mapper-multipath
+    ```
  
 
  2. **Configure the iSCSI initiator name** :
 
-```bash title="Run on: Slurm control node"
-cat /etc/iscsi/initiatorname.iscsi
-```
+    ```bash title="Run on: Slurm control node"
+    cat /etc/iscsi/initiatorname.iscsi
+    ```
  
 
 If the initiator name is not set, generate one:
 
-```bash title="Run on: Slurm control node"
-echo "InitiatorName=$(iscsi-iname)" > /etc/iscsi/initiatorname.iscsi
-```
+    ```bash title="Run on: Slurm control node"
+    echo "InitiatorName=$(iscsi-iname)" > /etc/iscsi/initiatorname.iscsi
+    ```
  
 
  3. **Configure DM-Multipath** :
 
-```bash title="Run on: Slurm control node"
-cat <<'EOF' > /etc/multipath.conf
-defaults {
- polling_interval 10
- path_grouping_policy multibus
- find_multipaths yes
- no_path_retry 5
- user_friendly_names yes
-}
+    ```bash title="Run on: Slurm control node"
+    cat <<'EOF' > /etc/multipath.conf
+    defaults {
+     polling_interval 10
+     path_grouping_policy multibus
+     find_multipaths yes
+     no_path_retry 5
+     user_friendly_names yes
+    }
 
-devices {
- device {
- vendor "DellEMC"
- product "ME5"
- path_grouping_policy group_by_prio
- path_checker tur
- failback immediate
- no_path_retry queue
- }
-}
-EOF
+    devices {
+     device {
+     vendor "DellEMC"
+     product "ME5"
+     path_grouping_policy group_by_prio
+     path_checker tur
+     failback immediate
+     no_path_retry queue
+     }
+    }
+    EOF
 
-systemctl enable --now multipathd
-```
+    systemctl enable --now multipathd
+    ```
  
 
  4. **Discover iSCSI targets** on the PowerVault:
 
-```bash title="Run on: Slurm control node"
+    ```bash title="Run on: Slurm control node"
 iscsiadm -m discovery -t sendtargets -p 10.5.2.100:3260
 iscsiadm -m discovery -t sendtargets -p 10.5.2.101:3260
 ```

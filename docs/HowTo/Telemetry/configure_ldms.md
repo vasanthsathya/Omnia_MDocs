@@ -21,9 +21,9 @@ This guide shows how to configure sampler plugins (`meminfo`, `vmstat`, `procsta
 
  1. **Review available LDMS sampler plugins** :
 
-```bash title="Run on: compute node"
-ldms_ls -h localhost -p 411 -v
-```
+    ```bash title="Run on: compute node"
+    ldms_ls -h localhost -p 411 -v
+    ```
 
 Common sampler plugins:
 
@@ -48,36 +48,36 @@ Common sampler plugins:
 
  2. **Configure sampler plugins** on a compute node:
 
-```bash title="Run on: compute node"
-vi /etc/ldms/ldmsd.conf
-```
+    ```bash title="Run on: compute node"
+    vi /etc/ldms/ldmsd.conf
+    ```
  
 
 Example sampler configuration:
 
-```text title="File: /etc/ldms/ldmsd.conf on compute node
-# Transport and authentication
-auth_add name=munge plugin=munge
+    ```text title="File: /etc/ldms/ldmsd.conf on compute node
+    # Transport and authentication
+    auth_add name=munge plugin=munge
 
-# Listen for connections
-listen xprt=sock port=411 auth=munge
+    # Listen for connections
+    listen xprt=sock port=411 auth=munge
 
-# Load sampler plugins
-load name=meminfo
-config name=meminfo producer=${HOSTNAME} instance=${HOSTNAME}/meminfo \
-schema=meminfo component_id=${COMPONENT_ID}
-start name=meminfo interval=10000000
+    # Load sampler plugins
+    load name=meminfo
+    config name=meminfo producer=${HOSTNAME} instance=${HOSTNAME}/meminfo \
+    schema=meminfo component_id=${COMPONENT_ID}
+    start name=meminfo interval=10000000
 
-load name=vmstat
-config name=vmstat producer=${HOSTNAME} instance=${HOSTNAME}/vmstat \
-schema=vmstat component_id=${COMPONENT_ID}
-start name=vmstat interval=10000000
+    load name=vmstat
+    config name=vmstat producer=${HOSTNAME} instance=${HOSTNAME}/vmstat \
+    schema=vmstat component_id=${COMPONENT_ID}
+    start name=vmstat interval=10000000
 
-load name=procstat
-config name=procstat producer=${HOSTNAME} instance=${HOSTNAME}/procstat \
-schema=procstat component_id=${COMPONENT_ID}
-start name=procstat interval=10000000
-```
+    load name=procstat
+    config name=procstat producer=${HOSTNAME} instance=${HOSTNAME}/procstat \
+    schema=procstat component_id=${COMPONENT_ID}
+    start name=procstat interval=10000000
+    ```
  
 
 !!! note

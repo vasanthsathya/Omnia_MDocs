@@ -24,89 +24,89 @@ This guide shows how to pull benchmark container images (SIF format) and submit 
 
  1. **SSH to the Slurm login or control node** :
 
-```bash title="Run on: omnia_core container"
-ssh root@<slurm-control-node-ip>
-```
+    ```bash title="Run on: omnia_core container"
+    ssh root@<slurm-control-node-ip>
+    ```
  
 
  2. **Create a directory for benchmark images** on shared storage:
 
-```bash title="Run on: Slurm control node"
-mkdir -p /home/benchmarks/images
-mkdir -p /home/benchmarks/results
-cd /home/benchmarks
-```
+    ```bash title="Run on: Slurm control node"
+    mkdir -p /home/benchmarks/images
+    mkdir -p /home/benchmarks/results
+    cd /home/benchmarks
+    ```
  
 
  3. **Pull the HPL (High Performance Linpack) benchmark container** :
 
-```bash title="Run on: Slurm control node"
-apptainer pull images/hpl.sif docker://nvcr.io/nvidia/hpc-benchmarks:24.03
-```
+    ```bash title="Run on: Slurm control node"
+    apptainer pull images/hpl.sif docker://nvcr.io/nvidia/hpc-benchmarks:24.03
+    ```
  
 
-!!! note
-    For non-GPU clusters, use the standard HPL benchmark:
+    !!! note
+        For non-GPU clusters, use the standard HPL benchmark:
 
-    ```bash title="Run on: Slurm control node"
-    apptainer pull images/hpl-cpu.sif docker://ghcr.io/hpc-benchmarks/hpl:latest
-    ```
+        ```bash title="Run on: Slurm control node"
+        apptainer pull images/hpl-cpu.sif docker://ghcr.io/hpc-benchmarks/hpl:latest
+        ```
 
  4. **Pull the OSU Micro-Benchmarks container** for MPI testing:
 
-```bash title="Run on: Slurm control node"
-apptainer pull images/osu-benchmarks.sif docker://ghcr.io/osu-benchmarks/osu-micro-benchmarks:latest
-```
+    ```bash title="Run on: Slurm control node"
+    apptainer pull images/osu-benchmarks.sif docker://ghcr.io/osu-benchmarks/osu-micro-benchmarks:latest
+    ```
  
 
  5. **Run the HPL benchmark** as a Slurm job:
 
-```bash title="Run on: Slurm control node"
-cat <<'EOF' > /home/benchmarks/run_hpl.sh
-#!/bin/bash
-#SBATCH --job-name=hpl-benchmark
-#SBATCH --nodes=2
-#SBATCH --ntasks-per-node=4
-#SBATCH --time=01:00:00
-#SBATCH --output=results/hpl-%j.out
+    ```bash title="Run on: Slurm control node"
+    cat <<'EOF' > /home/benchmarks/run_hpl.sh
+    #!/bin/bash
+    #SBATCH --job-name=hpl-benchmark
+    #SBATCH --nodes=2
+    #SBATCH --ntasks-per-node=4
+    #SBATCH --time=01:00:00
+    #SBATCH --output=results/hpl-%j.out
 
-cd /home/benchmarks
-apptainer exec images/hpl.sif mpirun -np 8 /usr/local/bin/xhpl
-EOF
+    cd /home/benchmarks
+    apptainer exec images/hpl.sif mpirun -np 8 /usr/local/bin/xhpl
+    EOF
 
-sbatch /home/benchmarks/run_hpl.sh
-```
+    sbatch /home/benchmarks/run_hpl.sh
+    ```
  
 
  6. **Run GPU benchmarks** (NVIDIA):
 
-```bash title="Run on: Slurm control node"
-cat <<'EOF' > /home/benchmarks/run_gpu_bench.sh
-#!/bin/bash
-#SBATCH --job-name=gpu-benchmark
-#SBATCH --nodes=1
-#SBATCH --gres=gpu:1
-#SBATCH --time=00:30:00
-#SBATCH --output=results/gpu-%j.out
+    ```bash title="Run on: Slurm control node"
+    cat <<'EOF' > /home/benchmarks/run_gpu_bench.sh
+    #!/bin/bash
+    #SBATCH --job-name=gpu-benchmark
+    #SBATCH --nodes=1
+    #SBATCH --gres=gpu:1
+    #SBATCH --time=00:30:00
+    #SBATCH --output=results/gpu-%j.out
 
-cd /home/benchmarks
-apptainer exec --nv images/hpl.sif nvidia-smi
-apptainer exec --nv images/hpl.sif /usr/local/bin/cuda_bandwidthTest
-EOF
+    cd /home/benchmarks
+    apptainer exec --nv images/hpl.sif nvidia-smi
+    apptainer exec --nv images/hpl.sif /usr/local/bin/cuda_bandwidthTest
+    EOF
 
-sbatch /home/benchmarks/run_gpu_bench.sh
-```
+    sbatch /home/benchmarks/run_gpu_bench.sh
+    ```
  
 
  7. **Run OSU MPI latency benchmark** :
 
-```bash title="Run on: Slurm control node"
-cat <<'EOF' > /home/benchmarks/run_osu_latency.sh
-#!/bin/bash
-#SBATCH --job-name=osu-latency
-#SBATCH --nodes=2
-#SBATCH --ntasks-per-node=1
-#SBATCH --time=00:10:00
+    ```bash title="Run on: Slurm control node"
+    cat <<'EOF' > /home/benchmarks/run_osu_latency.sh
+    #!/bin/bash
+    #SBATCH --job-name=osu-latency
+    #SBATCH --nodes=2
+    #SBATCH --ntasks-per-node=1
+    #SBATCH --time=00:10:00
 #SBATCH --output=results/osu-latency-%j.out
 
 cd /home/benchmarks
@@ -114,39 +114,41 @@ apptainer exec images/osu-benchmarks.sif mpirun -np 2 /usr/local/bin/osu_latency
 EOF
 
 sbatch /home/benchmarks/run_osu_latency.sh
-```
+    ```
  
 
  8. **Monitor benchmark job status** :
 
-```bash title="Run on: Slurm control node"
-squeue
-# Wait for completion, then check results
-ls -la /home/benchmarks/results/
-```
+    ```bash title="Run on: Slurm control node"
+    squeue
+    # Wait for completion, then check results
+    ls -la /home/benchmarks/results/
+    ```
  
 
 ## Verification[¶](#verification "Permanent link")
 
  1. **Check benchmark job completed successfully** :
 
-```bash title="Run on: Slurm control node"
-sacct --starttime=today --format=JobName,State,Elapsed,ExitCode
-```
+    ```bash title="Run on: Slurm control node"
+    sacct --starttime=today --format=JobName,State,Elapsed,ExitCode
+    ```
  
 
 All benchmark jobs should show `COMPLETED` state with exit code `0:0`.
 
  2. **Review HPL results** :
 
-```bash title="Run on: Slurm control node"
+
+    ```bash title="Run on: Slurm control node"
 cat /home/benchmarks/results/hpl-*.out | grep -A5 "T/V"
 ```
  
 
  3. **Review OSU latency results** :
 
-```bash title="Run on: Slurm control node"
+
+    ```bash title="Run on: Slurm control node"
 cat /home/benchmarks/results/osu-latency-*.out
 ```
  
@@ -191,3 +193,5 @@ apptainer exec --nv /home/benchmarks/images/hpl.sif nvidia-smi
 #SBATCH --mem=0 # Use all available memory on the node
 ```
  
+
+

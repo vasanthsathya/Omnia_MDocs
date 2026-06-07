@@ -24,41 +24,41 @@ The `omnia.yml` playbook deploys and configures Slurm across nodes defined in yo
 
  1. **Enter the omnia_core container** :
 
-```bash title="Run on: OIM host"
-ssh omnia_core
-```
+    ```bash title="Run on: OIM host"
+    ssh omnia_core
+    ```
  
 
  2. **Review and edit omnia_config.yml** :
 
-```bash title="Run on: omnia_core container"
-vi /opt/omnia/input/project_default/omnia_config.yml
-```
+    ```bash title="Run on: omnia_core container"
+    vi /opt/omnia/input/project_default/omnia_config.yml
+    ```
  
 
 Key Slurm-related parameters:
 
-```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml
----
-# Slurm configuration
-slurm_installation_type: "nfs_share"
-enable_omnia_nfs: true
+    ```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml
+    ---
+    # Slurm configuration
+    slurm_installation_type: "nfs_share"
+    enable_omnia_nfs: true
 
-# MariaDB for Slurm accounting
-mariadb_password: "" # Set via credentials utility
+    # MariaDB for Slurm accounting
+    mariadb_password: "" # Set via credentials utility
 
-# Optional: Slurm partitions
-slurm_partition_name: "normal"
-slurm_default_partition: true
-```
+    # Optional: Slurm partitions
+    slurm_partition_name: "normal"
+    slurm_default_partition: true
+    ```
  
 
  3. **Run the omnia.yml playbook** :
 
-```bash title="Run on: omnia_core container"
-cd /omnia
-ansible-playbook omnia.yml --ask-vault-pass
-```
+    ```bash title="Run on: omnia_core container"
+    cd /omnia
+    ansible-playbook omnia.yml --ask-vault-pass
+    ```
  
 
 The playbook will:

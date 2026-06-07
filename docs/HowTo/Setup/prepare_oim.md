@@ -26,62 +26,62 @@ The `prepare_oim.yml` playbook configures the OIM host with all services require
 
  1. **Enter the omnia_core container** :
 
-```bash title="Run on: OIM host"
-ssh omnia_core
-```
+    ```bash title="Run on: OIM host"
+    ssh omnia_core
+    ```
  
 
  2. **Review and edit network_spec.yml** (if not already done):
 
-```bash title="Run on: omnia_core container"
-vi /opt/omnia/input/project_default/network_spec.yml
-```
+    ```bash title="Run on: omnia_core container"
+    vi /opt/omnia/input/project_default/network_spec.yml
+    ```
  
 
 Ensure the admin and BMC network parameters match your physical network:
 
-```yaml title="File: /opt/omnia/input/project_default/network_spec.yml"
----
-admin_network:
-  nic_name: "eno1"
-  static_range: "10.5.0.100-10.5.0.200"
-  dynamic_range: "10.5.0.201-10.5.0.254"
-  subnet: "10.5.0.0"
-  netmask: "255.255.255.0"
-  gateway: "10.5.0.1"
+    ```yaml title="File: /opt/omnia/input/project_default/network_spec.yml"
+    ---
+    admin_network:
+      nic_name: "eno1"
+      static_range: "10.5.0.100-10.5.0.200"
+      dynamic_range: "10.5.0.201-10.5.0.254"
+      subnet: "10.5.0.0"
+      netmask: "255.255.255.0"
+      gateway: "10.5.0.1"
 
-bmc_network:
-  nic_name: "eno2"
-  static_range: "10.3.0.100-10.3.0.200"
-  dynamic_range: "10.3.0.201-10.3.0.254"
-  subnet: "10.3.0.0"
-  netmask: "255.255.255.0"
-```
+    bmc_network:
+      nic_name: "eno2"
+      static_range: "10.3.0.100-10.3.0.200"
+      dynamic_range: "10.3.0.201-10.3.0.254"
+      subnet: "10.3.0.0"
+      netmask: "255.255.255.0"
+    ```
  
 
  3. **Review and edit provision_config.yml** (if not already done):
 
-```bash title="Run on: omnia_core container"
-vi /opt/omnia/input/project_default/provision_config.yml
-```
+    ```bash title="Run on: omnia_core container"
+    vi /opt/omnia/input/project_default/provision_config.yml
+    ```
  
 
-```yaml title="File: /opt/omnia/input/project_default/provision_config.yml"
----
-timezone: "America/Chicago"
-language: "en-US"
-iso_file_path: "/opt/omnia/iso/RHEL-8.8-x86_64-dvd.iso"
-default_lease_time: 86400
-pxe_mapping_file_path: "/opt/omnia/input/project_default/pxe_mapping_file.csv"
-```
+    ```yaml title="File: /opt/omnia/input/project_default/provision_config.yml"
+    ---
+    timezone: "America/Chicago"
+    language: "en-US"
+    iso_file_path: "/opt/omnia/iso/RHEL-8.8-x86_64-dvd.iso"
+    default_lease_time: 86400
+    pxe_mapping_file_path: "/opt/omnia/input/project_default/pxe_mapping_file.csv"
+    ```
  
 
  4. **Run the prepare_oim playbook** :
 
-```bash title="Run on: omnia_core container"
-cd /omnia/prepare_oim
-ansible-playbook prepare_oim.yml
-```
+    ```bash title="Run on: omnia_core container"
+    cd /omnia/prepare_oim
+    ansible-playbook prepare_oim.yml
+    ```
  
 
 !!! note

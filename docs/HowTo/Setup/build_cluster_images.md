@@ -28,53 +28,53 @@ The build process:
 
  1. **Enter the omnia_core container** :
 
-```bash title="Run on: OIM host"
-ssh omnia_core
-```
+    ```bash title="Run on: OIM host"
+    ssh omnia_core
+    ```
  
 
  2. **Verify the OS ISO is accessible** :
 
-```bash title="Run on: omnia_core container"
-ls -lh /opt/omnia/iso/
-```
+    ```bash title="Run on: omnia_core container"
+    ls -lh /opt/omnia/iso/
+    ```
  
 
 Ensure the ISO file listed in `provision_config.yml` exists.
 
  3. **Build images for x86_64 nodes** :
 
-```bash title="Run on: omnia_core container"
-cd /omnia
-ansible-playbook build_image_x86_64.yml
-```
+    ```bash title="Run on: omnia_core container"
+    cd /omnia
+    ansible-playbook build_image_x86_64.yml
+    ```
  
 
-!!! note
-    Add `--ask-vault-pass` if credentials are encrypted:
+    !!! note
+        Add `--ask-vault-pass` if credentials are encrypted:
 
-    ```bash title="Run on: omnia_core container"
-    ansible-playbook build_image_x86_64.yml --ask-vault-pass
-    ```
+        ```bash title="Run on: omnia_core container"
+        ansible-playbook build_image_x86_64.yml --ask-vault-pass
+        ```
 
  4. **(If applicable) Build images for aarch64 nodes** :
 
-```bash title="Run on: omnia_core container"
-cd /omnia
-ansible-playbook build_image_aarch64.yml
-```
+    ```bash title="Run on: omnia_core container"
+    cd /omnia
+    ansible-playbook build_image_aarch64.yml
+    ```
  
 
-!!! note
-    You can build both architectures. Each playbook produces a separate
-    image in MinIO.
+    !!! note
+        You can build both architectures. Each playbook produces a separate
+        image in MinIO.
 
  5. **(Optional) Build images for ARM64 nodes** :
 
-```bash title="Run on: omnia_core container"
-cd /omnia
-ansible-playbook build_image_arm64.yml
-```
+    ```bash title="Run on: omnia_core container"
+    cd /omnia
+    ansible-playbook build_image_arm64.yml
+    ```
 
  6. **Wait for the build to complete**. Image building typically takes **20-45 minutes** depending on the software stack size and hardware.
 

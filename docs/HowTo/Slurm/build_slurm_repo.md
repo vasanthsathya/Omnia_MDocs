@@ -83,27 +83,29 @@ By default, Omnia installs Slurm from pre-built RPM packages in the local Pulp r
     --repository slurm-custom
     ```
 
-8. **List the custom repository contents**:
+## Verification
+
+1. **List the custom repository contents**:
 
     ```bash title="Run on: build host"
     ls -la /opt/omnia/custom_repos/slurm/
     ```
 
-9. **Verify the repository metadata**:
+2. **Verify the repository metadata**:
 
     ```bash title="Run on: build host"
     ls /opt/omnia/custom_repos/slurm/repodata/
     ```
 
-You should see `repomd.xml` and related files.
+    You should see `repomd.xml` and related files.
 
-10. **Test package availability via Pulp**:
+3. **Test package availability via Pulp**:
 
     ```bash title="Run on: OIM host"
     curl -s http://localhost:8080/pulp/content/slurm-custom/repodata/repomd.xml | head
     ```
 
-11. **Verify RPM versions**:
+4. **Verify RPM versions**:
 
     ```bash title="Run on: build host"
     rpm -qip ~/rpmbuild/RPMS/x86_64/slurm-23*.rpm | grep -E "^(Name|Version)"

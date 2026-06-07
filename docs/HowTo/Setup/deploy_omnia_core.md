@@ -32,41 +32,41 @@ Ensure that SELinux is set to `permissive` or `enforcing` with the appropriate c
 
  1. **Log in to the OIM** as `root` or a user with `sudo` privileges:
 
-```bash title="Run on: OIM host"
-ssh root@<oim-ip-address>
-```
+    ```bash title="Run on: OIM host"
+    ssh root@<oim-ip-address>
+    ```
  
 
  2. **Clone the Omnia repository** from Dell's artifact repository:
 
-```bash title="Run on: OIM host"
-cd /opt
-git clone https://github.com/dell/omnia.git
-cd omnia
-```
+    ```bash title="Run on: OIM host"
+    cd /opt
+    git clone https://github.com/dell/omnia.git
+    cd omnia
+    ```
  
 
-!!! note
-    To use a specific release, check out the corresponding tag:
+    !!! note
+        To use a specific release, check out the corresponding tag:
 
-    ```bash title="Run on: OIM host"
-    git checkout v2.1.0.0
-    ```
+        ```bash title="Run on: OIM host"
+        git checkout v2.1.0.0
+        ```
 
  3. **Build the container images** using the provided build script:
 
-```bash title="Run on: OIM host"
-bash build_images.sh core
-```
+    ```bash title="Run on: OIM host"
+    bash build_images.sh core
+    ```
  
 
 This builds the `omnia_core` container image locally. The build process takes approximately 10-15 minutes depending on network speed and hardware.
 
  4. **Install the omnia_core service** :
 
-```bash title="Run on: OIM host"
-bash omnia.sh --install
-```
+    ```bash title="Run on: OIM host"
+    bash omnia.sh --install
+    ```
  
 
 This script:

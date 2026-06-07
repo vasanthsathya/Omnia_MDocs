@@ -15,27 +15,31 @@ This guide describes how to submit a pull request (PR) to the Omnia project, wha
 ![Omnia Branch Structure](../assets/images/omnia-branch-structure.png)
 
 1. **Fork and clone** the repository:
-   ```bash title="Run on: local machine"
-   git clone https://github.com/<your_username>/omnia.git
-   cd omnia
-   ```
+
+    ```bash title="Run on: local machine"
+    git clone https://github.com/<your_username>/omnia.git
+    cd omnia
+    ```
 
 2. **Add the upstream remote:**
-   ```bash title="Run on: local machine"
-   git remote add upstream https://github.com/dell/omnia.git
-   ```
+
+    ```bash title="Run on: local machine"
+    git remote add upstream https://github.com/dell/omnia.git
+    ```
 
 3. **Keep your fork in sync:**
-   ```bash title="Run on: local machine"
-   git fetch upstream
-   git checkout main
-   git merge upstream/main
-   ```
+
+    ```bash title="Run on: local machine"
+    git fetch upstream
+    git checkout main
+    git merge upstream/main
+    ```
 
 4. **Create a feature branch** from the latest `main`:
-   ```bash title="Run on: local machine"
-   git checkout -b feature/descriptive-branch-name
-   ```
+
+    ```bash title="Run on: local machine"
+    git checkout -b feature/descriptive-branch-name
+    ```
 
 ## Making changes
 

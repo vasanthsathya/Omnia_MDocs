@@ -27,16 +27,16 @@ The most important input files are:
 
  1. **Enter the omnia_core container** :
 
-```bash title="Run on: OIM host"
-ssh omnia_core
-```
+    ```bash title="Run on: OIM host"
+    ssh omnia_core
+    ```
  
 
  2. **Copy the example templates** to the input directory:
 
-```bash title="Run on: omnia_core container"
-cp /omnia/examples/input_template/* /opt/omnia/input/project_default/
-```
+    ```bash title="Run on: omnia_core container"
+    cp /omnia/examples/input_template/* /opt/omnia/input/project_default/
+    ```
  
 
 !!! note
@@ -45,26 +45,26 @@ cp /omnia/examples/input_template/* /opt/omnia/input/project_default/
 
  3. **Edit the software configuration** :
 
-```bash title="Run on: omnia_core container"
-vi /opt/omnia/input/project_default/software_config.json
-```
+    ```bash title="Run on: omnia_core container"
+    vi /opt/omnia/input/project_default/software_config.json
+    ```
  
 
 Example `software_config.json`:
 
-```json title="File: /opt/omnia/input/project_default/software_config.json"
-{
-"cluster_os_type": "rhel",
-"cluster_os_version": "8.8",
-"repo_config": "partial",
-"softwares": [
-{"name": "slurm"},
-{"name": "openldap"},
-{"name": "cuda", "version": "12.2"},
-{"name": "apptainer"}
-]
-}
-```
+    ```json title="File: /opt/omnia/input/project_default/software_config.json"
+    {
+    "cluster_os_type": "rhel",
+    "cluster_os_version": "8.8",
+    "repo_config": "partial",
+    "softwares": [
+    {"name": "slurm"},
+    {"name": "openldap"},
+    {"name": "cuda", "version": "12.2"},
+    {"name": "apptainer"}
+    ]
+    }
+    ```
  
 
 Key parameters:

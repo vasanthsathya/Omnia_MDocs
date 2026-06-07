@@ -16,23 +16,23 @@ Use this procedure when new servers have been racked, cabled, and discovered by 
 
  1. **Update the node mapping file.** Add the new node entries (MAC address, hostname, IP) to the mapping file used during initial deployment:
 
-```text title="File: /omnia/input/mapping_file.csv
-AA:BB:CC:DD:EE:F1,compute-05,10.5.0.105
-AA:BB:CC:DD:EE:F2,compute-06,10.5.0.106
-```
+    ```text title="File: /omnia/input/mapping_file.csv
+    AA:BB:CC:DD:EE:F1,compute-05,10.5.0.105
+    AA:BB:CC:DD:EE:F2,compute-06,10.5.0.106
+    ```
 
  2. **Access the omnia_core container** on the OIM:
 
-```bash title="Run on: OIM host"
-ssh omnia_core
-```
+    ```bash title="Run on: OIM host"
+    ssh omnia_core
+    ```
 
  3. **Run the add_node playbook:**
 
-```bash title="Run on: omnia_core container
-cd /omnia
-ansible-playbook playbooks/add_node.yml
-```
+    ```bash title="Run on: omnia_core container
+    cd /omnia
+    ansible-playbook playbooks/add_node.yml
+    ```
 
 The playbook will:
 
@@ -42,15 +42,15 @@ The playbook will:
 
  * **Verify the new nodes** are visible to Slurm:
 
-```bash title="Run on: Slurm control node"
-sinfo
-```
+    ```bash title="Run on: Slurm control node"
+    sinfo
+    ```
 
 Expected output shows the new nodes in an `idle` state:
-```text title="Expected output on: Slurm control node
-PARTITION AVAIL TIMELIMIT NODES STATE NODELIST
-normal* up infinite 6 idle compute-[01-06]
-```
+    ```text title="Expected output on: Slurm control node
+    PARTITION AVAIL TIMELIMIT NODES STATE NODELIST
+    normal* up infinite 6 idle compute-[01-06]
+    ```
 
 ## Removing compute nodes[¶](#removing-compute-nodes "Permanent link")
 
@@ -65,40 +65,40 @@ Use this procedure when decommissioning servers or temporarily removing nodes fr
 
  1. **Drain the node** to allow running jobs to complete and prevent new jobs from being scheduled:
 
-```bash title="Run on: Slurm control node
-scontrol update NodeName=compute-05 State=DRAIN Reason="Decommissioning"
-```
+    ```bash title="Run on: Slurm control node
+    scontrol update NodeName=compute-05 State=DRAIN Reason="Decommissioning"
+    ```
 
-Verify the node enters the `drained` state:
-```bash title="Run on: Slurm control node
-sinfo -n compute-05
-```
+    Verify the node enters the `drained` state:
+    ```bash title="Run on: Slurm control node
+    sinfo -n compute-05
+    ```
 
-```text title="Expected output on: Slurm control node
-PARTITION AVAIL TIMELIMIT NODES STATE NODELIST
-normal* up infinite 1 drained compute-05
-```
+    ```text title="Expected output on: Slurm control node
+    PARTITION AVAIL TIMELIMIT NODES STATE NODELIST
+    normal* up infinite 1 drained compute-05
+    ```
 
  2. **Access the omnia_core container** on the OIM:
 
-```bash title="Run on: OIM host"
-ssh omnia_core
-```
+    ```bash title="Run on: OIM host"
+    ssh omnia_core
+    ```
 
  3. **Run the remove_node playbook:**
 
-```bash title="Run on: omnia_core container
-cd /omnia
-ansible-playbook playbooks/remove_node.yml -e "target_nodes=compute-05"
-```
+    ```bash title="Run on: omnia_core container
+    cd /omnia
+    ansible-playbook playbooks/remove_node.yml -e "target_nodes=compute-05"
+    ```
 
  4. **Update the mapping file.** Remove the decommissioned node entry from `/omnia/input/mapping_file.csv` to prevent it from being re-added in future operations.
 
  5. **Verify the node has been removed:**
 
-```bash title="Run on: Slurm control node"
-sinfo
-```
+    ```bash title="Run on: Slurm control node"
+    sinfo
+    ```
 
 The removed node should no longer appear in the node list.
 
@@ -106,16 +106,16 @@ The removed node should no longer appear in the node list.
 
 After adding or removing nodes, confirm the cluster state:
 
-```bash title="Run on: Slurm control node
-# Check overall cluster health
-sinfo
+    ```bash title="Run on: Slurm control node
+    # Check overall cluster health
+    sinfo
 
-# Verify controller sees all expected nodes
-scontrol show nodes | grep NodeName
+    # Verify controller sees all expected nodes
+    scontrol show nodes | grep NodeName
 
-# Submit a test job to verify scheduling
-srun -N 1 hostname
-```
+    # Submit a test job to verify scheduling
+    srun -N 1 hostname
+    ```
 
 Info
 

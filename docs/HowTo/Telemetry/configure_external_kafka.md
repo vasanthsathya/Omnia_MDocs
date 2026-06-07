@@ -23,61 +23,61 @@ Benefits of external Kafka:
 
  1. **Enter the omnia_core container** :
 
-```bash title="Run on: OIM host"
-ssh omnia_core
-```
+    ```bash title="Run on: OIM host"
+    ssh omnia_core
+    ```
  
 
  2. **Configure external Kafka** in `omnia_config.yml`:
 
-```bash title="Run on: omnia_core container"
-vi /opt/omnia/input/project_default/omnia_config.yml
-```
+    ```bash title="Run on: omnia_core container"
+    vi /opt/omnia/input/project_default/omnia_config.yml
+    ```
  
 
-```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml
----
-# External Kafka configuration
-kafka_external: true
-kafka_bootstrap_servers: "kafka-broker1.example.com:9092,kafka-broker2.example.com:9092,kafka-broker3.example.com:9092"
-kafka_telemetry_topic: "omnia-telemetry"
-kafka_idrac_topic: "omnia-idrac"
-kafka_ldms_topic: "omnia-ldms"
+    ```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml
+    ---
+    # External Kafka configuration
+    kafka_external: true
+    kafka_bootstrap_servers: "kafka-broker1.example.com:9092,kafka-broker2.example.com:9092,kafka-broker3.example.com:9092"
+    kafka_telemetry_topic: "omnia-telemetry"
+    kafka_idrac_topic: "omnia-idrac"
+    kafka_ldms_topic: "omnia-ldms"
 
-# Optional: Kafka authentication
-kafka_security_protocol: "SASL_PLAINTEXT" # or "PLAINTEXT", "SSL", "SASL_SSL"
-kafka_sasl_mechanism: "PLAIN"
-kafka_sasl_username: "omnia-telemetry"
-kafka_sasl_password: "" # Set via credentials utility
-```
+    # Optional: Kafka authentication
+    kafka_security_protocol: "SASL_PLAINTEXT" # or "PLAINTEXT", "SSL", "SASL_SSL"
+    kafka_sasl_mechanism: "PLAIN"
+    kafka_sasl_username: "omnia-telemetry"
+    kafka_sasl_password: "" # Set via credentials utility
+    ```
  
 
  3. **Create the required Kafka topics** on the external cluster (if auto-create is disabled):
 
-```bash title="Run on: external Kafka broker"
-kafka-topics.sh --create \
---bootstrap-server localhost:9092 \
---topic omnia-telemetry \
---partitions 6 \
---replication-factor 3
+    ```bash title="Run on: external Kafka broker"
+    kafka-topics.sh --create \
+    --bootstrap-server localhost:9092 \
+    --topic omnia-telemetry \
+    --partitions 6 \
+    --replication-factor 3
 
-kafka-topics.sh --create \
---bootstrap-server localhost:9092 \
---topic omnia-idrac \
---partitions 3 \
---replication-factor 3
+    kafka-topics.sh --create \
+    --bootstrap-server localhost:9092 \
+    --topic omnia-idrac \
+    --partitions 3 \
+    --replication-factor 3
 
-kafka-topics.sh --create \
---bootstrap-server localhost:9092 \
---topic omnia-ldms \
---partitions 6 \
---replication-factor 3
-```
+    kafka-topics.sh --create \
+    --bootstrap-server localhost:9092 \
+    --topic omnia-ldms \
+    --partitions 6 \
+    --replication-factor 3
+    ```
  
 
  4. **Run the telemetry playbook** to reconfigure:
 
-```bash title="Run on: omnia_core container"
+    ```bash title="Run on: omnia_core container"
 cd /omnia
 ansible-playbook telemetry.yml --ask-vault-pass
 ```

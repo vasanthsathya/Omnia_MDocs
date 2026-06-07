@@ -28,25 +28,25 @@ Danger
 
  1. **Log in to the OIM as root:**
 
-```bash title="Run on: OIM host"
-ssh root@<oim_ip>
-```
+    ```bash title="Run on: OIM host"
+    ssh root@<oim_ip>
+    ```
 
-!!! note
-    Do **not** run this playbook from inside the `omnia_core` container.
-    The cleanup process removes the container itself.
+    !!! note
+        Do **not** run this playbook from inside the `omnia_core` container.
+        The cleanup process removes the container itself.
 
- 1. **Navigate to the Omnia utils directory:**
+ 2. **Navigate to the Omnia utils directory:**
 
-```bash title="Run on: OIM host
-cd /omnia/utils/
-```
+    ```bash title="Run on: OIM host
+    cd /omnia/utils/
+    ```
 
- 1. **Run the cleanup playbook:**
+ 3. **Run the cleanup playbook:**
 
-```bash title="Run on: OIM host
-ansible-playbook oim_cleanup.yml
-```
+    ```bash title="Run on: OIM host
+    ansible-playbook oim_cleanup.yml
+    ```
 
 The playbook performs the following actions:
 
@@ -58,13 +58,13 @@ The playbook performs the following actions:
 
  * **Verify the cleanup:**
 
-```bash title="Run on: OIM host
-# Confirm no Omnia containers remain
-podman ps -a | grep -i omnia
+    ```bash title="Run on: OIM host
+    # Confirm no Omnia containers remain
+    podman ps -a | grep -i omnia
 
-# Confirm no Omnia pods remain
-podman pod ls
-```
+    # Confirm no Omnia pods remain
+    podman pod ls
+    ```
 
 ## Selective cleanup options[¶](#selective-cleanup-options "Permanent link")
 

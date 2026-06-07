@@ -21,59 +21,59 @@ Omnia supports dynamic node addition to expand a running Slurm cluster. The proc
 
  1. **Update the mapping file** with new node entries:
 
-```bash title="Run on: omnia_core container"
-vi /opt/omnia/input/project_default/pxe_mapping_file.csv
-```
+    ```bash title="Run on: omnia_core container"
+    vi /opt/omnia/input/project_default/pxe_mapping_file.csv
+    ```
  
 
 Add new rows for each new compute node:
 
-```text title="File: /opt/omnia/input/project_default/pxe_mapping_file.csv
-slurm_node,slurm_cluster,NEWSVCTG1,,,aa:bb:cc:dd:ee:10,10.5.0.110,aa:bb:cc:dd:ff:10,10.3.0.110
-slurm_node,slurm_cluster,NEWSVCTG2,,,aa:bb:cc:dd:ee:11,10.5.0.111,aa:bb:cc:dd:ff:11,10.3.0.111
-```
+    ```text title="File: /opt/omnia/input/project_default/pxe_mapping_file.csv
+    slurm_node,slurm_cluster,NEWSVCTG1,,,aa:bb:cc:dd:ee:10,10.5.0.110,aa:bb:cc:dd:ff:10,10.3.0.110
+    slurm_node,slurm_cluster,NEWSVCTG2,,,aa:bb:cc:dd:ee:11,10.5.0.111,aa:bb:cc:dd:ff:11,10.3.0.111
+    ```
  
 
  2. **Provision the new nodes** if not already provisioned:
 
-```bash title="Run on: omnia_core container"
-cd /omnia/discovery
-ansible-playbook discovery.yml --ask-vault-pass
-```
+    ```bash title="Run on: omnia_core container"
+    cd /omnia/discovery
+    ansible-playbook discovery.yml --ask-vault-pass
+    ```
  
 
  3. **Run the add-node playbook** :
 
-```bash title="Run on: omnia_core container"
-cd /omnia
-ansible-playbook omnia.yml --ask-vault-pass --limit "new_nodes"
-```
+    ```bash title="Run on: omnia_core container"
+    cd /omnia
+    ansible-playbook omnia.yml --ask-vault-pass --limit "new_nodes"
+    ```
  
 
-!!! note
-    If a dedicated `add_node.yml` playbook is available in your Omnia
-    version, use it instead:
+    !!! note
+        If a dedicated `add_node.yml` playbook is available in your Omnia
+        version, use it instead:
 
-    ```bash title="Run on: omnia_core container"
-    ansible-playbook utils/add_node.yml --ask-vault-pass \
-    -e "target_nodes=10.5.0.110,10.5.0.111"
-    ```
+        ```bash title="Run on: omnia_core container"
+        ansible-playbook utils/add_node.yml --ask-vault-pass \
+        -e "target_nodes=10.5.0.110,10.5.0.111"
+        ```
 
  4. **Update the Slurm configuration** on the control node to include the new nodes:
 
-```bash title="Run on: Slurm control node"
-# Reconfigure Slurm to pick up new nodes
-scontrol reconfigure
-```
+    ```bash title="Run on: Slurm control node"
+    # Reconfigure Slurm to pick up new nodes
+    scontrol reconfigure
+    ```
  
 
 ## Verification[¶](#verification "Permanent link")
 
  1. **Check that new nodes appear in the cluster** :
 
-```bash title="Run on: Slurm control node"
-sinfo
-```
+    ```bash title="Run on: Slurm control node"
+    sinfo
+    ```
  
 
 New nodes should appear in the `normal` partition with `idle` state.

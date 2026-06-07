@@ -26,24 +26,24 @@ The `discovery.yml` playbook automates the following process:
 
  1. **Enter the omnia_core container** :
 
-```bash title="Run on: OIM host"
-ssh omnia_core
-```
+    ```bash title="Run on: OIM host"
+    ssh omnia_core
+    ```
  
 
  2. **Verify the mapping file is in place** :
 
-```bash title="Run on: omnia_core container"
-cat /opt/omnia/input/project_default/pxe_mapping_file.csv
-```
+    ```bash title="Run on: omnia_core container"
+    cat /opt/omnia/input/project_default/pxe_mapping_file.csv
+    ```
  
 
  3. **Run the discovery playbook** :
 
-```bash title="Run on: omnia_core container"
-cd /omnia/discovery
-ansible-playbook discovery.yml --ask-vault-pass
-```
+    ```bash title="Run on: omnia_core container"
+    cd /omnia/discovery
+    ansible-playbook discovery.yml --ask-vault-pass
+    ```
  
 
 The playbook will:
@@ -54,9 +54,9 @@ The playbook will:
  * Power-cycle the servers.
  * Wait for each server to PXE boot and register with SMD.
 
-!!! note
-    Discovery can take **30-60 minutes** depending on the number of nodes.
-    Each server must complete a full PXE boot cycle.
+    !!! note
+        Discovery can take **30-60 minutes** depending on the number of nodes.
+        Each server must complete a full PXE boot cycle.
 
  4. **Monitor discovery progress** by watching the Ansible output. Each node will progress through these stages:
 
@@ -69,9 +69,9 @@ The playbook will:
 
  1. **List discovered nodes in OpenCHAMI** :
 
-```bash title="Run on: omnia_core container"
-ochami node list
-```
+    ```bash title="Run on: omnia_core container"
+    ochami node list
+    ```
  
 
 Expected output shows all nodes from the mapping file with their service tags, MAC addresses, and assigned IPs.

@@ -22,63 +22,63 @@ After provisioning and configuring your cluster, verify that:
 
  1. **Ping all nodes** from the omnia_core container:
 
-```bash title="Run on: omnia_core container"
-ansible all -m ping
-```
+    ```bash title="Run on: omnia_core container"
+    ansible all -m ping
+    ```
  
 
 Expected output for each node:
 
-```text title="Expected output on: omnia_core container"
-10.5.0.101 | SUCCESS => {
-"ping": "pong"
-}
-```
+    ```text title="Expected output on: omnia_core container"
+    10.5.0.101 | SUCCESS => {
+    "ping": "pong"
+    }
+    ```
  
 
  2. **Check OS version on all nodes** :
 
-```bash title="Run on: omnia_core container"
-ansible all -m shell -a "cat /etc/os-release | grep PRETTY_NAME"
-```
+    ```bash title="Run on: omnia_core container"
+    ansible all -m shell -a "cat /etc/os-release | grep PRETTY_NAME"
+    ```
  
 
  3. **Check hostnames are correctly set** :
 
-```bash title="Run on: omnia_core container"
-ansible all -m shell -a "hostname"
-```
+    ```bash title="Run on: omnia_core container"
+    ansible all -m shell -a "hostname"
+    ```
  
 
 ### Verify Slurm[¶](#verify-slurm "Permanent link")
 
  1. **SSH to the Slurm control node** and check the cluster status:
 
-```bash title="Run on: omnia_core container"
-ssh root@<slurm-control-node-ip>
-```
+    ```bash title="Run on: omnia_core container"
+    ssh root@<slurm-control-node-ip>
+    ```
  
 
-```bash title="Run on: Slurm control node"
-sinfo
-```
+    ```bash title="Run on: Slurm control node"
+    sinfo
+    ```
  
 
 Expected output:
 
-```text title="Expected output on: Slurm control node"
-PARTITION AVAIL TIMELIMIT NODES STATE NODELIST
-normal* up infinite 2 idle compute[01-02]
-```
+    ```text title="Expected output on: Slurm control node"
+    PARTITION AVAIL TIMELIMIT NODES STATE NODELIST
+    normal* up infinite 2 idle compute[01-02]
+    ```
  
 
 All nodes should show `idle` state. If any show `down` or `drain`, investigate further.
 
  2. **Run a test job** across all compute nodes:
 
-```bash title="Run on: Slurm control node"
-srun -N 2 hostname
-```
+    ```bash title="Run on: Slurm control node"
+    srun -N 2 hostname
+    ```
  
 
 Expected output shows the hostnames of the compute nodes that executed the job:

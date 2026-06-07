@@ -25,12 +25,12 @@ If you ran the `discovery.yml` playbook, PXE boot order is typically configured 
 
  1. **Verify OIM boot services are running** :
 
-```bash title="Run on: OIM host"
-systemctl is-active coredhcp.service
-systemctl is-active tftpd.service
-systemctl is-active image-server.service
-systemctl is-active bss.service
-```
+    ```bash title="Run on: OIM host"
+    systemctl is-active coredhcp.service
+    systemctl is-active tftpd.service
+    systemctl is-active image-server.service
+    systemctl is-active bss.service
+    ```
  
 
 All services should report `active`.
@@ -41,33 +41,33 @@ a. Open a web browser and navigate to `https://<bmc-ip>`. b. Log in with iDRAC c
 
 Alternatively, configure via Redfish from the OIM:
 
-```bash title="Run on: OIM host"
-curl -sk -X PATCH \
-https://<bmc-ip>/redfish/v1/Systems/System.Embedded.1 \
--u root:<bmc-password> \
--H "Content-Type: application/json" \
--d '{"Boot": {"BootSourceOverrideTarget": "Pxe", "BootSourceOverrideEnabled": "Continuous"}}'
-```
+    ```bash title="Run on: OIM host"
+    curl -sk -X PATCH \
+    https://<bmc-ip>/redfish/v1/Systems/System.Embedded.1 \
+    -u root:<bmc-password> \
+    -H "Content-Type: application/json" \
+    -d '{"Boot": {"BootSourceOverrideTarget": "Pxe", "BootSourceOverrideEnabled": "Continuous"}}'
+    ```
  
 
  3. **Power-cycle the target servers** to initiate PXE boot:
 
-```bash title="Run on: OIM host"
-# Using Redfish to power-cycle a single server
-curl -sk -X POST \
-https://<bmc-ip>/redfish/v1/Systems/System.Embedded.1/Actions/ComputerSystem.Reset \
--u root:<bmc-password> \
--H "Content-Type: application/json" \
--d '{"ResetType": "ForceRestart"}'
-```
+    ```bash title="Run on: OIM host"
+    # Using Redfish to power-cycle a single server
+    curl -sk -X POST \
+    https://<bmc-ip>/redfish/v1/Systems/System.Embedded.1/Actions/ComputerSystem.Reset \
+    -u root:<bmc-password> \
+    -H "Content-Type: application/json" \
+    -d '{"ResetType": "ForceRestart"}'
+    ```
  
 
 Or power-cycle all nodes from the omnia_core container:
 
-```bash title="Run on: omnia_core container"
-# Power-cycle all discovered nodes
-ochami node power --action restart --all
-```
+    ```bash title="Run on: omnia_core container"
+    # Power-cycle all discovered nodes
+    ochami node power --action restart --all
+    ```
  
 
  4. **Monitor the PXE boot process** :

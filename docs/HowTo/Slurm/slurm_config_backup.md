@@ -23,61 +23,61 @@ This guide covers backing up `slurm.conf`, `gres.conf`, `cgroup.conf`, and relat
 
  1. **Create a backup directory** on the Slurm control node:
 
-```bash title="Run on: Slurm control node"
-mkdir -p /opt/slurm_backup
-```
+    ```bash title="Run on: Slurm control node"
+    mkdir -p /opt/slurm_backup
+    ```
  
 
  2. **Create a timestamped backup** of all Slurm configuration files:
 
-```bash title="Run on: Slurm control node"
-BACKUP_DIR="/opt/slurm_backup/$(date +%Y%m%d_%H%M%S)"
-mkdir -p "$BACKUP_DIR"
+    ```bash title="Run on: Slurm control node"
+    BACKUP_DIR="/opt/slurm_backup/$(date +%Y%m%d_%H%M%S)"
+    mkdir -p "$BACKUP_DIR"
 
-cp /etc/slurm/slurm.conf "$BACKUP_DIR/"
-cp /etc/slurm/gres.conf "$BACKUP_DIR/" 2>/dev/null
-cp /etc/slurm/cgroup.conf "$BACKUP_DIR/" 2>/dev/null
-cp /etc/slurm/topology.conf "$BACKUP_DIR/" 2>/dev/null
-cp /etc/slurm/job_container.conf "$BACKUP_DIR/" 2>/dev/null
-cp /etc/munge/munge.key "$BACKUP_DIR/"
+    cp /etc/slurm/slurm.conf "$BACKUP_DIR/"
+    cp /etc/slurm/gres.conf "$BACKUP_DIR/" 2>/dev/null
+    cp /etc/slurm/cgroup.conf "$BACKUP_DIR/" 2>/dev/null
+    cp /etc/slurm/topology.conf "$BACKUP_DIR/" 2>/dev/null
+    cp /etc/slurm/job_container.conf "$BACKUP_DIR/" 2>/dev/null
+    cp /etc/munge/munge.key "$BACKUP_DIR/"
 
-echo "Backup created: $BACKUP_DIR"
-ls -la "$BACKUP_DIR/"
-```
+    echo "Backup created: $BACKUP_DIR"
+    ls -la "$BACKUP_DIR/"
+    ```
  
 
  3. **(Optional) Create an automated backup** using a cron job:
 
-```bash title="Run on: Slurm control node"
-cat <<'EOF' > /etc/cron.daily/slurm_backup.sh
-#!/bin/bash
-BACKUP_DIR="/opt/slurm_backup/$(date +%Y%m%d_%H%M%S)"
-mkdir -p "$BACKUP_DIR"
-cp /etc/slurm/*.conf "$BACKUP_DIR/"
-cp /etc/munge/munge.key "$BACKUP_DIR/"
-# Keep only last 30 days of backups
-find /opt/slurm_backup -maxdepth 1 -type d -mtime +30 -exec rm -rf {} \;
-EOF
+    ```bash title="Run on: Slurm control node"
+    cat <<'EOF' > /etc/cron.daily/slurm_backup.sh
+    #!/bin/bash
+    BACKUP_DIR="/opt/slurm_backup/$(date +%Y%m%d_%H%M%S)"
+    mkdir -p "$BACKUP_DIR"
+    cp /etc/slurm/*.conf "$BACKUP_DIR/"
+    cp /etc/munge/munge.key "$BACKUP_DIR/"
+    # Keep only last 30 days of backups
+    find /opt/slurm_backup -maxdepth 1 -type d -mtime +30 -exec rm -rf {} \;
+    EOF
 
-chmod +x /etc/cron.daily/slurm_backup.sh
-```
+    chmod +x /etc/cron.daily/slurm_backup.sh
+    ```
  
 
 ### Rollback[¶](#rollback "Permanent link")
 
  1. **List available backups** :
 
-```bash title="Run on: Slurm control node"
-ls -lt /opt/slurm_backup/
-```
+    ```bash title="Run on: Slurm control node"
+    ls -lt /opt/slurm_backup/
+    ```
  
 
  2. **Restore from a backup** :
 
-```bash title="Run on: Slurm control node"
-# Select the backup to restore (e.g., the most recent)
-RESTORE_DIR=$(ls -dt /opt/slurm_backup/*/ | head -1)
-echo "Restoring from: $RESTORE_DIR"
+    ```bash title="Run on: Slurm control node"
+    # Select the backup to restore (e.g., the most recent)
+    RESTORE_DIR=$(ls -dt /opt/slurm_backup/*/ | head -1)
+    echo "Restoring from: $RESTORE_DIR"
 
 # Stop Slurm services
 systemctl stop slurmctld
@@ -94,47 +94,49 @@ systemctl start slurmctld
 
  3. **Verify the restored configuration** :
 
-```bash title="Run on: Slurm control node"
-scontrol show config | head -20
-sinfo
-```
+    ```bash title="Run on: Slurm control node"
+    scontrol show config | head -20
+    sinfo
+    ```
  
 
  4. **Distribute the restored config to compute nodes** if needed:
 
-```bash title="Run on: omnia_core container"
-ansible slurm_node -m copy -a "src=/etc/slurm/slurm.conf dest=/etc/slurm/slurm.conf"
-ansible slurm_node -m service -a "name=slurmd state=restarted"
-```
+    ```bash title="Run on: omnia_core container"
+    ansible slurm_node -m copy -a "src=/etc/slurm/slurm.conf dest=/etc/slurm/slurm.conf"
+    ansible slurm_node -m service -a "name=slurmd state=restarted"
+    ```
  
 
 ### Cleanup[¶](#cleanup "Permanent link")
 
  1. **Remove old backups** to free disk space:
 
-```bash title="Run on: Slurm control node"
-# Remove backups older than 30 days
-find /opt/slurm_backup -maxdepth 1 -type d -mtime +30 -exec rm -rf {} \;
+    ```bash title="Run on: Slurm control node"
+    # Remove backups older than 30 days
+    find /opt/slurm_backup -maxdepth 1 -type d -mtime +30 -exec rm -rf {} \;
 
 # Or remove all backups except the most recent 5
 ls -dt /opt/slurm_backup/*/ | tail -n +6 | xargs rm -rf
-```
+    ```
  
 
  2. **Check remaining backups and disk usage** :
 
-```bash title="Run on: Slurm control node"
-du -sh /opt/slurm_backup
-ls -lt /opt/slurm_backup/
-```
+
+    ```bash title="Run on: Slurm control node"
+    du -sh /opt/slurm_backup
+    ls -lt /opt/slurm_backup/
+    ```
  
 
 ## Verification[¶](#verification "Permanent link")
 
  1. **Verify the current configuration is valid** :
 
-```bash title="Run on: Slurm control node"
-slurmctld -t
+
+    ```bash title="Run on: Slurm control node"
+    slurmctld -t
 ```
  
 
@@ -185,3 +187,6 @@ du -sh /opt/slurm_backup
 # Adjust the cron cleanup period as needed
 ```
  
+
+
+

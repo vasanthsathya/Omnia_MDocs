@@ -178,37 +178,37 @@ Resolution
 
  1. **View an encrypted file** without editing:
 
-```bash title="Run on: OIM host
-ansible-vault view input/credentials.yml
-```
+    ```bash title="Run on: OIM host
+    ansible-vault view input/credentials.yml
+    ```
 
  2. **Edit an encrypted file:**
 
-```bash title="Run on: OIM host
-ansible-vault edit input/credentials.yml
-```
+    ```bash title="Run on: OIM host
+    ansible-vault edit input/credentials.yml
+    ```
 
  3. **Run a playbook with vault password prompt:**
 
-```bash title="Run on: OIM host
-ansible-playbook playbooks/omnia.yml --ask-vault-pass
-```
+    ```bash title="Run on: OIM host
+    ansible-playbook playbooks/omnia.yml --ask-vault-pass
+    ```
 
  4. **Run a playbook with a vault password file:**
 
-```bash title="Run on: OIM host
-ansible-playbook playbooks/omnia.yml --vault-password-file /root/.vault_pass
-```
+    ```bash title="Run on: OIM host
+    ansible-playbook playbooks/omnia.yml --vault-password-file /root/.vault_pass
+    ```
 
  5. If you have forgotten the vault password, you will need to recreate the credentials file. There is no way to recover an AES-256 encrypted vault without the original password:
 
-```bash title="Run on: OIM host
-# Back up the old file
-cp input/credentials.yml input/credentials.yml.bak
+    ```bash title="Run on: OIM host
+    # Back up the old file
+    cp input/credentials.yml input/credentials.yml.bak
 
-# Create a new encrypted file
-ansible-vault create input/credentials.yml
-```
+    # Create a new encrypted file
+    ansible-vault create input/credentials.yml
+    ```
 
 Info
 
