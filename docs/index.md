@@ -13,41 +13,33 @@ The project is hosted on [GitHub](https://github.com/dell/omnia), where you can:
 
 ## How This Documentation is Organized[¶](#how-this-documentation-is-organized "Permanent link")
 
- * **[Overview](Overview/index.md)**
+<div class="grid cards">
 
-* * *
+- **[:fontawesome-solid-book: Overview](Overview/index.md)**
 
-Architecture, components, network topologies, and design concepts. Start here if you are new to Omnia.
+    Architecture, components, network topologies, and design concepts. Start here if you are new to Omnia.
 
- * **[Get Started](GetStarted/index.md)**
+- **[:fontawesome-solid-rocket: Get Started](GetStarted/index.md)**
 
-* * *
+    End-to-end tutorials that take you from a bare set of PowerEdge servers to a fully operational cluster. Choose from Slurm-only, full deployment, Kubernetes + telemetry, or BuildStreaM paths.
 
-End-to-end tutorials that take you from a bare set of PowerEdge servers to a fully operational cluster. Choose from Slurm-only, full deployment, Kubernetes + telemetry, or BuildStreaM paths.
+- **[:fontawesome-solid-wrench: How-to Guides](HowTo/index.md)**
 
- * **[How-to Guides](HowTo/index.md)**
+    Task-oriented procedures for provisioning, configuring Slurm, Kubernetes, storage, networking, authentication, telemetry, and BuildStreaM.
 
-* * *
+- **[:fontawesome-solid-book-open: Reference](Reference/index.md)**
 
-Task-oriented procedures for provisioning, configuring Slurm, Kubernetes, storage, networking, authentication, telemetry, and BuildStreaM.
+    Configuration parameters, support matrices, playbook references, API documentation, and network port listings.
 
- * **[Reference](Reference/index.md)**
+- **[:fontawesome-solid-gears: Operations & Maintenance](Operations/index.md)**
 
-* * *
+    Day-2 operations: adding and removing nodes, re-provisioning, OIM cleanup, log management, security hardening, and best practices.
 
-Configuration parameters, support matrices, playbook references, API documentation, and network port listings.
+- **[:fontawesome-solid-bug: Troubleshooting](Troubleshooting/index.md)**
 
- * **[Operations& Maintenance](Operations/index.md)**
+    Symptom-driven guides for diagnosing and resolving issues with provisioning, Slurm, Kubernetes, telemetry, authentication, and more.
 
-* * *
-
-Day-2 operations: adding and removing nodes, re-provisioning, OIM cleanup, log management, security hardening, and best practices.
-
- * **[Troubleshooting](Troubleshooting/index.md)**
-
-* * *
-
-Symptom-driven guides for diagnosing and resolving issues with provisioning, Slurm, Kubernetes, telemetry, authentication, and more.
+</div>
 
 ## Quick Links[¶](#quick-links "Permanent link")
 
