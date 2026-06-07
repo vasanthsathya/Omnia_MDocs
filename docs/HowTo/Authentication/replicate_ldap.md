@@ -48,7 +48,7 @@ ldapmodify -Q -Y EXTERNAL -H ldapi:/// -f /tmp/enable_syncprov.ldif
 ```
  
 
- 1. **Create a replication service account** on the primary:
+ 2. **Create a replication service account** on the primary:
 
 ```bash title="Run on: omnia_auth container (primary)"
 cat <<'EOF' > /tmp/repl_user.ldif
@@ -63,7 +63,7 @@ ldapadd -x -D "cn=admin,dc=omnia,dc=example,dc=com" -W -f /tmp/repl_user.ldif
 ```
  
 
- 1. **Configure the replica** (consumer) server:
+ 3. **Configure the replica** (consumer) server:
 
 ```bash title="Run on: replica LDAP server"
 cat <<'EOF' > /tmp/syncrepl.ldif
@@ -89,7 +89,7 @@ ldapmodify -Q -Y EXTERNAL -H ldapi:/// -f /tmp/syncrepl.ldif
 
 Replace `<primary-oim-ip>` with the actual IP of the OIM.
 
- 1. **Configure SSSD on cluster nodes** to use both LDAP servers:
+ 4. **Configure SSSD on cluster nodes** to use both LDAP servers:
 
 ```bash title="Run on: omnia_core container"
 vi /opt/omnia/input/project_default/omnia_config.yml
@@ -104,7 +104,7 @@ ldap_uris:
 ```
  
 
- 1. **Re-run the auth playbook** to update SSSD configuration:
+ 5. **Re-run the auth playbook** to update SSSD configuration:
 
 ```bash title="Run on: omnia_core container"
 cd /omnia
@@ -123,7 +123,7 @@ ldapsearch -x -H ldap://localhost -b "dc=omnia,dc=example,dc=com" "(uid=testuser
 
 The user created on the primary should be visible on the replica.
 
- 1. **Add a user on the primary** and verify it replicates:
+ 2. **Add a user on the primary** and verify it replicates:
 
 ```bash title="Run on: omnia_auth container (primary)"
 cat <<'EOF' > /tmp/new_user.ldif
@@ -150,7 +150,7 @@ ldapsearch -x -H ldap://localhost -b "dc=omnia,dc=example,dc=com" "(uid=repltest
 ```
  
 
- 1. **Test failover** by stopping the primary and verifying authentication still works:
+ 3. **Test failover** by stopping the primary and verifying authentication still works:
 
 ```bash title="Run on: OIM host"
 podman stop omnia_auth

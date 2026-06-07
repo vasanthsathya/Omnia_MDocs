@@ -27,7 +27,7 @@ ssh omnia_core
 ```
  
 
- 1. **Configure OME telemetry** in `omnia_config.yml`:
+ 2. **Configure OME telemetry** in `omnia_config.yml`:
 
 ```bash title="Run on: omnia_core container"
 vi /opt/omnia/input/project_default/omnia_config.yml
@@ -54,7 +54,7 @@ sfm_collection_interval: 300
 ```
  
 
- 1. **Set OME/SFM credentials** using the credential utility:
+ 3. **Set OME/SFM credentials** using the credential utility:
 
 ```bash title="Run on: omnia_core container"
 cd /omnia/utils/credential_utility
@@ -62,7 +62,7 @@ ansible-playbook get_config_credentials.yml --tags telemetry
 ```
  
 
- 1. **Verify OME API access** from the K8s cluster:
+ 4. **Verify OME API access** from the K8s cluster:
 
 ```bash title="Run on: K8s control plane node"
 curl -sk https://10.5.1.50/api/SessionService/Sessions \
@@ -72,7 +72,7 @@ curl -sk https://10.5.1.50/api/SessionService/Sessions \
 ```
  
 
- 1. **Run the telemetry playbook** to deploy the OME/SFM collectors:
+ 5. **Run the telemetry playbook** to deploy the OME/SFM collectors:
 
 ```bash title="Run on: omnia_core container"
 cd /omnia
@@ -96,7 +96,7 @@ kubectl get pods -n telemetry | grep -E "ome|sfm"
 ```
  
 
- 1. **Check collector logs** for successful data collection:
+ 2. **Check collector logs** for successful data collection:
 
 ```bash title="Run on: K8s control plane node"
 kubectl logs -n telemetry -l app=ome-collector --tail=20
@@ -104,7 +104,7 @@ kubectl logs -n telemetry -l app=sfm-collector --tail=20
 ```
  
 
- 1. **Verify OME metrics in VictoriaMetrics** :
+ 3. **Verify OME metrics in VictoriaMetrics** :
 
 ```bash title="Run on: K8s control plane node"
 VM_POD=$(kubectl get pod -n telemetry -l app=victoriametrics -o jsonpath='{.items[0].metadata.name}')
@@ -113,7 +113,7 @@ curl -s "http://localhost:8428/api/v1/query?query=ome_device_health"
 ```
  
 
- 1. **Check Grafana dashboards** for OME/SFM panels:
+ 4. **Check Grafana dashboards** for OME/SFM panels:
 
 Open Grafana and navigate to the **OME Overview** and **SFM Fabric Health** dashboards.
 

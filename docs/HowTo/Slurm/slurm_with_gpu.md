@@ -40,14 +40,14 @@ ssh omnia_core
 ```
  
 
- 1. **Verify GPU software is listed in software_config.json** :
+ 2. **Verify GPU software is listed in software_config.json** :
 
 ```bash title="Run on: omnia_core container"
 cat /opt/omnia/input/project_default/software_config.json | python3 -m json.tool
 ```
  
 
- 1. **Configure GPU-related parameters in omnia_config.yml** :
+ 3. **Configure GPU-related parameters in omnia_config.yml** :
 
 ```bash title="Run on: omnia_core container"
 vi /opt/omnia/input/project_default/omnia_config.yml
@@ -67,7 +67,7 @@ slurm_gres_config: ""
 ```
  
 
- 1. **Run the omnia.yml playbook** (or re-run if Slurm is already deployed):
+ 4. **Run the omnia.yml playbook** (or re-run if Slurm is already deployed):
 
 ```bash title="Run on: omnia_core container"
 cd /omnia
@@ -117,7 +117,7 @@ hl-smi
 ```
  
 
- 1. **Check Slurm GRES configuration** :
+ 2. **Check Slurm GRES configuration** :
 
 ```bash title="Run on: Slurm control node"
 scontrol show nodes | grep -i gres
@@ -132,14 +132,14 @@ GresUsed=gpu:nvidia_a100:0
 ```
  
 
- 1. **Submit a GPU job** :
+ 3. **Submit a GPU job** :
 
 ```bash title="Run on: Slurm control node"
 srun --gres=gpu:1 nvidia-smi
 ```
  
 
- 1. **Submit a multi-GPU batch job** :
+ 4. **Submit a multi-GPU batch job** :
 
 ```bash title="Run on: Slurm control node"
 cat <<'EOF' > /tmp/gpu_test.sh
@@ -158,7 +158,7 @@ sbatch /tmp/gpu_test.sh
 ```
  
 
- 1. **Verify CUDA toolkit** (NVIDIA):
+ 5. **Verify CUDA toolkit** (NVIDIA):
 
 ```bash title="Run on: GPU compute node"
 nvcc --version

@@ -34,7 +34,7 @@ slurm_node,slurm_cluster,NEWSVCTG2,,,aa:bb:cc:dd:ee:11,10.5.0.111,aa:bb:cc:dd:ff
 ```
  
 
- 1. **Provision the new nodes** if not already provisioned:
+ 2. **Provision the new nodes** if not already provisioned:
 
 ```bash title="Run on: omnia_core container"
 cd /omnia/discovery
@@ -42,7 +42,7 @@ ansible-playbook discovery.yml --ask-vault-pass
 ```
  
 
- 1. **Run the add-node playbook** :
+ 3. **Run the add-node playbook** :
 
 ```bash title="Run on: omnia_core container"
 cd /omnia
@@ -51,18 +51,15 @@ ansible-playbook omnia.yml --ask-vault-pass --limit "new_nodes"
  
 
 !!! note
- 
- 
- If a dedicated `add_node.yml` playbook is available in your Omnia
- version, use it instead:
- 
- ```bash title="Run on: omnia_core container"
- ansible-playbook utils/add_node.yml --ask-vault-pass \
- -e "target_nodes=10.5.0.110,10.5.0.111"
- ```
- 
+    If a dedicated `add_node.yml` playbook is available in your Omnia
+    version, use it instead:
 
- 1. **Update the Slurm configuration** on the control node to include the new nodes:
+    ```bash title="Run on: omnia_core container"
+    ansible-playbook utils/add_node.yml --ask-vault-pass \
+    -e "target_nodes=10.5.0.110,10.5.0.111"
+    ```
+
+ 4. **Update the Slurm configuration** on the control node to include the new nodes:
 
 ```bash title="Run on: Slurm control node"
 # Reconfigure Slurm to pick up new nodes
@@ -81,21 +78,21 @@ sinfo
 
 New nodes should appear in the `normal` partition with `idle` state.
 
- 1. **Run a test job on the new nodes** :
+ 2. **Run a test job on the new nodes** :
 
 ```bash title="Run on: Slurm control node"
 srun -w <new-node-hostname> hostname
 ```
  
 
- 1. **Verify Munge authentication** on the new nodes:
+ 3. **Verify Munge authentication** on the new nodes:
 
 ```bash title="Run on: Slurm control node"
 munge -n | ssh <new-node-ip> unmunge
 ```
  
 
- 1. **Check slurmd is running** on the new nodes:
+ 4. **Check slurmd is running** on the new nodes:
 
 ```bash title="Run on: new compute node"
 systemctl status slurmd

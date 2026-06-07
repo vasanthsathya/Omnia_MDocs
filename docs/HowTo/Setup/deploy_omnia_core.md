@@ -37,7 +37,7 @@ ssh root@<oim-ip-address>
 ```
  
 
- 1. **Clone the Omnia repository** from Dell's artifact repository:
+ 2. **Clone the Omnia repository** from Dell's artifact repository:
 
 ```bash title="Run on: OIM host"
 cd /opt
@@ -47,16 +47,13 @@ cd omnia
  
 
 !!! note
- 
- 
- To use a specific release, check out the corresponding tag:
- 
- ```bash title="Run on: OIM host"
- git checkout v2.1.0.0
- ```
- 
+    To use a specific release, check out the corresponding tag:
 
- 1. **Build the container images** using the provided build script:
+    ```bash title="Run on: OIM host"
+    git checkout v2.1.0.0
+    ```
+
+ 3. **Build the container images** using the provided build script:
 
 ```bash title="Run on: OIM host"
 bash build_images.sh core
@@ -65,7 +62,7 @@ bash build_images.sh core
 
 This builds the `omnia_core` container image locally. The build process takes approximately 10-15 minutes depending on network speed and hardware.
 
- 1. **Install the omnia_core service** :
+ 4. **Install the omnia_core service** :
 
 ```bash title="Run on: OIM host"
 bash omnia.sh --install
@@ -79,7 +76,7 @@ This script:
  * Mounts the necessary volumes for configuration and playbook storage.
  * Starts the container automatically.
 
- * **Verify the service is running** :
+ 5. **Verify the service is running** :
 
 ```bash title="Run on: OIM host"
 systemctl status omnia_core.service
@@ -106,7 +103,7 @@ podman ps --filter name=omnia_core
 
 You should see a running container named `omnia_core`.
 
- 1. **Enter the omnia_core container** and verify Ansible is available:
+ 2. **Enter the omnia_core container** and verify Ansible is available:
 
 ```bash title="Run on: OIM host"
 podman exec -it -u root omnia_core bash
@@ -118,7 +115,7 @@ ansible --version
 ```
  
 
- 1. **Verify playbooks are accessible** :
+ 3. **Verify playbooks are accessible** :
 
 ```bash title="Run on: omnia_core container"
 ls /omnia/*.yml
@@ -127,7 +124,7 @@ ls /omnia/*.yml
 
 You should see the key playbooks: `omnia_startup.yml`, `input_validator.yml`, `credentials_utility.yml`, `prepare_oim.yml`, `local_repo.yml`, `discovery.yml`, and others.
 
- 1. **Verify input directory exists** :
+ 4. **Verify input directory exists** :
 
 ```bash title="Run on: omnia_core container"
 ls /opt/omnia/input/project_default/

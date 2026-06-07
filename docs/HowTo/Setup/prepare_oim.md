@@ -31,7 +31,7 @@ ssh omnia_core
 ```
  
 
- 1. **Review and edit network_spec.yml** (if not already done):
+ 2. **Review and edit network_spec.yml** (if not already done):
 
 ```bash title="Run on: omnia_core container"
 vi /opt/omnia/input/project_default/network_spec.yml
@@ -59,7 +59,7 @@ bmc_network:
 ```
  
 
- 1. **Review and edit provision_config.yml** (if not already done):
+ 3. **Review and edit provision_config.yml** (if not already done):
 
 ```bash title="Run on: omnia_core container"
 vi /opt/omnia/input/project_default/provision_config.yml
@@ -76,7 +76,7 @@ pxe_mapping_file_path: "/opt/omnia/input/project_default/pxe_mapping_file.csv"
 ```
  
 
- 1. **Run the prepare_oim playbook** :
+ 4. **Run the prepare_oim playbook** :
 
 ```bash title="Run on: omnia_core container"
 cd /omnia/prepare_oim
@@ -85,15 +85,12 @@ ansible-playbook prepare_oim.yml
  
 
 !!! note
- 
- 
- If your credentials file is encrypted with Ansible Vault, add the
- `--ask-vault-pass` flag:
- 
- ```bash title="Run on: omnia_core container"
- ansible-playbook prepare_oim.yml --ask-vault-pass
- ```
- 
+    If your credentials file is encrypted with Ansible Vault, add the
+    `--ask-vault-pass` flag:
+
+    ```bash title="Run on: omnia_core container"
+    ansible-playbook prepare_oim.yml --ask-vault-pass
+    ```
 
 The playbook performs the following tasks:
 
@@ -138,7 +135,7 @@ omnia.target
 ```
  
 
- 1. **Verify all services are active** :
+ 2. **Verify all services are active** :
 
 ```bash title="Run on: OIM host"
 systemctl status omnia_core.service
@@ -146,7 +143,7 @@ systemctl status openchami.target
 ```
  
 
- 1. **Test OpenCHAMI CLI** :
+ 3. **Test OpenCHAMI CLI** :
 
 ```bash title="Run on: omnia_core container"
 ochami --help
@@ -155,14 +152,14 @@ ochami --help
 
 This should display the OpenCHAMI command-line help, confirming the CLI is installed and the services are accessible.
 
- 1. **Verify Pulp is running** :
+ 4. **Verify Pulp is running** :
 
 ```bash title="Run on: OIM host"
 podman ps --filter name=pulp
 ```
  
 
- 1. **Verify MinIO is accessible** :
+ 5. **Verify MinIO is accessible** :
 
 ```bash title="Run on: omnia_core container"
 s3cmd ls

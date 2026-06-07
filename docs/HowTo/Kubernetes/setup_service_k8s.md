@@ -29,7 +29,7 @@ ssh omnia_core
 ```
  
 
- 1. **Configure Kubernetes parameters** in `omnia_config.yml`:
+ 2. **Configure Kubernetes parameters** in `omnia_config.yml`:
 
 ```bash title="Run on: omnia_core container"
 vi /opt/omnia/input/project_default/omnia_config.yml
@@ -55,7 +55,7 @@ nfs_path: "/home"
 ```
  
 
- 1. **Verify the mapping file** has K8s node assignments:
+ 3. **Verify the mapping file** has K8s node assignments:
 
 ```bash title="Run on: omnia_core container"
 grep -E "kube_control_plane|kube_node" /opt/omnia/input/project_default/pxe_mapping_file.csv
@@ -64,7 +64,7 @@ grep -E "kube_control_plane|kube_node" /opt/omnia/input/project_default/pxe_mapp
 
 You should see at least 3 `kube_control_plane` entries and 1 `kube_node` entry.
 
- 1. **Run the omnia.yml playbook** to deploy Kubernetes:
+ 4. **Run the omnia.yml playbook** to deploy Kubernetes:
 
 ```bash title="Run on: omnia_core container"
 cd /omnia
@@ -105,7 +105,7 @@ k8s-worker01 Ready <none> 10m v1.28.x 10.5.0.108
 
 All nodes must show `Ready` status.
 
- 1. **Verify system pods are running** :
+ 2. **Verify system pods are running** :
 
 ```bash title="Run on: K8s control plane node"
 kubectl get pods -A
@@ -114,7 +114,7 @@ kubectl get pods -A
 
 All pods in `kube-system`, `calico-system`, and `metallb-system` namespaces should be `Running`.
 
- 1. **Verify MetalLB is operational** :
+ 3. **Verify MetalLB is operational** :
 
 ```bash title="Run on: K8s control plane node"
 kubectl get pods -n metallb-system
@@ -122,7 +122,7 @@ kubectl get ipaddresspool -n metallb-system
 ```
  
 
- 1. **Verify NFS CSI driver** :
+ 4. **Verify NFS CSI driver** :
 
 ```bash title="Run on: K8s control plane node"
 kubectl get pods -n kube-system | grep nfs
@@ -130,7 +130,7 @@ kubectl get storageclass
 ```
  
 
- 1. **Test pod scheduling** :
+ 5. **Test pod scheduling** :
 
 ```bash title="Run on: K8s control plane node"
 kubectl run test --image=busybox --restart=Never -- echo "K8s is working"
@@ -139,7 +139,7 @@ kubectl delete pod test
 ```
  
 
- 1. **Test a LoadBalancer service** :
+ 6. **Test a LoadBalancer service** :
 
 ```bash title="Run on: K8s control plane node"
 kubectl create deployment nginx --image=nginx

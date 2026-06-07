@@ -30,7 +30,7 @@ ssh omnia_core
 ```
  
 
- 1. **Configure the RoCE network** in the network specification:
+ 2. **Configure the RoCE network** in the network specification:
 
 ```bash title="Run on: omnia_core container"
 vi /opt/omnia/input/project_default/network_spec.yml
@@ -48,7 +48,7 @@ roce_network:
 ```
  
 
- 1. **Run the omnia.yml playbook** :
+ 3. **Run the omnia.yml playbook** :
 
 ```bash title="Run on: omnia_core container"
 cd /omnia
@@ -56,7 +56,7 @@ ansible-playbook omnia.yml --ask-vault-pass
 ```
  
 
- 1. **(If needed) Manually configure RoCE on a compute node** :
+ 4. **(If needed) Manually configure RoCE on a compute node** :
 
 a. **Install OFED packages** :
  
@@ -118,11 +118,8 @@ e. **Configure ECN (Explicit Congestion Notification)** :
  1. **Configure the Ethernet switch** for lossless RoCE traffic:
 
 !!! note
- 
- 
- Switch configuration is vendor-specific. Consult your switch
- documentation. The following is an example for Dell OS10 switches:
- 
+    Switch configuration is vendor-specific. Consult your switch
+    documentation. The following is an example for Dell OS10 switches:
 
 ```bash title="Run on: Ethernet switch (Dell OS10 example)"
 configure terminal

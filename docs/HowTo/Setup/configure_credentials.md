@@ -27,14 +27,14 @@ ssh omnia_core
 ```
  
 
- 1. **Navigate to the credential utility directory** :
+ 2. **Navigate to the credential utility directory** :
 
 ```bash title="Run on: omnia_core container"
 cd /omnia/utils/credential_utility
 ```
  
 
- 1. **Run the credential configuration playbook** with the `provision` tag:
+ 3. **Run the credential configuration playbook** with the `provision` tag:
 
 ```bash title="Run on: omnia_core container"
 ansible-playbook get_config_credentials.yml --tags provision
@@ -69,14 +69,14 @@ The playbook will prompt you for:
  credentials.
  
 
- 1. **Verify the encrypted file was created** :
+ 4. **Verify the encrypted file was created** :
 
 ```bash title="Run on: omnia_core container"
 ls -la /opt/omnia/input/project_default/omnia_config_credentials.yml
 ```
  
 
- 1. **(Optional) View the encrypted credentials** to confirm values:
+ 5. **(Optional) View the encrypted credentials** to confirm values:
 
 ```bash title="Run on: omnia_core container"
 ansible-vault view /opt/omnia/input/project_default/omnia_config_credentials.yml
@@ -101,7 +101,7 @@ $ANSIBLE_VAULT;1.1;AES256
 ```
  
 
- 1. **Test decryption** with the Vault password:
+ 2. **Test decryption** with the Vault password:
 
 ```bash title="Run on: omnia_core container"
 ansible-vault view /opt/omnia/input/project_default/omnia_config_credentials.yml
@@ -110,12 +110,13 @@ ansible-vault view /opt/omnia/input/project_default/omnia_config_credentials.yml
 
 If the password is correct, you will see the decrypted YAML content. If incorrect, Ansible will report a decryption error.
 
- 1. **Verify credential completeness** by checking that all required keys are present in the decrypted output:
+ 3. **Verify credential completeness** by checking that all required keys are present in the decrypted output:
 
- 2. `bmc_username`
+Required keys:
 
- 3. `bmc_password`
- 4. `provision_os_password`
+* `bmc_username`
+* `bmc_password`
+* `provision_os_password`
 
 ## Next Steps[¶](#next-steps "Permanent link")
 

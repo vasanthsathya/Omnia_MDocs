@@ -435,11 +435,13 @@
 /* ── Permalink anchors ────────────────────────────────────── */
 .md-typeset .headerlink {
   color: var(--md-default-fg-color--lighter);
+  opacity: 0;
   transition: color 0.15s ease, opacity 0.15s ease;
 }
 
 .md-typeset :hover > .headerlink {
   color: var(--md-accent-fg-color);
+  opacity: 1;
 }
 
 /* ── Smooth scrolling ─────────────────────────────────────── */

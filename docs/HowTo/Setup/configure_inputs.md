@@ -32,7 +32,7 @@ ssh omnia_core
 ```
  
 
- 1. **Copy the example templates** to the input directory:
+ 2. **Copy the example templates** to the input directory:
 
 ```bash title="Run on: omnia_core container"
 cp /omnia/examples/input_template/* /opt/omnia/input/project_default/
@@ -40,13 +40,10 @@ cp /omnia/examples/input_template/* /opt/omnia/input/project_default/
  
 
 !!! note
- 
- 
- If files already exist in the destination, this command will overwrite
- them. Back up any previously customized files before copying.
- 
+    If files already exist in the destination, this command will overwrite
+    them. Back up any previously customized files before copying.
 
- 1. **Edit the software configuration** :
+ 3. **Edit the software configuration** :
 
 ```bash title="Run on: omnia_core container"
 vi /opt/omnia/input/project_default/software_config.json
@@ -88,7 +85,7 @@ Key parameters:
  - List of software stacks to install on compute nodes
  
 
- 1. **Edit the network specification** :
+ 4. **Edit the network specification** :
 
 ```bash title="Run on: omnia_core container"
 vi /opt/omnia/input/project_default/network_spec.yml
@@ -116,7 +113,7 @@ bmc_network:
 ```
  
 
- 1. **Edit the provision configuration** :
+ 5. **Edit the provision configuration** :
 
 ```bash title="Run on: omnia_core container"
 vi /opt/omnia/input/project_default/provision_config.yml
@@ -135,7 +132,7 @@ pxe_mapping_file_path: "/opt/omnia/input/project_default/pxe_mapping_file.csv"
 ```
  
 
- 1. **Edit the Omnia configuration** (for Slurm/K8s parameters):
+ 6. **Edit the Omnia configuration** (for Slurm/K8s parameters):
 
 ```bash title="Run on: omnia_core container"
 vi /opt/omnia/input/project_default/omnia_config.yml

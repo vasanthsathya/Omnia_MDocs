@@ -36,14 +36,14 @@ Expected output for each node:
 ```
  
 
- 1. **Check OS version on all nodes** :
+ 2. **Check OS version on all nodes** :
 
 ```bash title="Run on: omnia_core container"
 ansible all -m shell -a "cat /etc/os-release | grep PRETTY_NAME"
 ```
  
 
- 1. **Check hostnames are correctly set** :
+ 3. **Check hostnames are correctly set** :
 
 ```bash title="Run on: omnia_core container"
 ansible all -m shell -a "hostname"
@@ -74,7 +74,7 @@ normal* up infinite 2 idle compute[01-02]
 
 All nodes should show `idle` state. If any show `down` or `drain`, investigate further.
 
- 1. **Run a test job** across all compute nodes:
+ 2. **Run a test job** across all compute nodes:
 
 ```bash title="Run on: Slurm control node"
 srun -N 2 hostname
@@ -89,7 +89,7 @@ compute02
 ```
  
 
- 1. **Submit a batch job** :
+ 3. **Submit a batch job** :
 
 ```bash title="Run on: Slurm control node"
 cat <<'EOF' > /tmp/test_job.sh
@@ -113,7 +113,7 @@ cat slurm-*.out
 ```
  
 
- 1. **Verify Slurm accounting** :
+ 4. **Verify Slurm accounting** :
 
 ```bash title="Run on: Slurm control node"
 sacct --starttime=today
@@ -147,7 +147,7 @@ k8s-worker01 Ready <none> 1h v1.28.x
 
 All nodes should show `Ready` status.
 
- 1. **Verify core Kubernetes components** :
+ 2. **Verify core Kubernetes components** :
 
 ```bash title="Run on: K8s control plane node"
 kubectl get pods -A
@@ -156,7 +156,7 @@ kubectl get pods -A
 
 All system pods (`kube-system`, `calico-system`, `metallb-system`) should be `Running`.
 
- 1. **Test pod scheduling** :
+ 3. **Test pod scheduling** :
 
 ```bash title="Run on: K8s control plane node"
 kubectl run test-pod --image=busybox --restart=Never -- echo "Hello from K8s"

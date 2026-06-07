@@ -31,7 +31,7 @@ ssh omnia_core
 ```
  
 
- 1. **Configure telemetry parameters** in `omnia_config.yml`:
+ 2. **Configure telemetry parameters** in `omnia_config.yml`:
 
 ```bash title="Run on: omnia_core container"
 vi /opt/omnia/input/project_default/omnia_config.yml
@@ -64,7 +64,7 @@ ldms_samplers:
 ```
  
 
- 1. **Run the telemetry playbook** :
+ 3. **Run the telemetry playbook** :
 
 ```bash title="Run on: omnia_core container"
 cd /omnia
@@ -84,7 +84,7 @@ The playbook performs:
 
 Execution time: **15-30 minutes**.
 
- 1. **Access the Grafana dashboard** :
+ 4. **Access the Grafana dashboard** :
 
 ```bash title="Run on: K8s control plane node"
 kubectl get svc -n telemetry | grep grafana
@@ -121,21 +121,21 @@ ldms-aggregator-xxxxxxxxxx-xxxxx 1/1 Running 0
 ```
  
 
- 1. **Verify LDMS agents on compute nodes** :
+ 2. **Verify LDMS agents on compute nodes** :
 
 ```bash title="Run on: omnia_core container"
 ansible slurm_node -m shell -a "systemctl is-active ldmsd"
 ```
  
 
- 1. **Check Kafka topics** have telemetry data:
+ 3. **Check Kafka topics** have telemetry data:
 
 ```bash title="Run on: K8s control plane node"
 kubectl exec -n telemetry kafka-0 -- kafka-topics.sh --list --bootstrap-server localhost:9092
 ```
  
 
- 1. **Verify VictoriaMetrics is receiving data** :
+ 4. **Verify VictoriaMetrics is receiving data** :
 
 ```bash title="Run on: K8s control plane node"
 VM_POD=$(kubectl get pod -n telemetry -l app=victoriametrics -o jsonpath='{.items[0].metadata.name}')
@@ -143,7 +143,7 @@ kubectl exec -n telemetry $VM_POD -- curl -s "http://localhost:8428/api/v1/query
 ```
  
 
- 1. **Verify Grafana dashboards** show data by opening the web UI and checking the pre-configured dashboards for active time-series data.
+ 5. **Verify Grafana dashboards** show data by opening the web UI and checking the pre-configured dashboards for active time-series data.
 
 ## Next Steps[¶](#next-steps "Permanent link")
 

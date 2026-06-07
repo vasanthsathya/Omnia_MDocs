@@ -142,7 +142,7 @@ TLS_CACERT /etc/openldap/certs/ca.crt
 TLS_REQCERT demand
 ```
 
- 1. **Restrict anonymous binds:**
+ 2. **Restrict anonymous binds:**
 
 Configure the LDAP server to disallow anonymous access:
 ```bash title="Run on: LDAP server
@@ -154,11 +154,11 @@ olcDisallows: bind_anon
 EOF
 ```
 
- 1. **Set strong password policies:**
+ 3. **Set strong password policies:**
 
 Configure password complexity, lockout, and expiry in the LDAP password policy overlay.
 
- 1. **Limit LDAP admin access:**
+ 4. **Limit LDAP admin access:**
 
 Restrict the LDAP admin bind DN to connections originating from the OIM and authentication server only.
 

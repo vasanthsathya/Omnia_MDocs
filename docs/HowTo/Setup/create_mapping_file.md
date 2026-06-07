@@ -41,21 +41,21 @@ podman exec -it -u root omnia_core bash
 ```
  
 
- 1. **Navigate to the input directory** :
+ 2. **Navigate to the input directory** :
 
 ```bash title="Run on: omnia_core container"
 cd /opt/omnia/input/project_default
 ```
  
 
- 1. **Create the mapping file** using a text editor:
+ 3. **Create the mapping file** using a text editor:
 
 ```bash title="Run on: omnia_core container"
 vi pxe_mapping_file.csv
 ```
  
 
- 1. **Add the CSV header and node entries**. The file must contain the following columns in this exact order:
+ 4. **Add the CSV header and node entries**. The file must contain the following columns in this exact order:
 
 ```text title="File: /opt/omnia/input/project_default/pxe_mapping_file.csv"
 FUNCTIONAL_GROUP_NAME,GROUP_NAME,SERVICE_TAG,PARENT_SERVICE_TAG,HOSTNAME,ADMIN_MAC,ADMIN_IP,BMC_MAC,BMC_IP

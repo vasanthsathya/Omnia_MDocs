@@ -31,14 +31,14 @@ kubectl logs -n telemetry -l app=idrac-collector --tail=10
 
 Look for successful metric retrieval messages.
 
- 1. **Check LDMS samplers** are running on compute nodes:
+ 2. **Check LDMS samplers** are running on compute nodes:
 
 ```bash title="Run on: omnia_core container"
 ansible slurm_node -m shell -a "systemctl is-active ldmsd"
 ```
  
 
- 1. **Query LDMS metrics** locally on a compute node:
+ 3. **Query LDMS metrics** locally on a compute node:
 
 ```bash title="Run on: compute node"
 ldms_ls -h localhost -p 411 -v
@@ -57,7 +57,7 @@ kubectl exec -n telemetry $KAFKA_POD -- kafka-topics.sh --list --bootstrap-serve
 ```
  
 
- 1. **Check topic message counts** :
+ 2. **Check topic message counts** :
 
 ```bash title="Run on: K8s control plane node"
 kubectl exec -n telemetry $KAFKA_POD -- kafka-run-class.sh kafka.tools.GetOffsetShell \
@@ -67,7 +67,7 @@ kubectl exec -n telemetry $KAFKA_POD -- kafka-run-class.sh kafka.tools.GetOffset
 
 Message offsets should be increasing.
 
- 1. **Read sample messages** from a topic:
+ 3. **Read sample messages** from a topic:
 
 ```bash title="Run on: K8s control plane node"
 kubectl exec -n telemetry $KAFKA_POD -- kafka-console-consumer.sh \
@@ -90,7 +90,7 @@ kubectl exec -n telemetry $VM_POD -- curl -s http://localhost:8428/health
 
 Expected: `OK`
 
- 1. **Query stored metrics** :
+ 2. **Query stored metrics** :
 
 ```bash title="Run on: K8s control plane node"
 kubectl exec -n telemetry $VM_POD -- \
@@ -98,7 +98,7 @@ curl -s "http://localhost:8428/api/v1/query?query=up" | python3 -m json.tool
 ```
  
 
- 1. **Check active time series count** :
+ 3. **Check active time series count** :
 
 ```bash title="Run on: K8s control plane node"
 kubectl exec -n telemetry $VM_POD -- \
@@ -109,7 +109,7 @@ print(f'Active time series: {data.get(\"data\", {}).get(\"totalSeries\", \"unkno
 "
 ```
 
- 1. **Query a specific metric** (e.g., iDRAC temperature):
+ 4. **Query a specific metric** (e.g., iDRAC temperature):
 
 ```bash title="Run on: K8s control plane node"
 kubectl exec -n telemetry $VM_POD -- \

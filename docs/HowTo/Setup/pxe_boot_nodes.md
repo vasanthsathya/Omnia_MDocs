@@ -35,7 +35,7 @@ systemctl is-active bss.service
 
 All services should report `active`.
 
- 1. **(If needed) Manually set PXE boot order via iDRAC** :
+ 2. **(If needed) Manually set PXE boot order via iDRAC** :
 
 a. Open a web browser and navigate to `https://<bmc-ip>`. b. Log in with iDRAC credentials. c. Go to **Configuration** > **BIOS Settings** > **Boot Settings**. d. Set **Boot Mode** to `UEFI`. e. Under **UEFI Boot Sequence** , move **Integrated NIC** (PXE) to the **first** position. f. Click **Apply** and reboot the server.
 
@@ -50,7 +50,7 @@ https://<bmc-ip>/redfish/v1/Systems/System.Embedded.1 \
 ```
  
 
- 1. **Power-cycle the target servers** to initiate PXE boot:
+ 3. **Power-cycle the target servers** to initiate PXE boot:
 
 ```bash title="Run on: OIM host"
 # Using Redfish to power-cycle a single server
@@ -70,20 +70,20 @@ ochami node power --action restart --all
 ```
  
 
- 1. **Monitor the PXE boot process** :
+ 4. **Monitor the PXE boot process** :
 
- 2. Watch the iDRAC virtual console for each server.
+ 5. Watch the iDRAC virtual console for each server.
 
- 3. The server should display `iPXE` boot messages followed by the OS installer.
- 4. After installation, the server reboots into the provisioned OS.
+ 6. The server should display `iPXE` boot messages followed by the OS installer.
+ 7. After installation, the server reboots into the provisioned OS.
 
- 5. **Wait for provisioning to complete**. Provisioning typically takes **10-20 minutes** per node. Nodes will:
+ 8. **Wait for provisioning to complete**. Provisioning typically takes **10-20 minutes** per node. Nodes will:
 
- 6. PXE boot and download the boot image from the OIM.
+ 9. PXE boot and download the boot image from the OIM.
 
- 7. Install the operating system to local disk.
- 8. Configure networking based on the mapping file.
- 9. Reboot into the installed OS.
+ 10. Install the operating system to local disk.
+ 11. Configure networking based on the mapping file.
+ 12. Reboot into the installed OS.
 
 ## Verification[¶](#verification "Permanent link")
 
@@ -98,7 +98,7 @@ done
 ```
  
 
- 1. **SSH into a provisioned node** to verify the OS is installed:
+ 2. **SSH into a provisioned node** to verify the OS is installed:
 
 ```bash title="Run on: omnia_core container"
 ssh root@10.5.0.101
@@ -112,7 +112,7 @@ ip addr show
 ```
  
 
- 1. **Verify node registration in OpenCHAMI** :
+ 3. **Verify node registration in OpenCHAMI** :
 
 ```bash title="Run on: omnia_core container"
 ochami node list

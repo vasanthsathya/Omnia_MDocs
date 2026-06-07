@@ -27,7 +27,7 @@ ssh omnia_core
 ```
  
 
- 1. **Configure external VictoriaMetrics** in `omnia_config.yml`:
+ 2. **Configure external VictoriaMetrics** in `omnia_config.yml`:
 
 ```bash title="Run on: omnia_core container"
 vi /opt/omnia/input/project_default/omnia_config.yml
@@ -53,7 +53,7 @@ datacenter: "dc1"
 ```
  
 
- 1. **Verify connectivity** to the external VictoriaMetrics:
+ 3. **Verify connectivity** to the external VictoriaMetrics:
 
 ```bash title="Run on: K8s control plane node"
 curl -s http://victoria.example.com:8428/api/v1/status/tsdb
@@ -62,7 +62,7 @@ curl -s http://victoria.example.com:8428/api/v1/status/tsdb
 
 Expected: JSON response with database statistics.
 
- 1. **Run the telemetry playbook** to reconfigure:
+ 4. **Run the telemetry playbook** to reconfigure:
 
 ```bash title="Run on: omnia_core container"
 cd /omnia
@@ -76,7 +76,7 @@ The playbook will:
  * Configure Kafka consumers to write to the external VictoriaMetrics.
  * Update Grafana data source to point to the external instance.
 
- * **Update Grafana data source** (if not automatically configured):
+ 5. **Update Grafana data source** (if not automatically configured):
 
 ```bash title="Run on: K8s control plane node"
 GRAFANA_POD=$(kubectl get pod -n telemetry -l app=grafana -o jsonpath='{.items[0].metadata.name}')
@@ -103,21 +103,21 @@ curl -s "http://victoria.example.com:8428/api/v1/query?query=up" | python3 -m js
 ```
  
 
- 1. **Check metric count** on the external instance:
+ 2. **Check metric count** on the external instance:
 
 ```bash title="Run on: any node with curl"
 curl -s "http://victoria.example.com:8428/api/v1/status/tsdb" | python3 -m json.tool
 ```
  
 
- 1. **Verify no built-in VictoriaMetrics pod** is running:
+ 3. **Verify no built-in VictoriaMetrics pod** is running:
 
 ```bash title="Run on: K8s control plane node"
 kubectl get pods -n telemetry | grep victoriametrics
 ```
  
 
- 1. **Verify Grafana dashboards** show data from the external instance by opening the Grafana web UI and checking the data source configuration.
+ 4. **Verify Grafana dashboards** show data from the external instance by opening the Grafana web UI and checking the data source configuration.
 
 ## Next Steps[¶](#next-steps "Permanent link")
 

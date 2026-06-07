@@ -27,7 +27,7 @@ ssh omnia_core
 ```
  
 
- 1. **Configure InfiniBand settings** in the network specification:
+ 2. **Configure InfiniBand settings** in the network specification:
 
 ```bash title="Run on: omnia_core container"
 vi /opt/omnia/input/project_default/network_spec.yml
@@ -46,7 +46,7 @@ ib_network:
 ```
  
 
- 1. **Ensure OFED is listed in software_config.json** :
+ 3. **Ensure OFED is listed in software_config.json** :
 
 ```bash title="Run on: omnia_core container"
 cat /opt/omnia/input/project_default/software_config.json | python3 -m json.tool
@@ -64,7 +64,7 @@ Verify the `softwares` list includes:
 ```
  
 
- 1. **Run the omnia.yml playbook** to deploy InfiniBand:
+ 4. **Run the omnia.yml playbook** to deploy InfiniBand:
 
 ```bash title="Run on: omnia_core container"
 cd /omnia
@@ -79,7 +79,7 @@ The playbook will:
  * Configure IPoIB interfaces with static IP addresses.
  * Deploy and start OpenSM on a designated subnet manager node.
 
- * **(If needed) Manually configure IPoIB on a node** :
+ 5. **(If needed) Manually configure IPoIB on a node** :
 
 ```bash title="Run on: compute node"
 # Load InfiniBand modules
@@ -111,11 +111,8 @@ systemctl enable --now opensm
  
 
 !!! note
- 
- 
- Only one node in the IB fabric should run OpenSM as the primary subnet
- manager. A second node can run OpenSM as a standby for HA.
- 
+    Only one node in the IB fabric should run OpenSM as the primary subnet
+    manager. A second node can run OpenSM as a standby for HA.
 
 ## Verification[¶](#verification "Permanent link")
 

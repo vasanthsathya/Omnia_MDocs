@@ -29,7 +29,7 @@ ssh omnia_core
 ```
  
 
- 1. **Verify software_config.json is configured** with the desired software stacks:
+ 2. **Verify software_config.json is configured** with the desired software stacks:
 
 ```bash title="Run on: omnia_core container"
 cat /opt/omnia/input/project_default/software_config.json | python3 -m json.tool
@@ -38,7 +38,7 @@ cat /opt/omnia/input/project_default/software_config.json | python3 -m json.tool
 
 Confirm the `softwares` list includes all packages you need (e.g., `slurm`, `cuda`, `openldap`, `apptainer`).
 
- 1. **Run the local_repo playbook** :
+ 3. **Run the local_repo playbook** :
 
 ```bash title="Run on: omnia_core container"
 cd /omnia/local_repo
@@ -47,14 +47,11 @@ ansible-playbook local_repo.yml
  
 
 !!! note
- 
- 
- If credentials are Vault-encrypted:
- 
- ```bash title="Run on: omnia_core container"
- ansible-playbook local_repo.yml --ask-vault-pass
- ```
- 
+    If credentials are Vault-encrypted:
+
+    ```bash title="Run on: omnia_core container"
+    ansible-playbook local_repo.yml --ask-vault-pass
+    ```
 
 The playbook will:
 
@@ -64,14 +61,11 @@ The playbook will:
  * Create Pulp publications and distributions.
 
 !!! warning
- 
- 
- Initial synchronization can take **1-3 hours** depending on the number
- of repositories, internet bandwidth, and selected software stacks.
- CUDA and ROCm repositories are particularly large (10-30 GB each).
- 
+    Initial synchronization can take **1-3 hours** depending on the number
+    of repositories, internet bandwidth, and selected software stacks.
+    CUDA and ROCm repositories are particularly large (10-30 GB each).
 
- 1. **Monitor synchronization progress** (in a separate terminal):
+ 4. **Monitor synchronization progress** (in a separate terminal):
 
 ```bash title="Run on: OIM host"
 podman logs -f pulp
@@ -89,14 +83,14 @@ curl -s http://localhost:8080/pulp/api/v3/distributions/rpm/rpm/ | python3 -m js
 
 Each synced repository should have a distribution with a `base_url`.
 
- 1. **List available repositories** from a node's perspective:
+ 2. **List available repositories** from a node's perspective:
 
 ```bash title="Run on: OIM host"
 curl -s http://localhost:8080/pulp/content/ | grep -oP 'href="[^"]*"'
 ```
  
 
- 1. **Test package availability** by querying a specific repository:
+ 3. **Test package availability** by querying a specific repository:
 
 ```bash title="Run on: OIM host"
 curl -s http://localhost:8080/pulp/content/baseos/repodata/repomd.xml | head -5
@@ -105,7 +99,7 @@ curl -s http://localhost:8080/pulp/content/baseos/repodata/repomd.xml | head -5
 
 Expected: XML content from the repository metadata.
 
- 1. **Verify disk usage** to ensure sync completed:
+ 4. **Verify disk usage** to ensure sync completed:
 
 ```bash title="Run on: OIM host"
 df -h /var/lib/containers

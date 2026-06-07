@@ -31,7 +31,7 @@ mkdir -p /opt/gitlab/{config,logs,data}
 ```
  
 
- 1. **Deploy the GitLab container** :
+ 2. **Deploy the GitLab container** :
 
 ```bash title="Run on: OIM host"
 podman run -d \
@@ -50,13 +50,10 @@ docker.io/gitlab/gitlab-ce:latest
  
 
 !!! note
- 
- 
- GitLab takes **3-5 minutes** to fully initialize after the container
- starts. Wait before proceeding.
- 
+    GitLab takes **3-5 minutes** to fully initialize after the container
+    starts. Wait before proceeding.
 
- 1. **Retrieve the initial root password** :
+ 3. **Retrieve the initial root password** :
 
 ```bash title="Run on: OIM host"
 podman exec gitlab cat /etc/gitlab/initial_root_password
@@ -65,14 +62,14 @@ podman exec gitlab cat /etc/gitlab/initial_root_password
 
 Save this password; it is only available for 24 hours.
 
- 1. **Access GitLab** in a browser: `http://<oim-ip>:8082`
+ 4. **Access GitLab** in a browser: `http://<oim-ip>:8082`
 
 Log in with:
 
  * Username: `root`
  * Password: (from step 3)
 
- * **Create the BuildStreaM project** :
+ 6. **Create the BuildStreaM project** :
 
 ```bash title="Run on: OIM host"
 # Using GitLab API
@@ -82,7 +79,7 @@ curl -s -X POST "http://localhost:8082/api/v4/projects" \
 ```
  
 
- 1. **Register a GitLab Runner** for pipeline execution:
+ 7. **Register a GitLab Runner** for pipeline execution:
 
 ```bash title="Run on: OIM host"
 podman run -d \
@@ -133,7 +130,7 @@ cd buildstream-catalog
 ```
  
 
- 1. **Create the pipeline configuration** :
+ 2. **Create the pipeline configuration** :
 
 ```yaml title="Run on: omnia_core container"
 cat <<'EOF' > .gitlab-ci.yml
@@ -172,7 +169,7 @@ EOF
 ```
  
 
- 1. **Push the initial configuration** :
+ 3. **Push the initial configuration** :
 
 ```bash title="Run on: omnia_core container"
 git add .
@@ -191,14 +188,14 @@ curl -s http://localhost:8082/users/sign_in | grep "GitLab"
 ```
  
 
- 1. **Verify the runner is registered** :
+ 2. **Verify the runner is registered** :
 
 ```bash title="Run on: OIM host"
 podman exec gitlab-runner gitlab-runner list
 ```
  
 
- 1. **Trigger a test pipeline** by pushing a commit or via the GitLab UI:
+ 3. **Trigger a test pipeline** by pushing a commit or via the GitLab UI:
 
 Navigate to **CI/CD** > **Pipelines** in the GitLab web UI and confirm the pipeline stages appear.
 

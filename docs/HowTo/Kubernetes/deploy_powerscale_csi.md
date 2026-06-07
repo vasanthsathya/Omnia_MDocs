@@ -32,14 +32,14 @@ helm version
 ```
  
 
- 1. **Create a namespace** for the CSI driver:
+ 2. **Create a namespace** for the CSI driver:
 
 ```bash title="Run on: K8s control plane node"
 kubectl create namespace csi-powerscale
 ```
  
 
- 1. **Create the PowerScale secret** with cluster connection details:
+ 3. **Create the PowerScale secret** with cluster connection details:
 
 ```yaml title="Run on: K8s control plane node"
 cat <<'EOF' > /tmp/powerscale-secret.yaml
@@ -79,7 +79,7 @@ rm -f /tmp/powerscale-secret.yaml
 ```
  
 
- 1. **Add the Dell CSI Helm repository** :
+ 4. **Add the Dell CSI Helm repository** :
 
 ```bash title="Run on: K8s control plane node"
 helm repo add dell https://dell.github.io/helm-charts
@@ -87,7 +87,7 @@ helm repo update
 ```
  
 
- 1. **Install the PowerScale CSI driver** :
+ 5. **Install the PowerScale CSI driver** :
 
 ```bash title="Run on: K8s control plane node"
 helm install isilon dell/csi-isilon \
@@ -100,7 +100,7 @@ helm install isilon dell/csi-isilon \
 
 Execution time: **2-5 minutes**.
 
- 1. **Create a StorageClass** for dynamic provisioning:
+ 6. **Create a StorageClass** for dynamic provisioning:
 
 ```yaml title="Run on: K8s control plane node"
 cat <<'EOF' | kubectl apply -f -
@@ -133,14 +133,14 @@ kubectl get pods -n csi-powerscale
 
 Expected: controller pods (2 replicas) and node pods (one per worker) in `Running` state.
 
- 1. **Verify the StorageClass was created** :
+ 2. **Verify the StorageClass was created** :
 
 ```bash title="Run on: K8s control plane node"
 kubectl get storageclass powerscale-nfs
 ```
  
 
- 1. **Test dynamic provisioning** by creating a PVC:
+ 3. **Test dynamic provisioning** by creating a PVC:
 
 ```yaml title="Run on: K8s control plane node"
 cat <<'EOF' | kubectl apply -f -
@@ -163,7 +163,7 @@ kubectl get pvc test-pvc
 
 The PVC should transition from `Pending` to `Bound`.
 
- 1. **Clean up the test PVC** :
+ 4. **Clean up the test PVC** :
 
 ```bash title="Run on: K8s control plane node"
 kubectl delete pvc test-pvc

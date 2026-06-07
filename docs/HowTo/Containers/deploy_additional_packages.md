@@ -34,14 +34,14 @@ ansible slurm_node -m dnf -a "name=htop state=present"
 ```
  
 
- 1. **Install multiple packages at once** :
+ 2. **Install multiple packages at once** :
 
 ```bash title="Run on: omnia_core container"
 ansible slurm_node -m dnf -a "name=gcc,gcc-c++,make,cmake state=present"
 ```
  
 
- 1. **Install on a specific group of nodes** :
+ 3. **Install on a specific group of nodes** :
 
 ```bash title="Run on: omnia_core container"
 # Install only on login nodes
@@ -49,7 +49,7 @@ ansible login_node -m dnf -a "name=emacs,vim-enhanced state=present"
 ```
  
 
- 1. **Install from a specific repository** :
+ 4. **Install from a specific repository** :
 
 ```bash title="Run on: omnia_core container"
 ansible slurm_node -m dnf -a "name=openmpi-devel enablerepo=epel state=present"
@@ -109,7 +109,7 @@ EOF
 ```
  
 
- 1. **Run the custom playbook** :
+ 2. **Run the custom playbook** :
 
 ```bash title="Run on: omnia_core container"
 cd /omnia
@@ -136,7 +136,7 @@ pulp rpm distribution create --name custom-packages \
 ```
  
 
- 1. **Configure nodes to use the custom repository** :
+ 2. **Configure nodes to use the custom repository** :
 
 ```bash title="Run on: omnia_core container"
 ansible all -m yum_repository -a "
@@ -149,7 +149,7 @@ enabled=1
 ```
  
 
- 1. **Install from the custom repository** :
+ 3. **Install from the custom repository** :
 
 ```bash title="Run on: omnia_core container"
 ansible slurm_node -m dnf -a "name=custom-package state=present enablerepo=custom-packages"
@@ -165,21 +165,21 @@ ansible slurm_node -m shell -a "rpm -q gcc cmake htop"
 ```
  
 
- 1. **Check package versions** :
+ 2. **Check package versions** :
 
 ```bash title="Run on: omnia_core container"
 ansible slurm_node -m shell -a "gcc --version | head -1"
 ```
  
 
- 1. **Verify Python packages** :
+ 3. **Verify Python packages** :
 
 ```bash title="Run on: omnia_core container"
 ansible slurm_node -m shell -a "pip3 list | grep numpy"
 ```
  
 
- 1. **Verify custom Pulp repository** is available:
+ 4. **Verify custom Pulp repository** is available:
 
 ```bash title="Run on: compute node"
 dnf repolist | grep custom-packages

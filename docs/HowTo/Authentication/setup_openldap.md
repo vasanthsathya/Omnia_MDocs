@@ -29,7 +29,7 @@ ssh omnia_core
 ```
  
 
- 1. **Configure authentication parameters** in `omnia_config.yml`:
+ 2. **Configure authentication parameters** in `omnia_config.yml`:
 
 ```bash title="Run on: omnia_core container"
 vi /opt/omnia/input/project_default/omnia_config.yml
@@ -48,7 +48,7 @@ ldap_organization: "Omnia HPC Cluster"
 ```
  
 
- 1. **Run the auth.yml playbook** :
+ 3. **Run the auth.yml playbook** :
 
 ```bash title="Run on: omnia_core container"
 cd /omnia
@@ -67,7 +67,7 @@ The playbook performs:
 
 Execution time: **10-20 minutes**.
 
- 1. **Add LDAP users** from the omnia_auth container:
+ 4. **Add LDAP users** from the omnia_auth container:
 
 ```bash title="Run on: OIM host"
 podman exec -it omnia_auth bash
@@ -95,7 +95,7 @@ ldapadd -x -D "cn=admin,dc=omnia,dc=example,dc=com" -W -f /tmp/add_user.ldif
 ```
  
 
- 1. **Set the user's password** :
+ 5. **Set the user's password** :
 
 ```bash title="Run on: omnia_auth container"
 ldappasswd -x -D "cn=admin,dc=omnia,dc=example,dc=com" -W \
@@ -112,21 +112,21 @@ podman exec omnia_auth slapcat | head -20
 ```
  
 
- 1. **Test LDAP search** from the omnia_core container:
+ 2. **Test LDAP search** from the omnia_core container:
 
 ```bash title="Run on: omnia_core container"
 ldapsearch -x -H ldap://omnia_auth -b "dc=omnia,dc=example,dc=com" "(uid=testuser)"
 ```
  
 
- 1. **Verify SSSD is running** on cluster nodes:
+ 3. **Verify SSSD is running** on cluster nodes:
 
 ```bash title="Run on: omnia_core container"
 ansible all -m shell -a "systemctl is-active sssd"
 ```
  
 
- 1. **Test user resolution** on a compute node:
+ 4. **Test user resolution** on a compute node:
 
 ```bash title="Run on: compute node"
 id testuser
@@ -141,7 +141,7 @@ uid=10001(testuser) gid=10001(testuser) groups=10001(testuser)
 ```
  
 
- 1. **Test SSH login** as the LDAP user:
+ 5. **Test SSH login** as the LDAP user:
 
 ```bash title="Run on: any node with network access"
 ssh testuser@<compute-node-ip>

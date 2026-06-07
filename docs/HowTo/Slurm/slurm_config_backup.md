@@ -28,7 +28,7 @@ mkdir -p /opt/slurm_backup
 ```
  
 
- 1. **Create a timestamped backup** of all Slurm configuration files:
+ 2. **Create a timestamped backup** of all Slurm configuration files:
 
 ```bash title="Run on: Slurm control node"
 BACKUP_DIR="/opt/slurm_backup/$(date +%Y%m%d_%H%M%S)"
@@ -46,7 +46,7 @@ ls -la "$BACKUP_DIR/"
 ```
  
 
- 1. **(Optional) Create an automated backup** using a cron job:
+ 3. **(Optional) Create an automated backup** using a cron job:
 
 ```bash title="Run on: Slurm control node"
 cat <<'EOF' > /etc/cron.daily/slurm_backup.sh
@@ -72,7 +72,7 @@ ls -lt /opt/slurm_backup/
 ```
  
 
- 1. **Restore from a backup** :
+ 2. **Restore from a backup** :
 
 ```bash title="Run on: Slurm control node"
 # Select the backup to restore (e.g., the most recent)
@@ -92,7 +92,7 @@ systemctl start slurmctld
 ```
  
 
- 1. **Verify the restored configuration** :
+ 3. **Verify the restored configuration** :
 
 ```bash title="Run on: Slurm control node"
 scontrol show config | head -20
@@ -100,7 +100,7 @@ sinfo
 ```
  
 
- 1. **Distribute the restored config to compute nodes** if needed:
+ 4. **Distribute the restored config to compute nodes** if needed:
 
 ```bash title="Run on: omnia_core container"
 ansible slurm_node -m copy -a "src=/etc/slurm/slurm.conf dest=/etc/slurm/slurm.conf"
@@ -121,7 +121,7 @@ ls -dt /opt/slurm_backup/*/ | tail -n +6 | xargs rm -rf
 ```
  
 
- 1. **Check remaining backups and disk usage** :
+ 2. **Check remaining backups and disk usage** :
 
 ```bash title="Run on: Slurm control node"
 du -sh /opt/slurm_backup
@@ -140,7 +140,7 @@ slurmctld -t
 
 If no errors are reported, the configuration is syntactically valid.
 
- 1. **Verify all nodes are healthy** after a rollback:
+ 2. **Verify all nodes are healthy** after a rollback:
 
 ```bash title="Run on: Slurm control node"
 sinfo
@@ -148,7 +148,7 @@ scontrol ping
 ```
  
 
- 1. **Diff the current config against a backup** to see changes:
+ 3. **Diff the current config against a backup** to see changes:
 
 ```bash title="Run on: Slurm control node"
 diff /etc/slurm/slurm.conf /opt/slurm_backup/<latest>/slurm.conf

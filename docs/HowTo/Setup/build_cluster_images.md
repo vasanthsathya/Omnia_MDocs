@@ -33,7 +33,7 @@ ssh omnia_core
 ```
  
 
- 1. **Verify the OS ISO is accessible** :
+ 2. **Verify the OS ISO is accessible** :
 
 ```bash title="Run on: omnia_core container"
 ls -lh /opt/omnia/iso/
@@ -42,7 +42,7 @@ ls -lh /opt/omnia/iso/
 
 Ensure the ISO file listed in `provision_config.yml` exists.
 
- 1. **Build images for x86_64 nodes** :
+ 3. **Build images for x86_64 nodes** :
 
 ```bash title="Run on: omnia_core container"
 cd /omnia
@@ -51,16 +51,13 @@ ansible-playbook build_image_x86_64.yml
  
 
 !!! note
- 
- 
- Add `--ask-vault-pass` if credentials are encrypted:
- 
- ```bash title="Run on: omnia_core container"
- ansible-playbook build_image_x86_64.yml --ask-vault-pass
- ```
- 
+    Add `--ask-vault-pass` if credentials are encrypted:
 
- 1. **(If applicable) Build images for aarch64 nodes** :
+    ```bash title="Run on: omnia_core container"
+    ansible-playbook build_image_x86_64.yml --ask-vault-pass
+    ```
+
+ 4. **(If applicable) Build images for aarch64 nodes** :
 
 ```bash title="Run on: omnia_core container"
 cd /omnia
@@ -69,13 +66,17 @@ ansible-playbook build_image_aarch64.yml
  
 
 !!! note
- 
- 
- You can build both architectures. Each playbook produces a separate
- image in MinIO.
- 
+    You can build both architectures. Each playbook produces a separate
+    image in MinIO.
 
- 1. **Wait for the build to complete**. Image building typically takes **20-45 minutes** depending on the software stack size and hardware.
+ 5. **(Optional) Build images for ARM64 nodes** :
+
+```bash title="Run on: omnia_core container"
+cd /omnia
+ansible-playbook build_image_arm64.yml
+```
+
+ 6. **Wait for the build to complete**. Image building typically takes **20-45 minutes** depending on the software stack size and hardware.
 
 ## Verification[¶](#verification "Permanent link")
 
@@ -95,7 +96,7 @@ Expected output shows the image files with their sizes:
 ```
  
 
- 1. **Verify the image is registered with BSS** :
+ 2. **Verify the image is registered with BSS** :
 
 ```bash title="Run on: omnia_core container"
 ochami bss list
@@ -104,7 +105,7 @@ ochami bss list
 
 The output should show boot configurations referencing the newly built images.
 
- 1. **Check the image size is reasonable** :
+ 3. **Check the image size is reasonable** :
 
 ```bash title="Run on: omnia_core container"
 s3cmd du s3://boot-images

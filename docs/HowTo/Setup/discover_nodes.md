@@ -31,14 +31,14 @@ ssh omnia_core
 ```
  
 
- 1. **Verify the mapping file is in place** :
+ 2. **Verify the mapping file is in place** :
 
 ```bash title="Run on: omnia_core container"
 cat /opt/omnia/input/project_default/pxe_mapping_file.csv
 ```
  
 
- 1. **Run the discovery playbook** :
+ 3. **Run the discovery playbook** :
 
 ```bash title="Run on: omnia_core container"
 cd /omnia/discovery
@@ -55,19 +55,15 @@ The playbook will:
  * Wait for each server to PXE boot and register with SMD.
 
 !!! note
- 
- 
- Discovery can take **30-60 minutes** depending on the number of nodes.
- Each server must complete a full PXE boot cycle.
- 
+    Discovery can take **30-60 minutes** depending on the number of nodes.
+    Each server must complete a full PXE boot cycle.
 
- 1. **Monitor discovery progress** by watching the Ansible output. Each node will progress through these stages:
+ 4. **Monitor discovery progress** by watching the Ansible output. Each node will progress through these stages:
 
- 2. `Configuring BMC` \-- Setting iDRAC boot options
-
- 3. `Powering on` \-- Sending power-on command via Redfish
- 4. `Waiting for PXE boot` \-- Node is booting from network
- 5. `Registered` \-- Node appeared in SMD inventory
+ * `Configuring BMC` \-- Setting iDRAC boot options
+ * `Powering on` \-- Sending power-on command via Redfish
+ * `Waiting for PXE boot` \-- Node is booting from network
+ * `Registered` \-- Node appeared in SMD inventory
 
 ## Verification[¶](#verification "Permanent link")
 
@@ -80,14 +76,14 @@ ochami node list
 
 Expected output shows all nodes from the mapping file with their service tags, MAC addresses, and assigned IPs.
 
- 1. **Check SMD inventory** :
+ 2. **Check SMD inventory** :
 
 ```bash title="Run on: omnia_core container"
 ochami smd status
 ```
  
 
- 1. **Verify node count matches the mapping file** :
+ 3. **Verify node count matches the mapping file** :
 
 ```bash title="Run on: omnia_core container"
 # Count discovered nodes

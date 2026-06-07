@@ -33,7 +33,7 @@ ansible slurm_node -m shell -a "apptainer --version"
 ```
  
 
- 1. **Create a shared images directory** on NFS:
+ 2. **Create a shared images directory** on NFS:
 
 ```bash title="Run on: Slurm control node or login node"
 mkdir -p /home/containers/images
@@ -41,14 +41,14 @@ chmod 755 /home/containers/images
 ```
  
 
- 1. **Pull a Docker image** and convert to SIF:
+ 3. **Pull a Docker image** and convert to SIF:
 
 ```bash title="Run on: Slurm control node or login node"
 apptainer pull /home/containers/images/ubuntu.sif docker://ubuntu:22.04
 ```
  
 
- 1. **Pull an HPC application container** :
+ 4. **Pull an HPC application container** :
 
 ```bash title="Run on: Slurm control node or login node"
 # Example: GROMACS molecular dynamics
@@ -59,7 +59,7 @@ apptainer pull /home/containers/images/tensorflow.sif docker://nvcr.io/nvidia/te
 ```
  
 
- 1. **Run an interactive container** on a compute node:
+ 5. **Run an interactive container** on a compute node:
 
 ```bash title="Run on: Slurm control node"
 srun -N 1 --pty apptainer shell /home/containers/images/ubuntu.sif
@@ -68,7 +68,7 @@ srun -N 1 --pty apptainer shell /home/containers/images/ubuntu.sif
 
 This opens an interactive shell inside the container on a compute node.
 
- 1. **Run a batch job** with Apptainer:
+ 6. **Run a batch job** with Apptainer:
 
 ```bash title="Run on: Slurm control node"
 cat <<'EOF' > /home/containers/run_gromacs.sh
@@ -87,7 +87,7 @@ sbatch /home/containers/run_gromacs.sh
 ```
  
 
- 1. **Run a GPU container** with Apptainer:
+ 7. **Run a GPU container** with Apptainer:
 
 ```bash title="Run on: Slurm control node"
 cat <<'EOF' > /home/containers/run_tensorflow.sh
@@ -106,7 +106,7 @@ sbatch /home/containers/run_tensorflow.sh
 ```
  
 
- 1. **Build a custom SIF image** from a definition file:
+ 8. **Build a custom SIF image** from a definition file:
 
 ```bash title="Run on: Slurm control node"
 cat <<'EOF' > /home/containers/custom.def
@@ -135,21 +135,21 @@ ansible slurm_node -m shell -a "ls -la /home/containers/images/"
 ```
  
 
- 1. **Run a quick test** across multiple nodes:
+ 2. **Run a quick test** across multiple nodes:
 
 ```bash title="Run on: Slurm control node"
 srun -N 2 apptainer exec /home/containers/images/ubuntu.sif hostname
 ```
  
 
- 1. **Verify GPU access** inside containers:
+ 3. **Verify GPU access** inside containers:
 
 ```bash title="Run on: Slurm control node"
 srun -N 1 --gres=gpu:1 apptainer exec --nv /home/containers/images/tensorflow.sif nvidia-smi
 ```
  
 
- 1. **Check job output** :
+ 4. **Check job output** :
 
 ```bash title="Run on: Slurm control node"
 cat /home/containers/results/*.out

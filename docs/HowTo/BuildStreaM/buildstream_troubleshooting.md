@@ -20,7 +20,7 @@ BuildStreaM integrates multiple components: GitLab, GitLab Runner, the local con
 
 Navigate to **CI/CD** > **Pipelines** > click the failed pipeline > click the failed job. Read the job output from bottom to top for the error.
 
- 1. **Common validation-stage failures** :
+ 2. **Common validation-stage failures** :
 
 ```bash title="Run on: omnia_core container"
 # Manually re-run validation to see errors
@@ -36,7 +36,7 @@ Common causes:
  * IP address outside configured range
  * Duplicate service tags or MAC addresses
 
- * **Common provision-stage failures** :
+ 3. **Common provision-stage failures** :
 
 ```bash title="Run on: omnia_core container"
 # Test BMC connectivity for a specific node
@@ -50,7 +50,7 @@ Common causes:
  * PXE boot failure (check DHCP and TFTP services)
  * Vault password not available to runner
 
- * **Common configure-stage failures** :
+ 4. **Common configure-stage failures** :
 
 ```bash title="Run on: omnia_core container"
 # Test node connectivity
@@ -87,7 +87,7 @@ podman rm gitlab
 ```
  
 
- 1. **GitLab "502 Bad Gateway"** :
+ 2. **GitLab "502 Bad Gateway"** :
 
 ```bash title="Run on: OIM host"
 # GitLab internal services may be restarting
@@ -98,7 +98,7 @@ podman exec gitlab gitlab-ctl restart
 ```
  
 
- 1. **GitLab database migration errors** :
+ 3. **GitLab database migration errors** :
 
 ```bash title="Run on: OIM host"
 podman exec gitlab gitlab-rake db:migrate
@@ -129,7 +129,7 @@ podman exec gitlab-runner gitlab-runner register \
 ```
  
 
- 1. **Runner fails with "permission denied"** :
+ 2. **Runner fails with "permission denied"** :
 
 Ensure the runner has access to the omnia_core container and playbooks:
 
@@ -139,7 +139,7 @@ podman exec gitlab-runner ls /omnia/
 ```
  
 
- 1. **Runner jobs time out** :
+ 3. **Runner jobs time out** :
 
 Increase the job timeout in GitLab:
 

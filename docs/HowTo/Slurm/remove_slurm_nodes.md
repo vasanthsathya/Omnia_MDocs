@@ -27,7 +27,7 @@ scontrol update nodename=<node-to-remove> state=drain reason="Decommissioning"
 ```
  
 
- 1. **Verify the node is draining** and check for running jobs:
+ 2. **Verify the node is draining** and check for running jobs:
 
 ```bash title="Run on: Slurm control node"
 sinfo -n <node-to-remove>
@@ -43,14 +43,14 @@ scancel -w <node-to-remove>
 ```
  
 
- 1. **Set the node to down** :
+ 3. **Set the node to down** :
 
 ```bash title="Run on: Slurm control node"
 scontrol update nodename=<node-to-remove> state=down reason="Removed from cluster"
 ```
  
 
- 1. **Stop Slurm services on the target node** :
+ 4. **Stop Slurm services on the target node** :
 
 ```bash title="Run on: node being removed"
 systemctl stop slurmd
@@ -60,7 +60,7 @@ systemctl disable munge
 ```
  
 
- 1. **Remove the node from slurm.conf** on the control node:
+ 5. **Remove the node from slurm.conf** on the control node:
 
 ```bash title="Run on: Slurm control node"
 vi /etc/slurm/slurm.conf
@@ -69,13 +69,13 @@ vi /etc/slurm/slurm.conf
 
 Remove or comment out the `NodeName=` line for the target node. Also update the `PartitionName=` line to remove the node from the `Nodes=` list.
 
- 1. **Reconfigure Slurm** to apply changes:
+ 6. **Reconfigure Slurm** to apply changes:
 
 ```bash title="Run on: Slurm control node"
 scontrol reconfigure
 ```
 
- 1. **(Optional) Remove the node from the mapping file** :
+ 7. **(Optional) Remove the node from the mapping file** :
 
 ```bash title="Run on: omnia_core container"
 vi /opt/omnia/input/project_default/pxe_mapping_file.csv

@@ -46,7 +46,7 @@ omnia_nfs_opts: "rw,sync,no_root_squash,no_subtree_check"
 ```
  
 
- 1. **Run the omnia.yml playbook** to deploy NFS:
+ 2. **Run the omnia.yml playbook** to deploy NFS:
 
 ```bash title="Run on: omnia_core container"
 cd /omnia
@@ -80,14 +80,14 @@ external_nfs_opts: "rw,hard,intr,nfsvers=3"
 ```
  
 
- 1. **Run the omnia.yml playbook** :
+ 2. **Run the omnia.yml playbook** :
 
 ```bash title="Run on: omnia_core container"
 cd /omnia
 ansible-playbook omnia.yml --ask-vault-pass
 ```
 
- 1. **(Alternative) Manual NFS mount** on a specific node:
+ 3. **(Alternative) Manual NFS mount** on a specific node:
 
 ```bash title="Run on: compute node"
 dnf install -y nfs-utils

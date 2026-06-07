@@ -29,7 +29,7 @@ ssh omnia_core
 ```
  
 
- 1. **Review and edit omnia_config.yml** :
+ 2. **Review and edit omnia_config.yml** :
 
 ```bash title="Run on: omnia_core container"
 vi /opt/omnia/input/project_default/omnia_config.yml
@@ -53,7 +53,7 @@ slurm_default_partition: true
 ```
  
 
- 1. **Run the omnia.yml playbook** :
+ 3. **Run the omnia.yml playbook** :
 
 ```bash title="Run on: omnia_core container"
 cd /omnia
@@ -72,13 +72,12 @@ The playbook will:
 
 Execution time: **20-40 minutes** depending on cluster size.
 
- 1. **Monitor playbook progress**. Watch for successful completion of each role:
+ 4. **Monitor playbook progress**. Watch for successful completion of each role:
 
- 2. `slurm/common` \-- Package installation on all nodes
-
- 3. `slurm/control` \-- Controller daemon setup
- 4. `slurm/compute` \-- Compute daemon setup
- 5. `slurm/login` \-- Login node configuration (if applicable)
+ * `slurm/common` \-- Package installation on all nodes
+ * `slurm/control` \-- Controller daemon setup
+ * `slurm/compute` \-- Compute daemon setup
+ * `slurm/login` \-- Login node configuration (if applicable)
 
 ## Verification[¶](#verification "Permanent link")
 
@@ -89,14 +88,14 @@ systemctl status slurmctld
 ```
  
 
- 1. **Check compute daemon status on a compute node** :
+ 2. **Check compute daemon status on a compute node** :
 
 ```bash title="Run on: Slurm compute node"
 systemctl status slurmd
 ```
  
 
- 1. **View the cluster partition and node status** :
+ 3. **View the cluster partition and node status** :
 
 ```bash title="Run on: Slurm control node"
 sinfo
@@ -111,14 +110,14 @@ normal* up infinite 2 idle compute[01-02]
 ```
  
 
- 1. **Run a test job** :
+ 4. **Run a test job** :
 
 ```bash title="Run on: Slurm control node"
 srun -N 2 hostname
 ```
  
 
- 1. **Verify Munge authentication** :
+ 5. **Verify Munge authentication** :
 
 ```bash title="Run on: Slurm control node"
 munge -n | ssh <compute-node> unmunge
@@ -127,7 +126,7 @@ munge -n | ssh <compute-node> unmunge
 
 Expected: successful decode with no errors.
 
- 1. **Check Slurm accounting** :
+ 6. **Check Slurm accounting** :
 
 ```bash title="Run on: Slurm control node"
 sacctmgr show cluster

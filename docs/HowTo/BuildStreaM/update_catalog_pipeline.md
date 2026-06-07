@@ -31,7 +31,7 @@ cd buildstream-catalog
 ```
  
 
- 1. **Edit the catalog file** :
+ 2. **Edit the catalog file** :
 
 ```bash title="Run on: omnia_core container"
 vi catalog.yml
@@ -96,15 +96,14 @@ telemetry:
 ```
  
 
- 1. **Make your changes**. Common modifications include:
+ 3. **Make your changes**. Common modifications include:
 
- 2. Adding new nodes to a `node_groups` section.
+ * Adding new nodes to a `node_groups` section.
+ * Changing the software stack.
+ * Updating network ranges.
+ * Enabling/disabling telemetry.
 
- 3. Changing the software stack.
- 4. Updating network ranges.
- 5. Enabling/disabling telemetry.
-
- 6. **Commit and push the changes** :
+ 4. **Commit and push the changes** :
 
 ```bash title="Run on: omnia_core container"
 cd /opt/omnia/buildstream-catalog
@@ -114,7 +113,7 @@ git push origin main
 ```
  
 
- 1. **Monitor the pipeline** in GitLab:
+ 5. **Monitor the pipeline** in GitLab:
 
 Open the GitLab web UI and navigate to: **CI/CD** > **Pipelines**
 

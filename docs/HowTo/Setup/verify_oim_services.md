@@ -31,7 +31,7 @@ systemctl status omnia_core.service
 
 Expected: `Active: active (running)`
 
- 1. **List the complete omnia.target dependency tree** :
+ 2. **List the complete omnia.target dependency tree** :
 
 ```bash title="Run on: OIM host"
 systemctl list-dependencies omnia.target
@@ -60,7 +60,7 @@ omnia.target
 ```
  
 
- 1. **Check each top-level service individually** :
+ 3. **Check each top-level service individually** :
 
 ```bash title="Run on: OIM host"
 for svc in minio omnia_auth omnia_core pulp registry; do
@@ -70,7 +70,7 @@ done
 ```
  
 
- 1. **Check OpenCHAMI sub-services** :
+ 4. **Check OpenCHAMI sub-services** :
 
 ```bash title="Run on: OIM host"
 for svc in bss coredhcp cloud-init-server dnsmasq hydra image-server opaal smd tftpd; do
@@ -80,14 +80,14 @@ done
 ```
  
 
- 1. **Verify running Podman containers** :
+ 5. **Verify running Podman containers** :
 
 ```bash title="Run on: OIM host"
 podman ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 ```
  
 
- 1. **Test the OpenCHAMI CLI** :
+ 6. **Test the OpenCHAMI CLI** :
 
 ```bash title="Run on: OIM host"
 ssh omnia_core
@@ -113,14 +113,14 @@ ochami bss list
 ```
  
 
- 1. **Test MinIO / S3 access** :
+ 7. **Test MinIO / S3 access** :
 
 ```bash title="Run on: omnia_core container"
 s3cmd ls
 ```
  
 
- 1. **Test Pulp accessibility** :
+ 8. **Test Pulp accessibility** :
 
 ```bash title="Run on: OIM host"
 curl -s http://localhost:8080/pulp/api/v3/status/ | python3 -m json.tool

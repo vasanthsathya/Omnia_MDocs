@@ -33,7 +33,7 @@ ssh omnia_core
 ```
  
 
- 1. **Configure proxy LDAP parameters** in `omnia_config.yml`:
+ 2. **Configure proxy LDAP parameters** in `omnia_config.yml`:
 
 ```bash title="Run on: omnia_core container"
 vi /opt/omnia/input/project_default/omnia_config.yml
@@ -53,14 +53,14 @@ external_ldap_tls_ca_cert: "/etc/ssl/certs/corp-ca.pem"
 ```
  
 
- 1. **(If using LDAPS) Copy the CA certificate** to the omnia_auth container:
+ 3. **(If using LDAPS) Copy the CA certificate** to the omnia_auth container:
 
 ```bash title="Run on: OIM host"
 podman cp /path/to/corp-ca.pem omnia_auth:/etc/ssl/certs/corp-ca.pem
 ```
  
 
- 1. **Run the auth.yml playbook** :
+ 4. **Run the auth.yml playbook** :
 
 ```bash title="Run on: omnia_core container"
 cd /omnia
@@ -75,7 +75,7 @@ The playbook will:
  * Configure TLS certificates if using LDAPS.
  * Enable caching for offline resilience.
 
- * **(Alternative) Manual proxy configuration** inside the `omnia_auth` container:
+ 5. **(Alternative) Manual proxy configuration** inside the `omnia_auth` container:
 
 ```bash title="Run on: OIM host"
 podman exec -it omnia_auth bash
@@ -106,14 +106,14 @@ ldapsearch -x -H ldaps://ldap.corp.example.com:636 \
 ```
  
 
- 1. **Test local proxy** from the omnia_core container:
+ 2. **Test local proxy** from the omnia_core container:
 
 ```bash title="Run on: omnia_core container"
 ldapsearch -x -H ldap://omnia_auth -b "dc=corp,dc=example,dc=com" "(uid=someuser)"
 ```
  
 
- 1. **Verify user resolution** on a compute node:
+ 3. **Verify user resolution** on a compute node:
 
 ```bash title="Run on: compute node"
 getent passwd someuser
@@ -121,7 +121,7 @@ id someuser
 ```
  
 
- 1. **Test SSH login** with a corporate LDAP user:
+ 4. **Test SSH login** with a corporate LDAP user:
 
 ```bash title="Run on: any node"
 ssh someuser@<compute-node-ip>

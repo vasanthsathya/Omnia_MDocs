@@ -28,16 +28,13 @@ Danger
 
  1. **Log in to the OIM as root:**
 
-```bash title="Run on: OIM host
+```bash title="Run on: OIM host"
 ssh root@<oim_ip>
 ```
 
 !!! note
- 
- 
- Do **not** run this playbook from inside the `omnia_core` container.
- The cleanup process removes the container itself.
- 
+    Do **not** run this playbook from inside the `omnia_core` container.
+    The cleanup process removes the container itself.
 
  1. **Navigate to the Omnia utils directory:**
 

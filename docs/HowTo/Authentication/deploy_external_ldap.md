@@ -30,7 +30,7 @@ ssh root@<ldap-server-ip>
 ```
  
 
- 1. **Create persistent storage directories** :
+ 2. **Create persistent storage directories** :
 
 ```bash title="Run on: dedicated LDAP server"
 mkdir -p /opt/ldap/data
@@ -38,7 +38,7 @@ mkdir -p /opt/ldap/config
 ```
  
 
- 1. **Deploy the Bitnami OpenLDAP container** :
+ 3. **Deploy the Bitnami OpenLDAP container** :
 
 ```bash title="Run on: dedicated LDAP server"
 podman run -d \
@@ -57,7 +57,7 @@ docker.io/bitnami/openldap:latest
 ```
  
 
- 1. **Create initial LDIF** for organizational structure:
+ 4. **Create initial LDIF** for organizational structure:
 
 ```bash title="Run on: dedicated LDAP server"
 cat <<'EOF' > /opt/ldap/config/01-org.ldif
@@ -72,7 +72,7 @@ EOF
 ```
  
 
- 1. **Load the initial LDIF** :
+ 5. **Load the initial LDIF** :
 
 ```bash title="Run on: dedicated LDAP server"
 podman exec openldap ldapadd -x \
@@ -82,7 +82,7 @@ podman exec openldap ldapadd -x \
 ```
  
 
- 1. **Add users and groups** :
+ 6. **Add users and groups** :
 
 ```bash title="Run on: dedicated LDAP server"
 cat <<'EOF' > /opt/ldap/config/02-users.ldif
@@ -143,7 +143,7 @@ helm install openldap bitnami/openldap \
 
 ### Configure Omnia Nodes[¶](#configure-omnia-nodes "Permanent link")
 
- 1. **Update omnia_config.yml** to point to the external LDAP:
+ 7. **Update omnia_config.yml** to point to the external LDAP:
 
 ```bash title="Run on: omnia_core container"
 vi /opt/omnia/input/project_default/omnia_config.yml
@@ -159,7 +159,7 @@ external_ldap_bind_dn: "cn=admin,dc=omnia,dc=example,dc=com"
 ```
  
 
- 1. **Run the auth playbook** to configure SSSD on cluster nodes:
+ 8. **Run the auth playbook** to configure SSSD on cluster nodes:
 
 ```bash title="Run on: omnia_core container"
 cd /omnia
@@ -176,7 +176,7 @@ podman ps --filter name=openldap
 ```
  
 
- 1. **Test LDAP search** :
+ 2. **Test LDAP search** :
 
 ```bash title="Run on: OIM host"
 ldapsearch -x -H ldap://<ldap-server-ip> \
@@ -184,7 +184,7 @@ ldapsearch -x -H ldap://<ldap-server-ip> \
 ```
  
 
- 1. **Verify user resolution on cluster nodes** :
+ 3. **Verify user resolution on cluster nodes** :
 
 ```bash title="Run on: compute node"
 getent passwd hpcuser1
@@ -192,7 +192,7 @@ id hpcuser1
 ```
  
 
- 1. **Test SSH login** :
+ 4. **Test SSH login** :
 
 ```bash title="Run on: any node"
 ssh hpcuser1@<compute-node-ip>

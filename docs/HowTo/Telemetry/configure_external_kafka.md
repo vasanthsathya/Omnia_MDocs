@@ -28,7 +28,7 @@ ssh omnia_core
 ```
  
 
- 1. **Configure external Kafka** in `omnia_config.yml`:
+ 2. **Configure external Kafka** in `omnia_config.yml`:
 
 ```bash title="Run on: omnia_core container"
 vi /opt/omnia/input/project_default/omnia_config.yml
@@ -52,7 +52,7 @@ kafka_sasl_password: "" # Set via credentials utility
 ```
  
 
- 1. **Create the required Kafka topics** on the external cluster (if auto-create is disabled):
+ 3. **Create the required Kafka topics** on the external cluster (if auto-create is disabled):
 
 ```bash title="Run on: external Kafka broker"
 kafka-topics.sh --create \
@@ -75,7 +75,7 @@ kafka-topics.sh --create \
 ```
  
 
- 1. **Run the telemetry playbook** to reconfigure:
+ 4. **Run the telemetry playbook** to reconfigure:
 
 ```bash title="Run on: omnia_core container"
 cd /omnia
@@ -101,7 +101,7 @@ kubectl delete pod kafka-test
 ```
  
 
- 1. **Verify topics have data** :
+ 2. **Verify topics have data** :
 
 ```bash title="Run on: external Kafka broker"
 kafka-console-consumer.sh \
@@ -112,7 +112,7 @@ kafka-console-consumer.sh \
 ```
  
 
- 1. **Verify no built-in Kafka pod** is running:
+ 3. **Verify no built-in Kafka pod** is running:
 
 ```bash title="Run on: K8s control plane node"
 kubectl get pods -n telemetry | grep kafka
@@ -121,7 +121,7 @@ kubectl get pods -n telemetry | grep kafka
 
 Should show no locally deployed Kafka pods.
 
- 1. **Verify data reaches VictoriaMetrics** :
+ 4. **Verify data reaches VictoriaMetrics** :
 
 ```bash title="Run on: K8s control plane node"
 VM_POD=$(kubectl get pod -n telemetry -l app=victoriametrics -o jsonpath='{.items[0].metadata.name}')

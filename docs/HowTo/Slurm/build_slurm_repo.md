@@ -31,14 +31,14 @@ http-parser-devel json-c-devel libcurl-devel
 ```
  
 
- 1. **Create the RPM build directory structure** :
+ 2. **Create the RPM build directory structure** :
 
 ```bash title="Run on: build host"
 mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 ```
  
 
- 1. **Download the Slurm source tarball** :
+ 3. **Download the Slurm source tarball** :
 
 ```bash title="Run on: build host"
 cd ~/rpmbuild/SOURCES
@@ -47,12 +47,9 @@ wget https://download.schedmd.com/slurm/slurm-23.11.4.tar.bz2
  
 
 !!! note
- 
- 
- Replace the version number with your desired Slurm version.
- 
+    Replace the version number with your desired Slurm version.
 
- 1. **Extract the spec file** :
+ 4. **Extract the spec file** :
 
 ```bash title="Run on: build host"
 tar xjf slurm-23.11.4.tar.bz2 --strip-components=1 -C /tmp slurm-23.11.4/slurm.spec
@@ -60,7 +57,7 @@ cp /tmp/slurm.spec ~/rpmbuild/SPECS/
 ```
  
 
- 1. **Build the RPMs** :
+ 5. **Build the RPMs** :
 
 ```bash title="Run on: build host"
 rpmbuild -ba ~/rpmbuild/SPECS/slurm.spec
@@ -69,7 +66,7 @@ rpmbuild -ba ~/rpmbuild/SPECS/slurm.spec
 
 This process takes **10-30 minutes** depending on hardware. The resulting RPMs will be in `~/rpmbuild/RPMS/x86_64/`.
 
- 1. **Create a local repository** from the built RPMs:
+ 6. **Create a local repository** from the built RPMs:
 
 ```bash title="Run on: build host"
 dnf install -y createrepo_c
@@ -79,7 +76,7 @@ createrepo_c /opt/omnia/custom_repos/slurm/
 ```
  
 
- 1. **Upload to Pulp** (from the omnia_core container):
+ 7. **Upload to Pulp** (from the omnia_core container):
 
 ```bash title="Run on: omnia_core container"
 # Create a Pulp repository for custom Slurm RPMs
@@ -107,7 +104,7 @@ ls -la /opt/omnia/custom_repos/slurm/
 ```
  
 
- 1. **Verify the repository metadata** :
+ 2. **Verify the repository metadata** :
 
 ```bash title="Run on: build host"
 ls /opt/omnia/custom_repos/slurm/repodata/
@@ -116,14 +113,14 @@ ls /opt/omnia/custom_repos/slurm/repodata/
 
 You should see `repomd.xml` and related files.
 
- 1. **Test package availability via Pulp** :
+ 3. **Test package availability via Pulp** :
 
 ```bash title="Run on: OIM host"
 curl -s http://localhost:8080/pulp/content/slurm-custom/repodata/repomd.xml | head
 ```
  
 
- 1. **Verify RPM versions** :
+ 4. **Verify RPM versions** :
 
 ```bash title="Run on: build host"
 rpm -qip ~/rpmbuild/RPMS/x86_64/slurm-23*.rpm | grep -E "^(Name|Version)"

@@ -29,7 +29,7 @@ ssh root@<slurm-control-node-ip>
 ```
  
 
- 1. **Create a directory for benchmark images** on shared storage:
+ 2. **Create a directory for benchmark images** on shared storage:
 
 ```bash title="Run on: Slurm control node"
 mkdir -p /home/benchmarks/images
@@ -38,7 +38,7 @@ cd /home/benchmarks
 ```
  
 
- 1. **Pull the HPL (High Performance Linpack) benchmark container** :
+ 3. **Pull the HPL (High Performance Linpack) benchmark container** :
 
 ```bash title="Run on: Slurm control node"
 apptainer pull images/hpl.sif docker://nvcr.io/nvidia/hpc-benchmarks:24.03
@@ -46,23 +46,20 @@ apptainer pull images/hpl.sif docker://nvcr.io/nvidia/hpc-benchmarks:24.03
  
 
 !!! note
- 
- 
- For non-GPU clusters, use the standard HPL benchmark:
- 
- ```bash title="Run on: Slurm control node"
- apptainer pull images/hpl-cpu.sif docker://ghcr.io/hpc-benchmarks/hpl:latest
- ```
- 
+    For non-GPU clusters, use the standard HPL benchmark:
 
- 1. **Pull the OSU Micro-Benchmarks container** for MPI testing:
+    ```bash title="Run on: Slurm control node"
+    apptainer pull images/hpl-cpu.sif docker://ghcr.io/hpc-benchmarks/hpl:latest
+    ```
+
+ 4. **Pull the OSU Micro-Benchmarks container** for MPI testing:
 
 ```bash title="Run on: Slurm control node"
 apptainer pull images/osu-benchmarks.sif docker://ghcr.io/osu-benchmarks/osu-micro-benchmarks:latest
 ```
  
 
- 1. **Run the HPL benchmark** as a Slurm job:
+ 5. **Run the HPL benchmark** as a Slurm job:
 
 ```bash title="Run on: Slurm control node"
 cat <<'EOF' > /home/benchmarks/run_hpl.sh
@@ -81,7 +78,7 @@ sbatch /home/benchmarks/run_hpl.sh
 ```
  
 
- 1. **Run GPU benchmarks** (NVIDIA):
+ 6. **Run GPU benchmarks** (NVIDIA):
 
 ```bash title="Run on: Slurm control node"
 cat <<'EOF' > /home/benchmarks/run_gpu_bench.sh
@@ -101,7 +98,7 @@ sbatch /home/benchmarks/run_gpu_bench.sh
 ```
  
 
- 1. **Run OSU MPI latency benchmark** :
+ 7. **Run OSU MPI latency benchmark** :
 
 ```bash title="Run on: Slurm control node"
 cat <<'EOF' > /home/benchmarks/run_osu_latency.sh
@@ -120,7 +117,7 @@ sbatch /home/benchmarks/run_osu_latency.sh
 ```
  
 
- 1. **Monitor benchmark job status** :
+ 8. **Monitor benchmark job status** :
 
 ```bash title="Run on: Slurm control node"
 squeue
@@ -140,14 +137,14 @@ sacct --starttime=today --format=JobName,State,Elapsed,ExitCode
 
 All benchmark jobs should show `COMPLETED` state with exit code `0:0`.
 
- 1. **Review HPL results** :
+ 2. **Review HPL results** :
 
 ```bash title="Run on: Slurm control node"
 cat /home/benchmarks/results/hpl-*.out | grep -A5 "T/V"
 ```
  
 
- 1. **Review OSU latency results** :
+ 3. **Review OSU latency results** :
 
 ```bash title="Run on: Slurm control node"
 cat /home/benchmarks/results/osu-latency-*.out

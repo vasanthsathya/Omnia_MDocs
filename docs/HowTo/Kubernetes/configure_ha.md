@@ -23,7 +23,7 @@ ssh omnia_core
 ```
  
 
- 1. **Configure the virtual IP** in `omnia_config.yml`:
+ 2. **Configure the virtual IP** in `omnia_config.yml`:
 
 ```bash title="Run on: omnia_core container"
 vi /opt/omnia/input/project_default/omnia_config.yml
@@ -42,13 +42,10 @@ k8s_vip_interface: "eno1"
  
 
 !!! warning
- 
- 
- The `k8s_vip` must be a free IP address on the same subnet as the
- control-plane nodes. Do **not** use an IP from the MetalLB range.
- 
+    The `k8s_vip` must be a free IP address on the same subnet as the
+    control-plane nodes. Do **not** use an IP from the MetalLB range.
 
- 1. **Run the omnia.yml playbook** (or re-run to apply HA changes):
+ 3. **Run the omnia.yml playbook** (or re-run to apply HA changes):
 
 ```bash title="Run on: omnia_core container"
 cd /omnia
@@ -124,9 +121,7 @@ c. **Configure keepalived** on backup control-plane nodes:
  
  
  !!! note
- 
- Set `priority 80` on the third control-plane node.
- 
+    Set `priority 80` on the third control-plane node.
 
 ## Verification[¶](#verification "Permanent link")
 

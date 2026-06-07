@@ -46,7 +46,7 @@ Common sampler plugins:
  - Slurm job-level metrics
  
 
- 1. **Configure sampler plugins** on a compute node:
+ 2. **Configure sampler plugins** on a compute node:
 
 ```bash title="Run on: compute node"
 vi /etc/ldms/ldmsd.conf
@@ -81,19 +81,16 @@ start name=procstat interval=10000000
  
 
 !!! note
- 
- 
- The `interval` is in microseconds. `10000000` = 10 seconds.
- 
+    The `interval` is in microseconds. `10000000` = 10 seconds.
 
- 1. **Restart the LDMS sampler daemon** after configuration changes:
+ 3. **Restart the LDMS sampler daemon** after configuration changes:
 
 ```bash title="Run on: compute node"
 systemctl restart ldmsd
 ```
  
 
- 1. **Configure the LDMS aggregator** on the K8s cluster:
+ 4. **Configure the LDMS aggregator** on the K8s cluster:
 
 ```bash title="Run on: K8s control plane node"
 kubectl edit configmap -n telemetry ldms-aggregator-config
@@ -125,14 +122,14 @@ updtr_start name=all_nodes
 ```
  
 
- 1. **Restart the aggregator pod** :
+ 5. **Restart the aggregator pod** :
 
 ```bash title="Run on: K8s control plane node"
 kubectl rollout restart deployment -n telemetry ldms-aggregator
 ```
  
 
- 1. **(Bulk configuration) Deploy to all compute nodes** via Ansible:
+ 6. **(Bulk configuration) Deploy to all compute nodes** via Ansible:
 
 ```bash title="Run on: omnia_core container"
 ansible slurm_node -m copy -a "src=/tmp/ldmsd.conf dest=/etc/ldms/ldmsd.conf"
@@ -150,14 +147,14 @@ ldms_ls -h localhost -p 411 -v
 
 Expected: list of active metric sets (meminfo, vmstat, procstat).
 
- 1. **Query specific metrics** :
+ 2. **Query specific metrics** :
 
 ```bash title="Run on: compute node"
 ldms_ls -h localhost -p 411 -l -v | grep MemFree
 ```
  
 
- 1. **Verify the aggregator is collecting** from compute nodes:
+ 3. **Verify the aggregator is collecting** from compute nodes:
 
 ```bash title="Run on: K8s control plane node"
 AGG_POD=$(kubectl get pod -n telemetry -l app=ldms-aggregator -o jsonpath='{.items[0].metadata.name}')
@@ -165,7 +162,7 @@ kubectl exec -n telemetry $AGG_POD -- ldms_ls -h localhost -p 411 -v
 ```
  
 
- 1. **Verify data reaches VictoriaMetrics** :
+ 4. **Verify data reaches VictoriaMetrics** :
 
 ```bash title="Run on: K8s control plane node"
 VM_POD=$(kubectl get pod -n telemetry -l app=victoriametrics -o jsonpath='{.items[0].metadata.name}')

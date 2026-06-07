@@ -21,13 +21,13 @@ AA:BB:CC:DD:EE:F1,compute-05,10.5.0.105
 AA:BB:CC:DD:EE:F2,compute-06,10.5.0.106
 ```
 
- 1. **Access the omnia_core container** on the OIM:
+ 2. **Access the omnia_core container** on the OIM:
 
 ```bash title="Run on: OIM host"
 ssh omnia_core
 ```
 
- 1. **Run the add_node playbook:**
+ 3. **Run the add_node playbook:**
 
 ```bash title="Run on: omnia_core container
 cd /omnia
@@ -79,22 +79,22 @@ PARTITION AVAIL TIMELIMIT NODES STATE NODELIST
 normal* up infinite 1 drained compute-05
 ```
 
- 1. **Access the omnia_core container** on the OIM:
+ 2. **Access the omnia_core container** on the OIM:
 
 ```bash title="Run on: OIM host"
 ssh omnia_core
 ```
 
- 1. **Run the remove_node playbook:**
+ 3. **Run the remove_node playbook:**
 
 ```bash title="Run on: omnia_core container
 cd /omnia
 ansible-playbook playbooks/remove_node.yml -e "target_nodes=compute-05"
 ```
 
- 1. **Update the mapping file.** Remove the decommissioned node entry from `/omnia/input/mapping_file.csv` to prevent it from being re-added in future operations.
+ 4. **Update the mapping file.** Remove the decommissioned node entry from `/omnia/input/mapping_file.csv` to prevent it from being re-added in future operations.
 
- 2. **Verify the node has been removed:**
+ 5. **Verify the node has been removed:**
 
 ```bash title="Run on: Slurm control node"
 sinfo
