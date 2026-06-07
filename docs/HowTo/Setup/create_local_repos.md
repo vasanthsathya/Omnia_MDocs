@@ -1,4 +1,4 @@
-# Create Local Repositories[¶](#create-local-repositories "Permanent link")
+# Create Local Repositories
 
 Synchronize RPM repositories to the OIM's local Pulp server so that provisioned nodes can install packages without direct internet access.
 

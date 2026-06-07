@@ -1,5 +1,4 @@
-# Omnia Documentation[¶](#omnia-documentation "Permanent link")
-
+# Omnia Documentation
 [![Omnia version](https://img.shields.io/github/v/release/dell/omnia?include_prereleases)](https://github.com/dell/omnia/releases) [![Downloads](https://img.shields.io/github/downloads/dell/omnia/total)](https://github.com/dell/omnia/releases) [![Last Commit](https://img.shields.io/github/last-commit/dell/omnia)](https://github.com/dell/omnia/commits) [![Contributors](https://img.shields.io/github/contributors/dell/omnia)](https://github.com/dell/omnia/graphs/contributors) [![Forks](https://img.shields.io/github/forks/dell/omnia)](https://github.com/dell/omnia/network/members) [![License](https://img.shields.io/github/license/dell/omnia)](https://github.com/dell/omnia/blob/main/LICENSE)
 
 Omnia is an open-source, Ansible-based toolkit by Dell Technologies that automates the deployment and management of HPC, AI, and data analytics clusters on Dell PowerEdge servers. From bare-metal provisioning to job scheduling, telemetry, and storage configuration, Omnia turns a rack of servers into a production-ready cluster.
@@ -11,7 +10,7 @@ The project is hosted on [GitHub](https://github.com/dell/omnia), where you can:
  * Ask questions
  * Contribute to development
 
-## How This Documentation is Organized[¶](#how-this-documentation-is-organized "Permanent link")
+## How This Documentation is Organized
 
 <div class="grid cards">
 
@@ -81,8 +80,7 @@ The project is hosted on [GitHub](https://github.com/dell/omnia), where you can:
 
 </div>
 
-## Quick Links[¶](#quick-links "Permanent link")
-
+## Quick Links
 Resource | Description 
 ---|--- 
 [Slurm Quickstart](GetStarted/slurm_quickstart.md) | Fastest path to a working Slurm cluster (~2 hours, 4 nodes). 
@@ -90,14 +88,14 @@ Resource | Description
 [Servers](Reference/SupportMatrix/servers.md) | Supported OS versions, hardware, firmware, and software combinations. 
 [Provision Config](Reference/Configuration/provision_config.md) | Complete reference for all Omnia input configuration files. 
  
-## Licensing[¶](#licensing "Permanent link")
+## Licensing
 
 Omnia is made available under the [Apache 2.0 license](https://opensource.org/licenses/Apache-2.0).
 
 !!! note
     Omnia playbooks are licensed under the Apache 2.0 license. Once an end-user initiates Omnia, that end-user will deploy other open-source and/or third-party software that is licensed separately by their respective developer communities and/or third parties. For a comprehensive list of software and their licenses, [click here](Reference/SupportMatrix/installed_software.md). Dell (or any other contributors) shall have no liability regarding (and no responsibility to provide support for) an end-user's use of any open-source and/or third-party software and Omnia users are solely responsible for ensuring that they are complying with all such licenses. Omnia is provided "as is" without any warranty, express or implied. Dell (or any other contributors) shall have no liability for any direct, indirect, incidental, punitive, special, or consequential damages for an end-user's use of Omnia.
 
-## Previous Versions[¶](#previous-versions "Permanent link")
+## Previous Versions
 
 _For a better understanding of what Omnia does, check out the following:_
 
@@ -107,7 +105,7 @@ _For a better understanding of what Omnia does, check out the following:_
 !!! note
     Upgrade from Omnia 1.x to 2.x is not supported due to architectural changes.
 
-## Omnia Community Members[¶](#omnia-community-members "Permanent link")
+## Omnia Community Members
 
 <div class="community-logos" style="display: flex; flex-wrap: wrap; align-items: center; gap: 2rem; margin: 1rem 0;">
   <a href="https://www.dell.com"><img src="assets/images/delltech.png" alt="Dell Technologies" style="height: 60px;"></a>

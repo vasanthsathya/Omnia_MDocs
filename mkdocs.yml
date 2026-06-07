@@ -26,10 +26,10 @@ nav:
   - Get Started:
     - GetStarted/index.md
     - Prerequisites Checklist: GetStarted/prerequisites_checklist.md
-    - Full Deployment: GetStarted/full_deployment.md
-    - Slurm Quickstart: GetStarted/slurm_quickstart.md
-    - K8s Telemetry Only: GetStarted/k8s_telemetry_only.md
-    - BuildStreaM Deployment: GetStarted/buildstream_deployment.md
+    - Path A:Slurm Quickstart: GetStarted/slurm_quickstart.md
+    - Path B:Full Deployment: GetStarted/full_deployment.md
+    - Path C:K8s Telemetry Only: GetStarted/k8s_telemetry_only.md
+    - Path D:BuildStreaM Deployment: GetStarted/buildstream_deployment.md
   - How-to Guides:
     - HowTo/index.md
     - Setup:
