@@ -30,41 +30,34 @@ Before re-provisioning, gracefully drain all workloads from the target nodes.
 
 **For Slurm nodes:**
 
-Run on: Slurm control node
- 
- 
- scontrol update NodeName=compute-03 State=DRAIN Reason="Re-provisioning"
- 
+```bash title="Run on: Slurm control node
+scontrol update NodeName=compute-03 State=DRAIN Reason="Re-provisioning"
+```
 
 Wait for running jobs to complete, or cancel them if immediate action is needed:
 
-Run on: Slurm control node
- 
- 
- # Check for running jobs on the node
- squeue -w compute-03
- 
- # Cancel if necessary
- scancel <job_id>
- 
+```bash title="Run on: Slurm control node
+# Check for running jobs on the node
+squeue -w compute-03
+
+# Cancel if necessary
+scancel <job_id>
+```
 
 **For Kubernetes nodes:**
 
-Run on: Kubernetes control plane
- 
- 
- kubectl drain kube-worker-02 --ignore-daemonsets --delete-emptydir-data
- 
+```bash title="Run on: Kubernetes control plane
+kubectl drain kube-worker-02 --ignore-daemonsets --delete-emptydir-data
+```
 
 ### Step 2: Update configuration[¶](#step-2-update-configuration "Permanent link")
 
  1. Review and update the input configuration files as needed:
 
- 
- 
- ssh omnia_core
- cd /omnia/input
- 
+```bash title="Run on: OIM host
+ssh omnia_core
+cd /omnia/input
+```
 
  * `mapping_file.csv` \-- Update node roles if changing.
  * `provision_config.yml` \-- Update OS image or provisioning parameters.
@@ -72,22 +65,19 @@ Run on: Kubernetes control plane
 
  * If building a new OS image, run the image-build process:
 
- 
- 
- cd /omnia
- ansible-playbook playbooks/build_cluster_images.yml
- 
+```bash title="Run on: omnia_core container
+cd /omnia
+ansible-playbook playbooks/build_cluster_images.yml
+```
 
 ### Step 3: Re-image the nodes[¶](#step-3-re-image-the-nodes "Permanent link")
 
 Run `discovery.yml` to re-discover and PXE-boot the target nodes with the updated OS image:
 
-Run on: OIM host
- 
- 
- cd /omnia
- ansible-playbook playbooks/discovery.yml
- 
+```bash title="Run on: OIM host
+cd /omnia
+ansible-playbook playbooks/discovery.yml
+```
 
 The nodes will:
 
@@ -103,12 +93,10 @@ The re-imaging process typically takes 15--30 minutes per node, depending on ima
 
 After the nodes have been re-imaged and are accessible via SSH, redeploy the Omnia cluster software:
 
-Run on: OIM host
- 
- 
- cd /omnia
- ansible-playbook playbooks/omnia.yml
- 
+```bash title="Run on: OIM host
+cd /omnia
+ansible-playbook playbooks/omnia.yml
+```
 
 This playbook applies the full cluster configuration, including:
 
@@ -122,21 +110,19 @@ This playbook applies the full cluster configuration, including:
 
 After re-provisioning is complete:
 
-Run on: OIM host
- 
- 
- # Verify Slurm nodes are back online
- sinfo
- 
- # Verify Kubernetes nodes are Ready
- kubectl get nodes
- 
- # Check for any failed Ansible tasks in the log
- cat /opt/omnia/log/core/playbooks/omnia.log | grep -i "failed"
- 
- # Run a test Slurm job
- srun -N 1 hostname
- 
+```bash title="Run on: OIM host
+# Verify Slurm nodes are back online
+sinfo
+
+# Verify Kubernetes nodes are Ready
+kubectl get nodes
+
+# Check for any failed Ansible tasks in the log
+cat /opt/omnia/log/core/playbooks/omnia.log | grep -i "failed"
+
+# Run a test Slurm job
+srun -N 1 hostname
+```
 
 Info
 

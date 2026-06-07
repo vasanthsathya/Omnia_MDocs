@@ -57,31 +57,29 @@ Parameter | Type | Required | Default | Description
  
 ## Usage example[¶](#usage-example "Permanent link")
 
-File: /opt/omnia/input/project_default/telemetry_config.yml
- 
- 
- enable_telemetry: true
- telemetry_entry_node: "kube-cp-01"
- 
- kafka_broker_port: 9092
- kafka_retention_hours: 168
- 
- victoriametrics_port: 8428
- victoriametrics_retention: "6"
- 
- grafana_port: 3000
- 
- enable_idrac_telemetry: true
- idrac_telemetry_interval: 300
- 
- enable_ldms: true
- ldms_samplers:
- - meminfo
- - vmstat
- - procstat
- - procnetdev
- ldms_sample_interval: 10
- 
+```yaml title="File: /opt/omnia/input/project_default/telemetry_config.yml
+enable_telemetry: true
+telemetry_entry_node: "kube-cp-01"
+
+kafka_broker_port: 9092
+kafka_retention_hours: 168
+
+victoriametrics_port: 8428
+victoriametrics_retention: "6"
+
+grafana_port: 3000
+
+enable_idrac_telemetry: true
+idrac_telemetry_interval: 300
+
+enable_ldms: true
+ldms_samplers:
+- meminfo
+- vmstat
+- procstat
+- procnetdev
+ldms_sample_interval: 10
+```
 
 Info
 

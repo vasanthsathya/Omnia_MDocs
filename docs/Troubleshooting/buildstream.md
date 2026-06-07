@@ -25,11 +25,10 @@ Resolution
 
  4. Verify the GitLab Runner is registered and online:
 
- 
- 
- gitlab-runner list
- gitlab-runner verify
- 
+```bash title="Run on: GitLab Runner host
+gitlab-runner list
+gitlab-runner verify
+```
 
  1. Check pipeline variables:
 
@@ -39,33 +38,30 @@ Resolution
 
  4. Test network connectivity from the runner to the OIM:
 
- 
- 
- # From the GitLab Runner host
- ping <oim_ip>
- ssh root@<oim_ip> hostname
- 
+```bash title="Run on: GitLab Runner host
+# From the GitLab Runner host
+ping <oim_ip>
+ssh root@<oim_ip> hostname
+```
 
  1. If stale state is the issue, clean up and retry:
 
- 
- 
- # Clear the runner's build cache
- gitlab-runner clear-cache
- 
- # Retry the pipeline from GitLab UI
- 
+```bash title="Run on: GitLab Runner host
+# Clear the runner's build cache
+gitlab-runner clear-cache
+
+# Retry the pipeline from GitLab UI
+```
 
 ## Registry push failures[¶](#registry-push-failures "Permanent link")
 
 Symptom
 
 The BuildStreaM pipeline fails during the image push stage with errors such as:
- 
- 
- Error: failed to push image: authentication required
- Error: failed to push image: denied: requested access to the resource is denied
- 
+```text title="Registry push error
+Error: failed to push image: authentication required
+Error: failed to push image: denied: requested access to the resource is denied
+```
 
 Cause
 
@@ -78,52 +74,45 @@ Resolution
 
  1. Verify registry credentials:
 
- 
- 
- podman login <registry_url>
- 
+```bash title="Run on: GitLab Runner host
+podman login <registry_url>
+```
 
  1. Check that the registry URL matches the pipeline configuration:
 
- 
- 
- grep -i registry .gitlab-ci.yml
- 
+```bash title="Run on: GitLab Runner host
+grep -i registry .gitlab-ci.yml
+```
 
  1. If TLS is the issue, add the registry's CA certificate:
 
- 
- 
- cp <registry_ca.crt> /etc/pki/ca-trust/source/anchors/
- update-ca-trust
- 
+```bash title="Run on: GitLab Runner host
+cp <registry_ca.crt> /etc/pki/ca-trust/source/anchors/
+update-ca-trust
+```
 
 Or configure Podman to trust the registry:
- 
- 
- # /etc/containers/registries.conf.d/buildstream.conf
- [[registry]]
- location = "<registry_url>"
- insecure = true # Not recommended for production
- 
+```ini title="File: /etc/containers/registries.conf.d/buildstream.conf
+[[registry]]
+location = "<registry_url>"
+insecure = true # Not recommended for production
+```
 
  1. Check registry storage:
 
- 
- 
- df -h <registry_data_dir>
- 
+```bash title="Run on: GitLab Runner host
+df -h <registry_data_dir>
+```
 
 ## Catalog parse errors[¶](#catalog-parse-errors "Permanent link")
 
 Symptom
 
 The BuildStreaM pipeline fails during the catalog parsing stage with errors such as:
- 
- 
- Error: Failed to parse catalog: invalid YAML syntax at line 42
- Error: Unknown component type 'slurm_cluser' in catalog entry
- 
+```text title="Catalog parse error
+Error: Failed to parse catalog: invalid YAML syntax at line 42
+Error: Unknown component type 'slurm_cluser' in catalog entry
+```
 
 Cause
 
@@ -135,18 +124,16 @@ Resolution
 
  1. Validate the catalog file syntax:
 
- 
- 
- python3 -c "import yaml; yaml.safe_load(open('catalog.yml'))"
- 
+```bash title="Run on: GitLab Runner host
+python3 -c "import yaml; yaml.safe_load(open('catalog.yml'))"
+```
 
  1. Use a YAML linter for more detailed error reporting:
 
- 
- 
- pip install yamllint
- yamllint catalog.yml
- 
+```bash title="Run on: GitLab Runner host
+pip install yamllint
+yamllint catalog.yml
+```
 
  1. Check for typos in component types. Valid types include:
 
@@ -161,23 +148,21 @@ Resolution
 
  8. After fixing errors, commit and push to trigger a new pipeline:
 
- 
- 
- git add catalog.yml
- git commit -m "Fix catalog syntax errors"
- git push
- 
+```bash title="Run on: GitLab Runner host
+git add catalog.yml
+git commit -m "Fix catalog syntax errors"
+git push
+```
 
 ## OAuth credential issues[¶](#oauth-credential-issues "Permanent link")
 
 Symptom
 
 BuildStreaM operations fail with OAuth authentication errors when communicating with GitLab or external services:
- 
- 
- Error: OAuth token expired or revoked
- Error: 401 Unauthorized: invalid_token
- 
+```text title="OAuth credential error
+Error: OAuth token expired or revoked
+Error: 401 Unauthorized: invalid_token
+```
 
 Cause
 
@@ -189,11 +174,10 @@ Resolution
 
  1. Check the current token status:
 
- 
- 
- curl -H "Authorization: Bearer <token>" \
- https://<gitlab_url>/api/v4/user
- 
+```bash title="Run on: GitLab Runner host
+curl -H "Authorization: Bearer <token>" \
+https://<gitlab_url>/api/v4/user
+```
 
 A `401` response confirms the token is invalid.
 

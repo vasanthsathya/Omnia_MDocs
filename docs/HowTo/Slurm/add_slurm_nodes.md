@@ -21,37 +21,33 @@ Omnia supports dynamic node addition to expand a running Slurm cluster. The proc
 
  1. **Update the mapping file** with new node entries:
 
-Run on: omnia_core container
- 
- 
- vi /opt/omnia/input/project_default/pxe_mapping_file.csv
+```bash title="Run on: omnia_core container"
+vi /opt/omnia/input/project_default/pxe_mapping_file.csv
+```
  
 
 Add new rows for each new compute node:
 
-File: /opt/omnia/input/project_default/pxe_mapping_file.csv
- 
- 
- slurm_node,slurm_cluster,NEWSVCTG1,,,aa:bb:cc:dd:ee:10,10.5.0.110,aa:bb:cc:dd:ff:10,10.3.0.110
- slurm_node,slurm_cluster,NEWSVCTG2,,,aa:bb:cc:dd:ee:11,10.5.0.111,aa:bb:cc:dd:ff:11,10.3.0.111
+```text title="File: /opt/omnia/input/project_default/pxe_mapping_file.csv
+slurm_node,slurm_cluster,NEWSVCTG1,,,aa:bb:cc:dd:ee:10,10.5.0.110,aa:bb:cc:dd:ff:10,10.3.0.110
+slurm_node,slurm_cluster,NEWSVCTG2,,,aa:bb:cc:dd:ee:11,10.5.0.111,aa:bb:cc:dd:ff:11,10.3.0.111
+```
  
 
  1. **Provision the new nodes** if not already provisioned:
 
-Run on: omnia_core container
- 
- 
- cd /omnia/discovery
- ansible-playbook discovery.yml --ask-vault-pass
+```bash title="Run on: omnia_core container"
+cd /omnia/discovery
+ansible-playbook discovery.yml --ask-vault-pass
+```
  
 
  1. **Run the add-node playbook** :
 
-Run on: omnia_core container
- 
- 
- cd /omnia
- ansible-playbook omnia.yml --ask-vault-pass --limit "new_nodes"
+```bash title="Run on: omnia_core container"
+cd /omnia
+ansible-playbook omnia.yml --ask-vault-pass --limit "new_nodes"
+```
  
 
 !!! note
@@ -68,47 +64,42 @@ Run on: omnia_core container
 
  1. **Update the Slurm configuration** on the control node to include the new nodes:
 
-Run on: Slurm control node
- 
- 
- # Reconfigure Slurm to pick up new nodes
- scontrol reconfigure
+```bash title="Run on: Slurm control node"
+# Reconfigure Slurm to pick up new nodes
+scontrol reconfigure
+```
  
 
 ## Verification[¶](#verification "Permanent link")
 
  1. **Check that new nodes appear in the cluster** :
 
-Run on: Slurm control node
- 
- 
- sinfo
+```bash title="Run on: Slurm control node"
+sinfo
+```
  
 
 New nodes should appear in the `normal` partition with `idle` state.
 
  1. **Run a test job on the new nodes** :
 
-Run on: Slurm control node
- 
- 
- srun -w <new-node-hostname> hostname
+```bash title="Run on: Slurm control node"
+srun -w <new-node-hostname> hostname
+```
  
 
  1. **Verify Munge authentication** on the new nodes:
 
-Run on: Slurm control node
- 
- 
- munge -n | ssh <new-node-ip> unmunge
+```bash title="Run on: Slurm control node"
+munge -n | ssh <new-node-ip> unmunge
+```
  
 
  1. **Check slurmd is running** on the new nodes:
 
-Run on: new compute node
- 
- 
- systemctl status slurmd
+```bash title="Run on: new compute node"
+systemctl status slurmd
+```
  
 
 ## Next Steps[¶](#next-steps "Permanent link")
@@ -130,31 +121,28 @@ Run on: new compute node
 
  * Check that `slurm.conf` on the new node matches the control node's version:
 
-Run on: new compute node
- 
- grep "SlurmctldHost" /etc/slurm/slurm.conf
- 
+```bash title="Run on: new compute node"
+grep "SlurmctldHost" /etc/slurm/slurm.conf
+```
 
  * Resume the node from the controller:
 
-Run on: Slurm control node
- 
- scontrol update nodename=<node> state=resume reason="added"
+```bash title="Run on: Slurm control node"
+scontrol update nodename=<node> state=resume reason="added"
+```
  
 
 **Munge key mismatch** Re-distribute the Munge key from the control node:
 
-Run on: omnia_core container
- 
- 
- ansible new_nodes -m copy -a "src=/etc/munge/munge.key dest=/etc/munge/munge.key owner=munge group=munge mode=0400"
- ansible new_nodes -m service -a "name=munge state=restarted"
+```bash title="Run on: omnia_core container"
+ansible new_nodes -m copy -a "src=/etc/munge/munge.key dest=/etc/munge/munge.key owner=munge group=munge mode=0400"
+ansible new_nodes -m service -a "name=munge state=restarted"
+```
  
 
 **New nodes not in Ansible inventory** Re-run discovery or manually add the nodes to the Ansible inventory:
 
-Run on: omnia_core container
- 
- 
- ochami node list
+```bash title="Run on: omnia_core container"
+ochami node list
+```
  

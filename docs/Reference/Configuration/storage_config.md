@@ -46,29 +46,27 @@ Parameter | Type | Required | Default | Description
  
 ## Usage example[¶](#usage-example "Permanent link")
 
-File: /opt/omnia/input/project_default/storage_config.yml
- 
- 
- nfs_client_params: "nosuid,rw,sync,hard,intr"
- nfs_shares:
- - server: "10.5.0.100"
+```yaml title="File: /opt/omnia/input/project_default/storage_config.yml
+nfs_client_params: "nosuid,rw,sync,hard,intr"
+nfs_shares:
+- server: "10.5.0.100"
  server_path: "/exports/home"
  client_mount_path: "/home"
- - server: "10.5.0.100"
+- server: "10.5.0.100"
  server_path: "/exports/scratch"
  client_mount_path: "/scratch"
  mount_options: "rw,sync,noatime"
- 
- beegfs_enabled: false
- 
- powerscale_enabled: true
- powerscale_server: "powerscale-sc.hpc.example.com"
- powerscale_exports:
- - server_path: "/ifs/data/hpc"
+
+beegfs_enabled: false
+
+powerscale_enabled: true
+powerscale_server: "powerscale-sc.hpc.example.com"
+powerscale_exports:
+- server_path: "/ifs/data/hpc"
  client_mount_path: "/data"
- 
- powervault_enabled: false
- 
+
+powervault_enabled: false
+```
 
 Info
 

@@ -20,23 +20,23 @@ Omnia is an open-source project licensed under the [Apache License 2.0](https://
 ## Getting Started
 
 1. **Fork the repository** on GitHub:
-   ```
+   ```text title="Repository URL"
    https://github.com/dell/omnia
    ```
 
 2. **Clone your fork** locally:
-   ```bash
+   ```bash title="Run on: local machine"
    git clone https://github.com/<your_username>/omnia.git
    cd omnia
    ```
 
 3. **Create a feature branch** for your changes:
-   ```bash
+   ```bash title="Run on: local machine"
    git checkout -b feature/my-improvement
    ```
 
 4. **Make your changes**, commit, and push:
-   ```bash
+   ```bash title="Run on: local machine"
    git add .
    git commit -m "Brief description of the change"
    git push origin feature/my-improvement

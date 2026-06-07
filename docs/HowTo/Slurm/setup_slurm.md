@@ -24,45 +24,41 @@ The `omnia.yml` playbook deploys and configures Slurm across nodes defined in yo
 
  1. **Enter the omnia_core container** :
 
-Run on: OIM host
- 
- 
- ssh omnia_core
+```bash title="Run on: OIM host"
+ssh omnia_core
+```
  
 
  1. **Review and edit omnia_config.yml** :
 
-Run on: omnia_core container
- 
- 
- vi /opt/omnia/input/project_default/omnia_config.yml
+```bash title="Run on: omnia_core container"
+vi /opt/omnia/input/project_default/omnia_config.yml
+```
  
 
 Key Slurm-related parameters:
 
-File: /opt/omnia/input/project_default/omnia_config.yml
- 
- 
- ---
- # Slurm configuration
- slurm_installation_type: "nfs_share"
- enable_omnia_nfs: true
- 
- # MariaDB for Slurm accounting
- mariadb_password: "" # Set via credentials utility
- 
- # Optional: Slurm partitions
- slurm_partition_name: "normal"
- slurm_default_partition: true
+```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml
+---
+# Slurm configuration
+slurm_installation_type: "nfs_share"
+enable_omnia_nfs: true
+
+# MariaDB for Slurm accounting
+mariadb_password: "" # Set via credentials utility
+
+# Optional: Slurm partitions
+slurm_partition_name: "normal"
+slurm_default_partition: true
+```
  
 
  1. **Run the omnia.yml playbook** :
 
-Run on: omnia_core container
- 
- 
- cd /omnia
- ansible-playbook omnia.yml --ask-vault-pass
+```bash title="Run on: omnia_core container"
+cd /omnia
+ansible-playbook omnia.yml --ask-vault-pass
+```
  
 
 The playbook will:
@@ -88,61 +84,54 @@ Execution time: **20-40 minutes** depending on cluster size.
 
  1. **Check Slurm controller status** :
 
-Run on: Slurm control node
- 
- 
- systemctl status slurmctld
+```bash title="Run on: Slurm control node"
+systemctl status slurmctld
+```
  
 
  1. **Check compute daemon status on a compute node** :
 
-Run on: Slurm compute node
- 
- 
- systemctl status slurmd
+```bash title="Run on: Slurm compute node"
+systemctl status slurmd
+```
  
 
  1. **View the cluster partition and node status** :
 
-Run on: Slurm control node
- 
- 
- sinfo
+```bash title="Run on: Slurm control node"
+sinfo
+```
  
 
 Expected output:
 
-Expected output on: Slurm control node
- 
- 
- PARTITION AVAIL TIMELIMIT NODES STATE NODELIST
- normal* up infinite 2 idle compute[01-02]
+```text title="Expected output on: Slurm control node
+PARTITION AVAIL TIMELIMIT NODES STATE NODELIST
+normal* up infinite 2 idle compute[01-02]
+```
  
 
  1. **Run a test job** :
 
-Run on: Slurm control node
- 
- 
- srun -N 2 hostname
+```bash title="Run on: Slurm control node"
+srun -N 2 hostname
+```
  
 
  1. **Verify Munge authentication** :
 
-Run on: Slurm control node
- 
- 
- munge -n | ssh <compute-node> unmunge
+```bash title="Run on: Slurm control node"
+munge -n | ssh <compute-node> unmunge
+```
  
 
 Expected: successful decode with no errors.
 
  1. **Check Slurm accounting** :
 
-Run on: Slurm control node
- 
- 
- sacctmgr show cluster
+```bash title="Run on: Slurm control node"
+sacctmgr show cluster
+```
  
 
 ## Next Steps[¶](#next-steps "Permanent link")
@@ -156,11 +145,10 @@ Run on: Slurm control node
 
 **slurmctld fails to start** Check the Slurm controller log:
 
-Run on: Slurm control node
- 
- 
- journalctl -u slurmctld --no-pager -n 50
- cat /var/log/slurm/slurmctld.log
+```bash title="Run on: Slurm control node"
+journalctl -u slurmctld --no-pager -n 50
+cat /var/log/slurm/slurmctld.log
+```
  
 
 **Compute nodes show "down" in sinfo** \- Verify `slurmd` is running on the affected node:
@@ -174,33 +162,31 @@ Run on: Slurm control node
 
  * Check Munge is running:
 
-Run on: affected compute node
- 
- systemctl status munge
+```bash title="Run on: affected compute node"
+systemctl status munge
+```
  
 
  * Resume the node:
 
-Run on: Slurm control node
- 
- scontrol update nodename=<node> state=resume
+```bash title="Run on: Slurm control node"
+scontrol update nodename=<node> state=resume
+```
  
 
 **Munge authentication failure** Ensure the Munge key is identical on all nodes:
 
-Run on: omnia_core container
- 
- 
- ansible slurm_cluster -m shell -a "md5sum /etc/munge/munge.key"
+```bash title="Run on: omnia_core container"
+ansible slurm_cluster -m shell -a "md5sum /etc/munge/munge.key"
+```
  
 
 All nodes should report the same MD5 hash.
 
 **MariaDB connection error** Check MariaDB is running on the control node:
 
-Run on: Slurm control node
- 
- 
- systemctl status mariadb
- mysql -u slurm -p -e "SHOW DATABASES;"
+```bash title="Run on: Slurm control node"
+systemctl status mariadb
+mysql -u slurm -p -e "SHOW DATABASES;"
+```
  

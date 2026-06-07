@@ -24,57 +24,52 @@ The minimum topology is 3 control-plane nodes + 1 worker node for high availabil
 
  1. **Enter the omnia_core container** :
 
-Run on: OIM host
- 
- 
- ssh omnia_core
+```bash title="Run on: OIM host"
+ssh omnia_core
+```
  
 
  1. **Configure Kubernetes parameters** in `omnia_config.yml`:
 
-Run on: omnia_core container
- 
- 
- vi /opt/omnia/input/project_default/omnia_config.yml
+```bash title="Run on: omnia_core container"
+vi /opt/omnia/input/project_default/omnia_config.yml
+```
  
 
 Key Kubernetes parameters:
 
-File: /opt/omnia/input/project_default/omnia_config.yml
- 
- 
- ---
- # Kubernetes configuration
- k8s_version: "1.28"
- k8s_cni: "calico"
- k8s_pod_network_cidr: "10.244.0.0/16"
- k8s_service_cidr: "10.96.0.0/16"
- 
- # MetalLB IP range (must be on the same subnet as worker nodes)
- metallb_address_range: "10.5.0.220-10.5.0.240"
- 
- # NFS CSI configuration
- nfs_server: "10.5.0.1"
- nfs_path: "/home"
+```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml
+---
+# Kubernetes configuration
+k8s_version: "1.28"
+k8s_cni: "calico"
+k8s_pod_network_cidr: "10.244.0.0/16"
+k8s_service_cidr: "10.96.0.0/16"
+
+# MetalLB IP range (must be on the same subnet as worker nodes)
+metallb_address_range: "10.5.0.220-10.5.0.240"
+
+# NFS CSI configuration
+nfs_server: "10.5.0.1"
+nfs_path: "/home"
+```
  
 
  1. **Verify the mapping file** has K8s node assignments:
 
-Run on: omnia_core container
- 
- 
- grep -E "kube_control_plane|kube_node" /opt/omnia/input/project_default/pxe_mapping_file.csv
+```bash title="Run on: omnia_core container"
+grep -E "kube_control_plane|kube_node" /opt/omnia/input/project_default/pxe_mapping_file.csv
+```
  
 
 You should see at least 3 `kube_control_plane` entries and 1 `kube_node` entry.
 
  1. **Run the omnia.yml playbook** to deploy Kubernetes:
 
-Run on: omnia_core container
- 
- 
- cd /omnia
- ansible-playbook omnia.yml --ask-vault-pass
+```bash title="Run on: omnia_core container"
+cd /omnia
+ansible-playbook omnia.yml --ask-vault-pass
+```
  
 
 The playbook performs the following:
@@ -92,82 +87,74 @@ Execution time: **20-40 minutes** depending on cluster size and network speed.
 
  1. **Check Kubernetes node status** :
 
-Run on: K8s control plane node
- 
- 
- kubectl get nodes -o wide
+```bash title="Run on: K8s control plane node"
+kubectl get nodes -o wide
+```
  
 
 Expected output:
 
-Expected output on: K8s control plane node
- 
- 
- NAME STATUS ROLES AGE VERSION INTERNAL-IP
- k8s-cp01 Ready control-plane 10m v1.28.x 10.5.0.105
- k8s-cp02 Ready control-plane 10m v1.28.x 10.5.0.106
- k8s-cp03 Ready control-plane 10m v1.28.x 10.5.0.107
- k8s-worker01 Ready <none> 10m v1.28.x 10.5.0.108
+```text title="Expected output on: K8s control plane node"
+NAME STATUS ROLES AGE VERSION INTERNAL-IP
+k8s-cp01 Ready control-plane 10m v1.28.x 10.5.0.105
+k8s-cp02 Ready control-plane 10m v1.28.x 10.5.0.106
+k8s-cp03 Ready control-plane 10m v1.28.x 10.5.0.107
+k8s-worker01 Ready <none> 10m v1.28.x 10.5.0.108
+```
  
 
 All nodes must show `Ready` status.
 
  1. **Verify system pods are running** :
 
-Run on: K8s control plane node
- 
- 
- kubectl get pods -A
+```bash title="Run on: K8s control plane node"
+kubectl get pods -A
+```
  
 
 All pods in `kube-system`, `calico-system`, and `metallb-system` namespaces should be `Running`.
 
  1. **Verify MetalLB is operational** :
 
-Run on: K8s control plane node
- 
- 
- kubectl get pods -n metallb-system
- kubectl get ipaddresspool -n metallb-system
+```bash title="Run on: K8s control plane node"
+kubectl get pods -n metallb-system
+kubectl get ipaddresspool -n metallb-system
+```
  
 
  1. **Verify NFS CSI driver** :
 
-Run on: K8s control plane node
- 
- 
- kubectl get pods -n kube-system | grep nfs
- kubectl get storageclass
+```bash title="Run on: K8s control plane node"
+kubectl get pods -n kube-system | grep nfs
+kubectl get storageclass
+```
  
 
  1. **Test pod scheduling** :
 
-Run on: K8s control plane node
- 
- 
- kubectl run test --image=busybox --restart=Never -- echo "K8s is working"
- kubectl logs test
- kubectl delete pod test
+```bash title="Run on: K8s control plane node"
+kubectl run test --image=busybox --restart=Never -- echo "K8s is working"
+kubectl logs test
+kubectl delete pod test
+```
  
 
  1. **Test a LoadBalancer service** :
 
-Run on: K8s control plane node
- 
- 
- kubectl create deployment nginx --image=nginx
- kubectl expose deployment nginx --type=LoadBalancer --port=80
- kubectl get svc nginx
+```bash title="Run on: K8s control plane node"
+kubectl create deployment nginx --image=nginx
+kubectl expose deployment nginx --type=LoadBalancer --port=80
+kubectl get svc nginx
+```
  
 
 The `EXTERNAL-IP` column should show an IP from the MetalLB range.
 
-Run on: K8s control plane node
- 
- 
- # Cleanup
- kubectl delete svc nginx
- kubectl delete deployment nginx
+```bash title="Run on: K8s control plane node"
+# Cleanup
+kubectl delete svc nginx
+kubectl delete deployment nginx
+```
  
 
 ## Next Steps[¶](#next-steps "Permanent link")
@@ -180,44 +167,39 @@ Run on: K8s control plane node
 
 **Nodes show "NotReady" status** Check kubelet on the affected node:
 
-Run on: affected K8s node
- 
- 
- systemctl status kubelet
- journalctl -u kubelet --no-pager -n 30
+```bash title="Run on: affected K8s node"
+systemctl status kubelet
+journalctl -u kubelet --no-pager -n 30
+```
  
 
 **Calico pods stuck in "Pending" or "CrashLoopBackOff"** Check Calico logs:
 
-Run on: K8s control plane node
- 
- 
- kubectl logs -n calico-system -l k8s-app=calico-node --tail=50
+```bash title="Run on: K8s control plane node"
+kubectl logs -n calico-system -l k8s-app=calico-node --tail=50
+```
  
 
 **MetalLB not assigning external IPs** Verify the IP address pool configuration:
 
-Run on: K8s control plane node
- 
- 
- kubectl get ipaddresspool -n metallb-system -o yaml
- kubectl get l2advertisement -n metallb-system
+```bash title="Run on: K8s control plane node"
+kubectl get ipaddresspool -n metallb-system -o yaml
+kubectl get l2advertisement -n metallb-system
+```
  
 
 **NFS CSI PersistentVolumeClaim stuck in "Pending"** Verify the NFS server is reachable and the export is configured:
 
-Run on: K8s worker node
- 
- 
- showmount -e <nfs-server-ip>
+```bash title="Run on: K8s worker node"
+showmount -e <nfs-server-ip>
+```
  
 
 **kubeconfig not found** Copy the admin kubeconfig:
 
-Run on: K8s control plane node
- 
- 
- mkdir -p $HOME/.kube
- cp /etc/kubernetes/admin.conf $HOME/.kube/config
- chown $(id -u):$(id -g) $HOME/.kube/config
+```bash title="Run on: K8s control plane node"
+mkdir -p $HOME/.kube
+cp /etc/kubernetes/admin.conf $HOME/.kube/config
+chown $(id -u):$(id -g) $HOME/.kube/config
+```
  

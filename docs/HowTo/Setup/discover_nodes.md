@@ -26,27 +26,24 @@ The `discovery.yml` playbook automates the following process:
 
  1. **Enter the omnia_core container** :
 
-Run on: OIM host
- 
- 
- ssh omnia_core
+```bash title="Run on: OIM host"
+ssh omnia_core
+```
  
 
  1. **Verify the mapping file is in place** :
 
-Run on: omnia_core container
- 
- 
- cat /opt/omnia/input/project_default/pxe_mapping_file.csv
+```bash title="Run on: omnia_core container"
+cat /opt/omnia/input/project_default/pxe_mapping_file.csv
+```
  
 
  1. **Run the discovery playbook** :
 
-Run on: omnia_core container
- 
- 
- cd /omnia/discovery
- ansible-playbook discovery.yml --ask-vault-pass
+```bash title="Run on: omnia_core container"
+cd /omnia/discovery
+ansible-playbook discovery.yml --ask-vault-pass
+```
  
 
 The playbook will:
@@ -76,49 +73,44 @@ The playbook will:
 
  1. **List discovered nodes in OpenCHAMI** :
 
-Run on: omnia_core container
- 
- 
- ochami node list
+```bash title="Run on: omnia_core container"
+ochami node list
+```
  
 
 Expected output shows all nodes from the mapping file with their service tags, MAC addresses, and assigned IPs.
 
  1. **Check SMD inventory** :
 
-Run on: omnia_core container
- 
- 
- ochami smd status
+```bash title="Run on: omnia_core container"
+ochami smd status
+```
  
 
  1. **Verify node count matches the mapping file** :
 
-Run on: omnia_core container
- 
- 
- # Count discovered nodes
- ochami node list | wc -l
- 
- # Count entries in mapping file (excluding header)
- tail -n +2 /opt/omnia/input/project_default/pxe_mapping_file.csv | wc -l
+```bash title="Run on: omnia_core container"
+# Count discovered nodes
+ochami node list | wc -l
+
+# Count entries in mapping file (excluding header)
+tail -n +2 /opt/omnia/input/project_default/pxe_mapping_file.csv | wc -l
+```
  
 
  1. **Ping each discovered node** on the admin network:
 
-Run on: omnia_core container
- 
- 
- # Example: ping a specific node
- ping -c 3 10.5.0.101
+```bash title="Run on: omnia_core container"
+# Example: ping a specific node
+ping -c 3 10.5.0.101
+```
  
 
  1. **Check Ansible inventory** was populated:
 
-Run on: omnia_core container
- 
- 
- ansible-inventory --list | python3 -m json.tool | head -50
+```bash title="Run on: omnia_core container"
+ansible-inventory --list | python3 -m json.tool | head -50
+```
  
 
 ## Next Steps[¶](#next-steps "Permanent link")
@@ -152,9 +144,9 @@ Run on: omnia_core container
 
  * Check TFTP service:
 
-Run on: OIM host
- 
- systemctl status tftpd.service
+```bash title="Run on: OIM host"
+systemctl status tftpd.service
+```
  
 
  * Verify the admin network switch is configured with the correct VLAN.

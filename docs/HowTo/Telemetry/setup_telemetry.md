@@ -26,54 +26,50 @@ The telemetry services run as pods on the Kubernetes service cluster.
 
  1. **Enter the omnia_core container** :
 
-Run on: OIM host
- 
- 
- ssh omnia_core
+```bash title="Run on: OIM host"
+ssh omnia_core
+```
  
 
  1. **Configure telemetry parameters** in `omnia_config.yml`:
 
-Run on: omnia_core container
- 
- 
- vi /opt/omnia/input/project_default/omnia_config.yml
+```bash title="Run on: omnia_core container"
+vi /opt/omnia/input/project_default/omnia_config.yml
+```
  
 
-File: /opt/omnia/input/project_default/omnia_config.yml
- 
- 
- ---
- # Telemetry configuration
- enable_telemetry: true
- telemetry_collection_interval: 60 # seconds
- grafana_admin_password: "" # Set via credentials utility
- 
- # iDRAC telemetry
- idrac_telemetry_enabled: true
- idrac_telemetry_metrics:
- - "SystemBoardInletTemp"
- - "SystemBoardExhaustTemp"
- - "TotalPower"
- - "CPUUsage"
- - "MemoryUsage"
- - "FanSpeed"
- 
- # LDMS configuration
- ldms_enabled: true
- ldms_samplers:
- - "meminfo"
- - "vmstat"
- - "procstat"
+```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml
+---
+# Telemetry configuration
+enable_telemetry: true
+telemetry_collection_interval: 60 # seconds
+grafana_admin_password: "" # Set via credentials utility
+
+# iDRAC telemetry
+idrac_telemetry_enabled: true
+idrac_telemetry_metrics:
+- "SystemBoardInletTemp"
+- "SystemBoardExhaustTemp"
+- "TotalPower"
+- "CPUUsage"
+- "MemoryUsage"
+- "FanSpeed"
+
+# LDMS configuration
+ldms_enabled: true
+ldms_samplers:
+- "meminfo"
+- "vmstat"
+- "procstat"
+```
  
 
  1. **Run the telemetry playbook** :
 
-Run on: omnia_core container
- 
- 
- cd /omnia
- ansible-playbook telemetry.yml --ask-vault-pass
+```bash title="Run on: omnia_core container"
+cd /omnia
+ansible-playbook telemetry.yml --ask-vault-pass
+```
  
 
 The playbook performs:
@@ -90,10 +86,9 @@ Execution time: **15-30 minutes**.
 
  1. **Access the Grafana dashboard** :
 
-Run on: K8s control plane node
- 
- 
- kubectl get svc -n telemetry | grep grafana
+```bash title="Run on: K8s control plane node"
+kubectl get svc -n telemetry | grep grafana
+```
  
 
 Note the external IP (from MetalLB). Open a browser and navigate to:
@@ -109,48 +104,43 @@ Default credentials:
 
  1. **Verify telemetry pods are running** :
 
-Run on: K8s control plane node
- 
- 
- kubectl get pods -n telemetry
+```bash title="Run on: K8s control plane node"
+kubectl get pods -n telemetry
+```
  
 
 Expected pods:
 
-Expected output on: K8s control plane node
- 
- 
- NAME READY STATUS RESTARTS
- grafana-xxxxxxxxxx-xxxxx 1/1 Running 0
- kafka-0 1/1 Running 0
- victoriametrics-xxxxxxxxxx-xxxxx 1/1 Running 0
- idrac-collector-xxxxxxxxxx-xxxxx 1/1 Running 0
- ldms-aggregator-xxxxxxxxxx-xxxxx 1/1 Running 0
+```text title="Expected output on: K8s control plane node
+NAME READY STATUS RESTARTS
+grafana-xxxxxxxxxx-xxxxx 1/1 Running 0
+kafka-0 1/1 Running 0
+victoriametrics-xxxxxxxxxx-xxxxx 1/1 Running 0
+idrac-collector-xxxxxxxxxx-xxxxx 1/1 Running 0
+ldms-aggregator-xxxxxxxxxx-xxxxx 1/1 Running 0
+```
  
 
  1. **Verify LDMS agents on compute nodes** :
 
-Run on: omnia_core container
- 
- 
- ansible slurm_node -m shell -a "systemctl is-active ldmsd"
+```bash title="Run on: omnia_core container"
+ansible slurm_node -m shell -a "systemctl is-active ldmsd"
+```
  
 
  1. **Check Kafka topics** have telemetry data:
 
-Run on: K8s control plane node
- 
- 
- kubectl exec -n telemetry kafka-0 -- kafka-topics.sh --list --bootstrap-server localhost:9092
+```bash title="Run on: K8s control plane node"
+kubectl exec -n telemetry kafka-0 -- kafka-topics.sh --list --bootstrap-server localhost:9092
+```
  
 
  1. **Verify VictoriaMetrics is receiving data** :
 
-Run on: K8s control plane node
- 
- 
- VM_POD=$(kubectl get pod -n telemetry -l app=victoriametrics -o jsonpath='{.items[0].metadata.name}')
- kubectl exec -n telemetry $VM_POD -- curl -s "http://localhost:8428/api/v1/query?query=up" | python3 -m json.tool
+```bash title="Run on: K8s control plane node"
+VM_POD=$(kubectl get pod -n telemetry -l app=victoriametrics -o jsonpath='{.items[0].metadata.name}')
+kubectl exec -n telemetry $VM_POD -- curl -s "http://localhost:8428/api/v1/query?query=up" | python3 -m json.tool
+```
  
 
  1. **Verify Grafana dashboards** show data by opening the web UI and checking the pre-configured dashboards for active time-series data.
@@ -166,26 +156,23 @@ Run on: K8s control plane node
 
 **Telemetry pods stuck in Pending** Check for persistent volume issues:
 
-Run on: K8s control plane node
- 
- 
- kubectl describe pvc -n telemetry
+```bash title="Run on: K8s control plane node"
+kubectl describe pvc -n telemetry
+```
  
 
 **iDRAC collector shows errors** Verify iDRAC credentials and Redfish access:
 
-Run on: K8s control plane node
- 
- 
- kubectl logs -n telemetry -l app=idrac-collector --tail=30
+```bash title="Run on: K8s control plane node"
+kubectl logs -n telemetry -l app=idrac-collector --tail=30
+```
  
 
 **LDMS agents not running on compute nodes** Re-deploy LDMS:
 
-Run on: omnia_core container
- 
- 
- ansible slurm_node -m shell -a "systemctl restart ldmsd"
+```bash title="Run on: omnia_core container"
+ansible slurm_node -m shell -a "systemctl restart ldmsd"
+```
  
 
 **Grafana shows "No data"** \- Verify the VictoriaMetrics data source is configured in Grafana. \- Check the time range in Grafana (default to "Last 1 hour"). \- Verify data is flowing through Kafka:
@@ -199,8 +186,7 @@ Run on: omnia_core container
 
 **Kafka pod CrashLoopBackOff** Check disk space on the K8s worker node:
 
-Run on: K8s worker node
- 
- 
- df -h
+```bash title="Run on: K8s worker node"
+df -h
+```
  

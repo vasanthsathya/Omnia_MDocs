@@ -22,26 +22,23 @@ The `get_config_credentials.yml` playbook interactively prompts for these creden
 
  1. **Enter the omnia_core container** :
 
-Run on: OIM host
- 
- 
- ssh omnia_core
+```bash title="Run on: OIM host"
+ssh omnia_core
+```
  
 
  1. **Navigate to the credential utility directory** :
 
-Run on: omnia_core container
- 
- 
- cd /omnia/utils/credential_utility
+```bash title="Run on: omnia_core container"
+cd /omnia/utils/credential_utility
+```
  
 
  1. **Run the credential configuration playbook** with the `provision` tag:
 
-Run on: omnia_core container
- 
- 
- ansible-playbook get_config_credentials.yml --tags provision
+```bash title="Run on: omnia_core container"
+ansible-playbook get_config_credentials.yml --tags provision
+```
  
 
 The playbook will prompt you for:
@@ -74,18 +71,16 @@ The playbook will prompt you for:
 
  1. **Verify the encrypted file was created** :
 
-Run on: omnia_core container
- 
- 
- ls -la /opt/omnia/input/project_default/omnia_config_credentials.yml
+```bash title="Run on: omnia_core container"
+ls -la /opt/omnia/input/project_default/omnia_config_credentials.yml
+```
  
 
  1. **(Optional) View the encrypted credentials** to confirm values:
 
-Run on: omnia_core container
- 
- 
- ansible-vault view /opt/omnia/input/project_default/omnia_config_credentials.yml
+```bash title="Run on: omnia_core container"
+ansible-vault view /opt/omnia/input/project_default/omnia_config_credentials.yml
+```
  
 
 Enter the Vault password when prompted. The decrypted content will display temporarily in the terminal.
@@ -94,26 +89,23 @@ Enter the Vault password when prompted. The decrypted content will display tempo
 
  1. **Confirm the file is Ansible Vault encrypted** :
 
-Run on: omnia_core container
- 
- 
- head -1 /opt/omnia/input/project_default/omnia_config_credentials.yml
+```bash title="Run on: omnia_core container"
+head -1 /opt/omnia/input/project_default/omnia_config_credentials.yml
+```
  
 
 Expected output:
 
-Expected output on: omnia_core container
- 
- 
- $ANSIBLE_VAULT;1.1;AES256
+```text title="Expected output on: omnia_core container"
+$ANSIBLE_VAULT;1.1;AES256
+```
  
 
  1. **Test decryption** with the Vault password:
 
-Run on: omnia_core container
- 
- 
- ansible-vault view /opt/omnia/input/project_default/omnia_config_credentials.yml
+```bash title="Run on: omnia_core container"
+ansible-vault view /opt/omnia/input/project_default/omnia_config_credentials.yml
+```
  
 
 If the password is correct, you will see the decrypted YAML content. If incorrect, Ansible will report a decryption error.
@@ -136,29 +128,26 @@ If the password is correct, you will see the decrypted YAML content. If incorrec
 
 **Need to update a single credential** Edit the encrypted file directly:
 
-Run on: omnia_core container
- 
- 
- ansible-vault edit /opt/omnia/input/project_default/omnia_config_credentials.yml
+```bash title="Run on: omnia_core container"
+ansible-vault edit /opt/omnia/input/project_default/omnia_config_credentials.yml
+```
  
 
 This opens the decrypted file in your default editor. Save and exit to re-encrypt.
 
 **Need to change the Vault password** Re-key the encrypted file:
 
-Run on: omnia_core container
- 
- 
- ansible-vault rekey /opt/omnia/input/project_default/omnia_config_credentials.yml
+```bash title="Run on: omnia_core container"
+ansible-vault rekey /opt/omnia/input/project_default/omnia_config_credentials.yml
+```
  
 
 **Playbook prompts are not appearing** Ensure you are running the playbook interactively (not piped or redirected). The `--tags provision` flag limits the prompts to provisioning-related credentials only.
 
 **Credentials file already exists** Re-running the playbook will overwrite the existing file. Back up the current file if needed:
 
-Run on: omnia_core container
- 
- 
- cp /opt/omnia/input/project_default/omnia_config_credentials.yml \
- /opt/omnia/input/project_default/omnia_config_credentials.yml.bak
+```bash title="Run on: omnia_core container"
+cp /opt/omnia/input/project_default/omnia_config_credentials.yml \
+/opt/omnia/input/project_default/omnia_config_credentials.yml.bak
+```
  

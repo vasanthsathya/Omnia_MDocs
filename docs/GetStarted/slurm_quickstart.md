@@ -21,56 +21,52 @@ This tutorial assumes you have completed every item on the [Prerequisites Checkl
 
 Clone the Omnia repository, build the container images, and install the `omnia_core` Podman container on the OIM.
 
-Run on OIM (as root)
- 
- 
- # Clone the Omnia repository
- cd /opt
- git clone https://github.com/dell/omnia.git
- cd omnia
- 
- # Build the required container images
- bash build_images.sh
+```bash title="Run on OIM (as root)"
+# Clone the Omnia repository
+cd /opt
+git clone https://github.com/dell/omnia.git
+cd omnia
+
+# Build the required container images
+bash build_images.sh
+```
  
 
 Tip
 
 `build_images.sh` creates the `omnia_core` and supporting images. It takes 5--10 minutes on a fast connection. Watch for any `FAILED` messages in the output.
 
-Run on OIM (as root)
- 
- 
- # Install and start the omnia_core container
- bash omnia.sh --install
- 
- # Verify that the omnia_core container is running
- systemctl status omnia_core
+```bash title="Run on OIM (as root)"
+# Install and start the omnia_core container
+bash omnia.sh --install
+
+# Verify that the omnia_core container is running
+systemctl status omnia_core
+```
  
 
 You should see `active (running)` in the output. If the service is `failed`, check `journalctl -u omnia_core` for errors.
 
-Run on OIM (as root)
- 
- 
- # Verify you can access the container shell
- ssh omnia_core
- # You should land at a prompt inside the container. Type 'exit' to return.
- exit
+```bash title="Run on OIM (as root)"
+# Verify you can access the container shell
+ssh omnia_core
+# You should land at a prompt inside the container. Type 'exit' to return.
+exit
+```
  
 
 ## Step 2 -- Create the Mapping File[¶](#step-2-create-the-mapping-file "Permanent link")
 
 The mapping file tells Omnia which physical servers map to which cluster roles. Create a CSV at `/opt/omnia/input/project_default/mapping.csv`.
 
-Run on OIM (as root)
- 
- 
- cat > /opt/omnia/input/project_default/mapping.csv << 'EOF'
- FUNCTIONAL_GROUP_NAME,GROUP_NAME,SERVICE_TAG,PARENT_SERVICE_TAG,HOSTNAME,ADMIN_MAC,ADMIN_IP,BMC_MAC,BMC_IP
- slurm_control_node,slurm,ABC1234,,head01,24:6E:96:AA:BB:01,10.5.0.101,,10.3.0.101
- slurm_node,slurm,DEF5678,,compute01,24:6E:96:AA:BB:02,10.5.0.102,,10.3.0.102
- login_node,slurm,GHI9012,,login01,24:6E:96:AA:BB:03,10.5.0.103,,10.3.0.103
- EOF
+```bash title="Run on OIM (as root)"
+cat > /opt/omnia/input/project_default/mapping.csv << 'EOF'
+FUNCTIONAL_GROUP_NAME,GROUP_NAME,SERVICE_TAG,PARENT_SERVICE_TAG,HOSTNAME,ADMIN_MAC,ADMIN_IP,BMC_MAC,BMC_IP
+slurm_control_node,slurm,ABC1234,,head01,24:6E:96:AA:BB:01,10.5.0.101,,10.3.0.101
+slurm_node,slurm,DEF5678,,compute01,24:6E:96:AA:BB:02,10.5.0.102,,10.3.0.102
+login_node,slurm,GHI9012,,login01,24:6E:96:AA:BB:03,10.5.0.103,,10.3.0.103
+EOF
+```
  
 
 Warning
@@ -93,17 +89,16 @@ Replace the placeholder values (`SERVICE_TAG`, `ADMIN_MAC`, `ADMIN_IP`, `BMC_IP`
 
 Omnia ships example input templates for common deployment patterns. Copy the bare-metal Slurm template (without service K8s) and customize it.
 
-Run on OIM (inside omnia_core container)
- 
- 
- ssh omnia_core
- 
- # Copy the template inputs to the active input directory
- cp -r /opt/omnia/examples/input_template/bare_metal_slurm/x86_64/without_service_k8s/* \
- /opt/omnia/input/project_default/
- 
- # List the copied files
- ls -la /opt/omnia/input/project_default/
+```bash title="Run on OIM (inside omnia_core container)"
+ssh omnia_core
+
+# Copy the template inputs to the active input directory
+cp -r /opt/omnia/examples/input_template/bare_metal_slurm/x86_64/without_service_k8s/* \
+/opt/omnia/input/project_default/
+
+# List the copied files
+ls -la /opt/omnia/input/project_default/
+```
  
 
 You should see these key input files:
@@ -124,11 +119,10 @@ Each file is heavily commented with inline documentation. Read the comments befo
 
 Run the `credentials_utility.yml` playbook to securely store passwords for iDRAC, the provisioning OS, and other services. This playbook prompts you interactively.
 
-Run on OIM (inside omnia_core container)
- 
- 
- cd /opt/omnia
- ansible-playbook credentials_utility.yml
+```bash title="Run on OIM (inside omnia_core container)"
+cd /opt/omnia
+ansible-playbook credentials_utility.yml
+```
  
 
 You will be prompted to set:
@@ -147,59 +141,54 @@ Edit the two critical network-related input files, then run `prepare_oim.yml` to
 
 ### **5a. Edit** `network_spec.yml`[¶](#5a-edit-network_specyml "Permanent link")
 
-Run on OIM (inside omnia_core container)
- 
- 
- vi /opt/omnia/input/project_default/network_spec.yml
+```bash title="Run on OIM (inside omnia_core container)"
+vi /opt/omnia/input/project_default/network_spec.yml
+```
  
 
 Set the following values (adjust to match your environment):
 
-Example network_spec.yml excerpt
- 
- 
- admin_network:
+```yaml title="Example network_spec.yml excerpt"
+admin_network:
  nic: eno2 # OIM NIC connected to admin switch
  cidr: 10.5.0.0/16 # Admin subnet CIDR
  static_range: 10.5.0.100-10.5.0.200
  gateway: 10.5.0.1
- 
- bmc_network:
+
+bmc_network:
  nic: eno2 # Can share NIC if VLANs are used
  cidr: 10.3.0.0/16 # BMC subnet CIDR
  static_range: 10.3.0.100-10.3.0.200
+```
  
 
 ### **5b. Edit** `provision_config.yml`[¶](#5b-edit-provision_configyml "Permanent link")
 
-Run on OIM (inside omnia_core container)
- 
- 
- vi /opt/omnia/input/project_default/provision_config.yml
+```bash title="Run on OIM (inside omnia_core container)"
+vi /opt/omnia/input/project_default/provision_config.yml
+```
  
 
 Key fields to verify or set:
 
-Example provision_config.yml excerpt
- 
- 
- # Path to the RHEL or Rocky Linux ISO on the OIM
- iso_path: /opt/isos/RHEL-8.8-x86_64-dvd.iso
- 
- # Timezone for provisioned nodes
- timezone: America/Chicago
- 
- # Domain name for the cluster
- domain_name: omnia.local
+```yaml title="Example provision_config.yml excerpt"
+# Path to the RHEL or Rocky Linux ISO on the OIM
+iso_path: /opt/isos/RHEL-8.8-x86_64-dvd.iso
+
+# Timezone for provisioned nodes
+timezone: America/Chicago
+
+# Domain name for the cluster
+domain_name: omnia.local
+```
  
 
 ### **5c. Run** `prepare_oim.yml`[¶](#5c-run-prepare_oimyml "Permanent link")
 
-Run on OIM (inside omnia_core container)
- 
- 
- cd /opt/omnia
- ansible-playbook prepare_oim.yml -i /opt/omnia/input/project_default/mapping.csv
+```bash title="Run on OIM (inside omnia_core container)"
+cd /opt/omnia
+ansible-playbook prepare_oim.yml -i /opt/omnia/input/project_default/mapping.csv
+```
  
 
 Tip
@@ -210,10 +199,9 @@ Tip
 
 After `prepare_oim.yml` completes, verify that all Omnia-managed services are running.
 
-Run on OIM (inside omnia_core container)
- 
- 
- systemctl list-dependencies omnia.target
+```bash title="Run on OIM (inside omnia_core container)"
+systemctl list-dependencies omnia.target
+```
  
 
 Every listed service should show a green dot (`●`) indicating `active`. Key services to verify:
@@ -223,24 +211,22 @@ Every listed service should show a green dot (`●`) indicating `active`. Key se
  * `httpd.service` \-- HTTP for kickstart/autoinstall files
  * `nfs-server.service` \-- NFS for shared storage
 
-Run on OIM (inside omnia_core container)
- 
- 
- # Quick health check -- all should return 'active'
- for svc in dhcpd tftp.socket httpd nfs-server; do
+```bash title="Run on OIM (inside omnia_core container)"
+# Quick health check -- all should return 'active'
+for svc in dhcpd tftp.socket httpd nfs-server; do
  echo -n "$svc: "; systemctl is-active $svc
- done
+done
+```
  
 
 ## Step 7 -- Create Local Repositories[¶](#step-7-create-local-repositories "Permanent link")
 
 Build local mirrors of OS packages, Python packages, and container images so that node provisioning does not depend on external internet access.
 
-Run on OIM (inside omnia_core container)
- 
- 
- cd /opt/omnia
- ansible-playbook local_repo.yml
+```bash title="Run on OIM (inside omnia_core container)"
+cd /opt/omnia
+ansible-playbook local_repo.yml
+```
  
 
 Warning
@@ -249,32 +235,29 @@ Warning
 
 When the playbook finishes, verify that the local repo is accessible:
 
-Run on OIM (inside omnia_core container)
- 
- 
- # Check that the repo metadata exists
- ls /opt/omnia/local_repo/
- dnf repolist --all | grep omnia
+```bash title="Run on OIM (inside omnia_core container)"
+# Check that the repo metadata exists
+ls /opt/omnia/local_repo/
+dnf repolist --all | grep omnia
+```
  
 
 ## Step 8 -- Build Node Images[¶](#step-8-build-node-images "Permanent link")
 
 Build the provisioning image that Omnia will PXE-boot onto target nodes.
 
-Run on OIM (inside omnia_core container)
- 
- 
- cd /opt/omnia
- ansible-playbook build_image_x86_64.yml
+```bash title="Run on OIM (inside omnia_core container)"
+cd /opt/omnia
+ansible-playbook build_image_x86_64.yml
+```
  
 
 This playbook creates a customized OS image with pre-installed Slurm packages, Omnia agents, and configuration. The image is stored in the local S3-compatible object store.
 
-Run on OIM (inside omnia_core container)
- 
- 
- # Verify the image was uploaded to the local S3 store
- s3cmd ls s3://omnia-images/
+```bash title="Run on OIM (inside omnia_core container)"
+# Verify the image was uploaded to the local S3 store
+s3cmd ls s3://omnia-images/
+```
  
 
 You should see at least one `.qcow2` or `.raw` image file listed.
@@ -287,11 +270,10 @@ If `build_image_x86_64.yml` fails with a disk-space error, free space under `/op
 
 Power on your target nodes (or ensure they are powered on with PXE boot priority). Then run the discovery playbook.
 
-Run on OIM (inside omnia_core container)
- 
- 
- cd /opt/omnia
- ansible-playbook discovery.yml
+```bash title="Run on OIM (inside omnia_core container)"
+cd /opt/omnia
+ansible-playbook discovery.yml
+```
  
 
 `discovery.yml` performs the following:
@@ -312,22 +294,20 @@ Discovery can take **20--40 minutes** per node depending on network speed and ha
 
 After discovery completes, verify all nodes are reachable:
 
-Run on OIM (inside omnia_core container)
- 
- 
- # Ping all discovered nodes
- ansible all -m ping -i /opt/omnia/inventories/project_default/inventory
+```bash title="Run on OIM (inside omnia_core container)"
+# Ping all discovered nodes
+ansible all -m ping -i /opt/omnia/inventories/project_default/inventory
+```
  
 
 ## Step 10 -- Deploy Slurm[¶](#step-10-deploy-slurm "Permanent link")
 
 Run the main Omnia playbook to install and configure Slurm across the cluster.
 
-Run on OIM (inside omnia_core container)
- 
- 
- cd /opt/omnia
- ansible-playbook omnia.yml
+```bash title="Run on OIM (inside omnia_core container)"
+cd /opt/omnia
+ansible-playbook omnia.yml
+```
  
 
 `omnia.yml` orchestrates:
@@ -347,49 +327,44 @@ Tip
 
 Congratulations! Your Slurm cluster should now be operational. Run these verification commands.
 
-Run on OIM (inside omnia_core container)
- 
- 
- # SSH to the head node
- ssh head01
+```bash title="Run on OIM (inside omnia_core container)"
+# SSH to the head node
+ssh head01
+```
  
 
-Run on head node (head01)
- 
- 
- # Check Slurm controller status
- systemctl status slurmctld
- 
- # View cluster partition and node info
- sinfo
+```bash title="Run on head node (head01)"
+# Check Slurm controller status
+systemctl status slurmctld
+
+# View cluster partition and node info
+sinfo
+```
  
 
 Expected `sinfo` output:
 
-Expected output
- 
- 
- PARTITION AVAIL TIMELIMIT NODES STATE NODELIST
- normal* up infinite 1 idle compute01
- 
-
-Run on head node (head01)
- 
- 
- # Run a test job across all nodes
- srun -N 1 hostname
- 
- # Submit a batch job
- sbatch --wrap="echo Hello from \$(hostname)" --output=/tmp/hello.out
- cat /tmp/hello.out
+```text title="Expected output"
+PARTITION AVAIL TIMELIMIT NODES STATE NODELIST
+normal* up infinite 1 idle compute01
+```
  
 
-Run on login node (login01)
+```bash title="Run on head node (head01)"
+# Run a test job across all nodes
+srun -N 1 hostname
+
+# Submit a batch job
+sbatch --wrap="echo Hello from \$(hostname)" --output=/tmp/hello.out
+cat /tmp/hello.out
+```
  
- 
- # Verify login node can submit jobs
- ssh login01
- srun -N 1 hostname
+
+```bash title="Run on login node (login01)"
+# Verify login node can submit jobs
+ssh login01
+srun -N 1 hostname
+```
  
 
 If all commands succeed, your Slurm cluster is fully operational.

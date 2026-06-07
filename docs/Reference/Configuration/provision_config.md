@@ -24,19 +24,17 @@ Parameter | Type | Required | Default | Description
  
 ## Usage example[¶](#usage-example "Permanent link")
 
-File: /opt/omnia/input/project_default/provision_config.yml
- 
- 
- pxe_mapping_file_path: "/opt/omnia/input/project_default/pxe_mapping.csv"
- timezone: "America/Chicago"
- domain_name: "hpc.example.com"
- repo_store_path: "/opt/omnia/repo_store"
- language: "en-US"
- iso_file_path: "/opt/omnia/iso/rhel-10.0-x86_64-dvd.iso"
- default_lease_time: 86400
- provision_os: "rhel"
- provision_os_version: "10.0"
- 
+```yaml title="File: /opt/omnia/input/project_default/provision_config.yml
+pxe_mapping_file_path: "/opt/omnia/input/project_default/pxe_mapping.csv"
+timezone: "America/Chicago"
+domain_name: "hpc.example.com"
+repo_store_path: "/opt/omnia/repo_store"
+language: "en-US"
+iso_file_path: "/opt/omnia/iso/rhel-10.0-x86_64-dvd.iso"
+default_lease_time: 86400
+provision_os: "rhel"
+provision_os_version: "10.0"
+```
 
 Note
 

@@ -16,45 +16,40 @@ Resolution
 
  1. Set the hostname permanently:
 
- 
- 
- hostnamectl set-hostname oim.example.com
- 
+```bash title="Run on: OIM host
+hostnamectl set-hostname oim.example.com
+```
 
  1. Verify it persisted in `/etc/hostname`:
 
- 
- 
- cat /etc/hostname
- 
+```bash title="Run on: OIM host
+cat /etc/hostname
+```
 
  1. Ensure the hostname is also in `/etc/hosts`:
 
- 
- 
- 127.0.0.1 localhost
- <oim_ip> oim.example.com oim
- 
+```bash title="Run on: OIM host
+127.0.0.1 localhost
+<oim_ip> oim.example.com oim
+```
 
  1. If DHCP is overriding the hostname, configure the DHCP client to preserve the static hostname by adding the following to `/etc/NetworkManager/conf.d/90-hostname.conf`:
 
- 
- 
- [main]
- hostname-mode=none
- 
+```ini title="File: /etc/NetworkManager/conf.d/90-hostname.conf
+[main]
+hostname-mode=none
+```
 
 ## SSH key mismatches[¶](#ssh-key-mismatches "Permanent link")
 
 Symptom
 
 SSH connections from the OIM to cluster nodes fail with:
- 
- 
- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
- @ WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED! @
- @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
- 
+```text title="SSH key mismatch warning
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@ WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED! @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+```
 
 Cause
 
@@ -64,27 +59,24 @@ Resolution
 
  1. Remove the stale key for the affected host:
 
- 
- 
- ssh-keygen -R <node_hostname_or_ip>
- 
+```bash title="Run on: OIM host
+ssh-keygen -R <node_hostname_or_ip>
+```
 
  1. Reconnect to accept the new key:
 
- 
- 
- ssh <node_hostname_or_ip>
- 
+```bash title="Run on: OIM host
+ssh <node_hostname_or_ip>
+```
 
  1. To prevent this issue across bulk re-provisions, clear all known_hosts entries for cluster nodes:
 
- 
- 
- # Remove entries for a range of IPs
- for i in $(seq 101 110); do
- ssh-keygen -R 10.5.0.$i
- done
- 
+```bash title="Run on: OIM host
+# Remove entries for a range of IPs
+for i in $(seq 101 110); do
+ssh-keygen -R 10.5.0.$i
+done
+```
 
 ## Container startup failures[¶](#container-startup-failures "Permanent link")
 
@@ -105,51 +97,45 @@ Resolution
 
  1. Check the container status and error message:
 
- 
- 
- podman ps -a
- podman logs <container_name>
- 
+```bash title="Run on: OIM host
+podman ps -a
+podman logs <container_name>
+```
 
  1. Attempt a manual restart:
 
- 
- 
- podman start <container_name>
- 
+```bash title="Run on: OIM host
+podman start <container_name>
+```
 
  1. If disk space is the issue:
 
- 
- 
- df -h /
- podman system prune --force
- 
+```bash title="Run on: OIM host
+df -h /
+podman system prune --force
+```
 
  1. If a port conflict is reported, identify the conflicting process:
 
- 
- 
- ss -tlnp | grep <port_number>
- 
+```bash title="Run on: OIM host
+ss -tlnp | grep <port_number>
+```
 
  1. If containers consistently fail after reboot, verify that Podman pods have auto-start enabled:
 
- 
- 
- podman generate systemd --name <pod_name> --files
- systemctl enable pod-<pod_name>.service
- 
+```bash title="Run on: OIM host
+podman generate systemd --name <pod_name> --files
+systemctl enable pod-<pod_name>.service
+```
 
 ## `ssh omnia_core` fails after `sudo`[¶](#ssh-omnia_core-fails-after-sudo "Permanent link")
 
 Symptom
 
 Running `ssh omnia_core` as a non-root user (or after `sudo su`) returns a connection error or permission denied:
- 
- 
- Permission denied (publickey).
- 
+```text title="SSH permission error
+Permission denied (publickey).
+```
 
 Cause
 
@@ -158,32 +144,29 @@ The `omnia_core` container is configured with SSH keys for the `root` user. When
 Resolution
 
 Log in as `root` directly instead of using `sudo`:
- 
- 
- # Instead of:
- sudo su
- ssh omnia_core # <-- fails
- 
- # Do this:
- ssh root@<oim_ip>
- ssh omnia_core # <-- works
- 
+```bash title="Run on: OIM host
+# Instead of:
+sudo su
+ssh omnia_core # <-- fails
+
+# Do this:
+ssh root@<oim_ip>
+ssh omnia_core # <-- works
+```
 
 Alternatively, explicitly specify the SSH key:
- 
- 
- ssh -i /root/.ssh/id_rsa omnia_core
- 
+```bash title="Run on: OIM host
+ssh -i /root/.ssh/id_rsa omnia_core
+```
 
 ## Ansible Vault encrypted file issues[¶](#ansible-vault-encrypted-file-issues "Permanent link")
 
 Symptom
 
 Ansible playbooks fail with:
- 
- 
- ERROR! Attempting to decrypt but no vault secrets found
- 
+```text title="Ansible Vault error
+ERROR! Attempting to decrypt but no vault secrets found
+```
 
 Or you cannot view the contents of encrypted credential files.
 
@@ -195,42 +178,37 @@ Resolution
 
  1. **View an encrypted file** without editing:
 
- 
- 
- ansible-vault view input/credentials.yml
- 
+```bash title="Run on: OIM host
+ansible-vault view input/credentials.yml
+```
 
  1. **Edit an encrypted file:**
 
- 
- 
- ansible-vault edit input/credentials.yml
- 
+```bash title="Run on: OIM host
+ansible-vault edit input/credentials.yml
+```
 
  1. **Run a playbook with vault password prompt:**
 
- 
- 
- ansible-playbook playbooks/omnia.yml --ask-vault-pass
- 
+```bash title="Run on: OIM host
+ansible-playbook playbooks/omnia.yml --ask-vault-pass
+```
 
  1. **Run a playbook with a vault password file:**
 
- 
- 
- ansible-playbook playbooks/omnia.yml --vault-password-file /root/.vault_pass
- 
+```bash title="Run on: OIM host
+ansible-playbook playbooks/omnia.yml --vault-password-file /root/.vault_pass
+```
 
  1. If you have forgotten the vault password, you will need to recreate the credentials file. There is no way to recover an AES-256 encrypted vault without the original password:
 
- 
- 
- # Back up the old file
- cp input/credentials.yml input/credentials.yml.bak
- 
- # Create a new encrypted file
- ansible-vault create input/credentials.yml
- 
+```bash title="Run on: OIM host
+# Back up the old file
+cp input/credentials.yml input/credentials.yml.bak
+
+# Create a new encrypted file
+ansible-vault create input/credentials.yml
+```
 
 Info
 

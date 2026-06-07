@@ -25,13 +25,12 @@ If you ran the `discovery.yml` playbook, PXE boot order is typically configured 
 
  1. **Verify OIM boot services are running** :
 
-Run on: OIM host
- 
- 
- systemctl is-active coredhcp.service
- systemctl is-active tftpd.service
- systemctl is-active image-server.service
- systemctl is-active bss.service
+```bash title="Run on: OIM host"
+systemctl is-active coredhcp.service
+systemctl is-active tftpd.service
+systemctl is-active image-server.service
+systemctl is-active bss.service
+```
  
 
 All services should report `active`.
@@ -42,36 +41,33 @@ a. Open a web browser and navigate to `https://<bmc-ip>`. b. Log in with iDRAC c
 
 Alternatively, configure via Redfish from the OIM:
 
-Run on: OIM host
- 
- 
- curl -sk -X PATCH \
- https://<bmc-ip>/redfish/v1/Systems/System.Embedded.1 \
- -u root:<bmc-password> \
- -H "Content-Type: application/json" \
- -d '{"Boot": {"BootSourceOverrideTarget": "Pxe", "BootSourceOverrideEnabled": "Continuous"}}'
+```bash title="Run on: OIM host"
+curl -sk -X PATCH \
+https://<bmc-ip>/redfish/v1/Systems/System.Embedded.1 \
+-u root:<bmc-password> \
+-H "Content-Type: application/json" \
+-d '{"Boot": {"BootSourceOverrideTarget": "Pxe", "BootSourceOverrideEnabled": "Continuous"}}'
+```
  
 
  1. **Power-cycle the target servers** to initiate PXE boot:
 
-Run on: OIM host
- 
- 
- # Using Redfish to power-cycle a single server
- curl -sk -X POST \
- https://<bmc-ip>/redfish/v1/Systems/System.Embedded.1/Actions/ComputerSystem.Reset \
- -u root:<bmc-password> \
- -H "Content-Type: application/json" \
- -d '{"ResetType": "ForceRestart"}'
+```bash title="Run on: OIM host"
+# Using Redfish to power-cycle a single server
+curl -sk -X POST \
+https://<bmc-ip>/redfish/v1/Systems/System.Embedded.1/Actions/ComputerSystem.Reset \
+-u root:<bmc-password> \
+-H "Content-Type: application/json" \
+-d '{"ResetType": "ForceRestart"}'
+```
  
 
 Or power-cycle all nodes from the omnia_core container:
 
-Run on: omnia_core container
- 
- 
- # Power-cycle all discovered nodes
- ochami node power --action restart --all
+```bash title="Run on: omnia_core container"
+# Power-cycle all discovered nodes
+ochami node power --action restart --all
+```
  
 
  1. **Monitor the PXE boot process** :
@@ -93,38 +89,34 @@ Run on: omnia_core container
 
  1. **Ping each provisioned node** from the OIM:
 
-Run on: omnia_core container
- 
- 
- # Ping all nodes listed in the mapping file
- for ip in $(awk -F',' 'NR>1 {print $7}' /opt/omnia/input/project_default/pxe_mapping_file.csv); do
+```bash title="Run on: omnia_core container"
+# Ping all nodes listed in the mapping file
+for ip in $(awk -F',' 'NR>1 {print $7}' /opt/omnia/input/project_default/pxe_mapping_file.csv); do
  echo -n "$ip: "
  ping -c 1 -W 2 $ip > /dev/null 2>&1 && echo "OK" || echo "UNREACHABLE"
- done
+done
+```
  
 
  1. **SSH into a provisioned node** to verify the OS is installed:
 
-Run on: omnia_core container
- 
- 
- ssh root@10.5.0.101
+```bash title="Run on: omnia_core container"
+ssh root@10.5.0.101
+```
  
 
-Run on: provisioned node
- 
- 
- cat /etc/os-release
- hostname
- ip addr show
+```bash title="Run on: provisioned node"
+cat /etc/os-release
+hostname
+ip addr show
+```
  
 
  1. **Verify node registration in OpenCHAMI** :
 
-Run on: omnia_core container
- 
- 
- ochami node list
+```bash title="Run on: omnia_core container"
+ochami node list
+```
  
 
 All nodes should show a `provisioned` or `ready` state.
@@ -149,9 +141,9 @@ All nodes should show a `provisioned` or `ready` state.
 
  * Verify the image server is running:
 
-Run on: OIM host
- 
- podman logs image-server
+```bash title="Run on: OIM host"
+podman logs image-server
+```
  
 
 **Node boots but gets the wrong OS** \- Verify the BSS configuration matches the expected image:

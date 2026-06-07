@@ -57,21 +57,19 @@ Parameter | Type | Required | Default | Description
  
 ## Usage example[¶](#usage-example "Permanent link")
 
-File: /opt/omnia/input/project_default/security_config.yml
- 
- 
- auth_type: "ldap"
- ldap_uri: "ldap://10.5.0.50"
- ldap_base_dn: "dc=hpc,dc=example,dc=com"
- ldap_bind_dn: "cn=admin,dc=hpc,dc=example,dc=com"
- ldap_tls_enabled: false
- 
- enable_kerberos: false
- 
- enable_firewall: true
- enable_selinux: true
- ssh_key_auth_only: false
- 
+```yaml title="File: /opt/omnia/input/project_default/security_config.yml
+auth_type: "ldap"
+ldap_uri: "ldap://10.5.0.50"
+ldap_base_dn: "dc=hpc,dc=example,dc=com"
+ldap_bind_dn: "cn=admin,dc=hpc,dc=example,dc=com"
+ldap_tls_enabled: false
+
+enable_kerberos: false
+
+enable_firewall: true
+enable_selinux: true
+ssh_key_auth_only: false
+```
 
 Info
 

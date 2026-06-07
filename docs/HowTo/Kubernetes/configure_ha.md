@@ -18,30 +18,27 @@ Omnia uses **kube-vip** or **keepalived** to manage the virtual IP, depending on
 
  1. **Enter the omnia_core container** :
 
-Run on: OIM host
- 
- 
- ssh omnia_core
+```bash title="Run on: OIM host"
+ssh omnia_core
+```
  
 
  1. **Configure the virtual IP** in `omnia_config.yml`:
 
-Run on: omnia_core container
- 
- 
- vi /opt/omnia/input/project_default/omnia_config.yml
+```bash title="Run on: omnia_core container"
+vi /opt/omnia/input/project_default/omnia_config.yml
+```
  
 
 Add or update the HA parameters:
 
-File: /opt/omnia/input/project_default/omnia_config.yml
- 
- 
- ---
- # Kubernetes HA configuration
- k8s_ha_enabled: true
- k8s_vip: "10.5.0.200"
- k8s_vip_interface: "eno1"
+```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml
+---
+# Kubernetes HA configuration
+k8s_ha_enabled: true
+k8s_vip: "10.5.0.200"
+k8s_vip_interface: "eno1"
+```
  
 
 !!! warning
@@ -53,11 +50,10 @@ File: /opt/omnia/input/project_default/omnia_config.yml
 
  1. **Run the omnia.yml playbook** (or re-run to apply HA changes):
 
-Run on: omnia_core container
- 
- 
- cd /omnia
- ansible-playbook omnia.yml --ask-vault-pass
+```bash title="Run on: omnia_core container"
+cd /omnia
+ansible-playbook omnia.yml --ask-vault-pass
+```
  
 
 If the cluster is already deployed, the playbook will:
@@ -136,61 +132,54 @@ c. **Configure keepalived** on backup control-plane nodes:
 
  1. **Verify the VIP is active** :
 
-Run on: OIM host
- 
- 
- ping -c 3 10.5.0.200
- 
+```bash title="Run on: OIM host"
+ping -c 3 10.5.0.200
+```
+
 
  1. **Check which node currently holds the VIP** :
 
-Run on: each K8s control plane node
- 
- 
- ip addr show eno1 | grep "10.5.0.200"
+```bash title="Run on: each K8s control plane node"
+ip addr show eno1 | grep "10.5.0.200"
+```
  
 
 Only one node should show the VIP.
 
  1. **Access the Kubernetes API via the VIP** :
 
-Run on: K8s control plane node
- 
- 
- kubectl --server=https://10.5.0.200:6443 get nodes
+```bash title="Run on: K8s control plane node"
+kubectl --server=https://10.5.0.200:6443 get nodes
+```
  
 
  1. **Test failover** by stopping keepalived on the active node:
 
-Run on: active K8s control plane node
- 
- 
- systemctl stop keepalived
+```bash title="Run on: active K8s control plane node"
+systemctl stop keepalived
+```
  
 
 Then verify the VIP migrated:
 
-Run on: OIM host
- 
- 
- ping -c 3 10.5.0.200
- # Should still respond -- VIP migrated to a backup node
+```bash title="Run on: OIM host"
+ping -c 3 10.5.0.200
+# Should still respond -- VIP migrated to a backup node
+```
  
 
 Re-enable keepalived:
 
-Run on: previously active node
- 
- 
- systemctl start keepalived
+```bash title="Run on: previously active node"
+systemctl start keepalived
+```
  
 
  1. **Update kubeconfig** to use the VIP:
 
-Run on: K8s control plane node
- 
- 
- kubectl config set-cluster kubernetes --server=https://10.5.0.200:6443
+```bash title="Run on: K8s control plane node"
+kubectl config set-cluster kubernetes --server=https://10.5.0.200:6443
+```
  
 
 ## Next Steps[¶](#next-steps "Permanent link")
@@ -202,28 +191,25 @@ Run on: K8s control plane node
 
 **VIP is not reachable** Check keepalived status on all control-plane nodes:
 
-Run on: each K8s control plane node
- 
- 
- systemctl status keepalived
- journalctl -u keepalived --no-pager -n 20
+```bash title="Run on: each K8s control plane node"
+systemctl status keepalived
+journalctl -u keepalived --no-pager -n 20
+```
  
 
 **VIP does not failover** Verify VRRP traffic is allowed on the network. Check for firewall rules blocking multicast:
 
-Run on: K8s control plane node
- 
- 
- firewall-cmd --add-protocol=vrrp --permanent
- firewall-cmd --reload
+```bash title="Run on: K8s control plane node"
+firewall-cmd --add-protocol=vrrp --permanent
+firewall-cmd --reload
+```
  
 
 **Both nodes claim the VIP (split-brain)** Ensure all control-plane nodes have the same `virtual_router_id` and `auth_pass` in keepalived.conf. Check network connectivity between control-plane nodes.
 
 **kubectl fails with "connection refused" on VIP** Verify the API server is listening on the VIP address:
 
-Run on: K8s control plane node
- 
- 
- ss -tlnp | grep 6443
+```bash title="Run on: K8s control plane node"
+ss -tlnp | grep 6443
+```
  

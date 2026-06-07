@@ -29,47 +29,41 @@ This guide covers three approaches:
 
  1. **Install a package on all compute nodes** :
 
-Run on: omnia_core container
- 
- 
- ansible slurm_node -m dnf -a "name=htop state=present"
+```bash title="Run on: omnia_core container"
+ansible slurm_node -m dnf -a "name=htop state=present"
+```
  
 
  1. **Install multiple packages at once** :
 
-Run on: omnia_core container
- 
- 
- ansible slurm_node -m dnf -a "name=gcc,gcc-c++,make,cmake state=present"
+```bash title="Run on: omnia_core container"
+ansible slurm_node -m dnf -a "name=gcc,gcc-c++,make,cmake state=present"
+```
  
 
  1. **Install on a specific group of nodes** :
 
-Run on: omnia_core container
- 
- 
- # Install only on login nodes
- ansible login_node -m dnf -a "name=emacs,vim-enhanced state=present"
+```bash title="Run on: omnia_core container"
+# Install only on login nodes
+ansible login_node -m dnf -a "name=emacs,vim-enhanced state=present"
+```
  
 
  1. **Install from a specific repository** :
 
-Run on: omnia_core container
- 
- 
- ansible slurm_node -m dnf -a "name=openmpi-devel enablerepo=epel state=present"
+```bash title="Run on: omnia_core container"
+ansible slurm_node -m dnf -a "name=openmpi-devel enablerepo=epel state=present"
+```
  
 
 ### Approach 2: Custom Ansible Playbook[¶](#approach-2-custom-ansible-playbook "Permanent link")
 
  1. **Create a custom playbook** for repeatable deployments:
 
-Run on: omnia_core container
- 
- 
- cat <<'EOF' > /omnia/custom_packages.yml
- ---
- - name: Deploy custom packages to compute nodes
+```yaml title="Run on: omnia_core container"
+cat <<'EOF' > /omnia/custom_packages.yml
+---
+- name: Deploy custom packages to compute nodes
  hosts: slurm_node
  become: true
  tasks:
@@ -84,7 +78,7 @@ Run on: omnia_core container
  - autoconf
  - automake
  state: present
- 
+
  - name: Install scientific libraries
  dnf:
  name:
@@ -93,7 +87,7 @@ Run on: omnia_core container
  - fftw-devel
  - hdf5-devel
  state: present
- 
+
  - name: Install Python scientific stack
  pip:
  name:
@@ -102,7 +96,7 @@ Run on: omnia_core container
  - matplotlib
  - pandas
  executable: pip3
- 
+
  - name: Install monitoring tools
  dnf:
  name:
@@ -111,92 +105,85 @@ Run on: omnia_core container
  - sysstat
  - perf
  state: present
- EOF
+EOF
+```
  
 
  1. **Run the custom playbook** :
 
-Run on: omnia_core container
- 
- 
- cd /omnia
- ansible-playbook custom_packages.yml
+```bash title="Run on: omnia_core container"
+cd /omnia
+ansible-playbook custom_packages.yml
+```
  
 
 ### Approach 3: Custom Pulp Repository[¶](#approach-3-custom-pulp-repository "Permanent link")
 
  1. **Add custom RPMs to Pulp** for automatic deployment to new nodes:
 
-Run on: omnia_core container
- 
- 
- # Create a custom repository in Pulp
- pulp rpm repository create --name custom-packages
- 
- # Upload custom RPMs
- pulp rpm content upload --file /path/to/custom-package.rpm --repository custom-packages
- 
- # Create publication and distribution
- pulp rpm publication create --repository custom-packages
- pulp rpm distribution create --name custom-packages \
- --base-path custom-packages \
- --repository custom-packages
+```bash title="Run on: omnia_core container"
+# Create a custom repository in Pulp
+pulp rpm repository create --name custom-packages
+
+# Upload custom RPMs
+pulp rpm content upload --file /path/to/custom-package.rpm --repository custom-packages
+
+# Create publication and distribution
+pulp rpm publication create --repository custom-packages
+pulp rpm distribution create --name custom-packages \
+--base-path custom-packages \
+--repository custom-packages
+```
  
 
  1. **Configure nodes to use the custom repository** :
 
-Run on: omnia_core container
- 
- 
- ansible all -m yum_repository -a "
- name=custom-packages
- description='Custom Omnia Packages'
- baseurl=http://<oim-ip>:8080/pulp/content/custom-packages/
- gpgcheck=0
- enabled=1
- "
+```bash title="Run on: omnia_core container"
+ansible all -m yum_repository -a "
+name=custom-packages
+description='Custom Omnia Packages'
+baseurl=http://<oim-ip>:8080/pulp/content/custom-packages/
+gpgcheck=0
+enabled=1
+"
+```
  
 
  1. **Install from the custom repository** :
 
-Run on: omnia_core container
- 
- 
- ansible slurm_node -m dnf -a "name=custom-package state=present enablerepo=custom-packages"
+```bash title="Run on: omnia_core container"
+ansible slurm_node -m dnf -a "name=custom-package state=present enablerepo=custom-packages"
+```
  
 
 ## Verification[¶](#verification "Permanent link")
 
  1. **Verify packages are installed** :
 
-Run on: omnia_core container
- 
- 
- ansible slurm_node -m shell -a "rpm -q gcc cmake htop"
+```bash title="Run on: omnia_core container"
+ansible slurm_node -m shell -a "rpm -q gcc cmake htop"
+```
  
 
  1. **Check package versions** :
 
-Run on: omnia_core container
- 
- 
- ansible slurm_node -m shell -a "gcc --version | head -1"
+```bash title="Run on: omnia_core container"
+ansible slurm_node -m shell -a "gcc --version | head -1"
+```
  
 
  1. **Verify Python packages** :
 
-Run on: omnia_core container
- 
- 
- ansible slurm_node -m shell -a "pip3 list | grep numpy"
+```bash title="Run on: omnia_core container"
+ansible slurm_node -m shell -a "pip3 list | grep numpy"
+```
  
 
  1. **Verify custom Pulp repository** is available:
 
-Run on: compute node
- 
- 
- dnf repolist | grep custom-packages
+```bash title="Run on: compute node"
+dnf repolist | grep custom-packages
+```
  
 
 ## Next Steps[¶](#next-steps "Permanent link")
@@ -208,41 +195,36 @@ Run on: compute node
 
 **"No package available" error** Verify the package name and check available repositories:
 
-Run on: compute node
- 
- 
- dnf search <package-name>
- dnf repolist
+```bash title="Run on: compute node"
+dnf search <package-name>
+dnf repolist
+```
  
 
 **Package conflicts** Check for conflicting packages:
 
-Run on: compute node
- 
- 
- dnf check
+```bash title="Run on: compute node"
+dnf check
+```
  
 
 **Custom Pulp repository not accessible** Verify the distribution URL:
 
-Run on: compute node
- 
- 
- curl -s http://<oim-ip>:8080/pulp/content/custom-packages/repodata/repomd.xml | head
+```bash title="Run on: compute node"
+curl -s http://<oim-ip>:8080/pulp/content/custom-packages/repodata/repomd.xml | head
+```
  
 
 **Pip install fails** Ensure pip and Python are installed:
 
-Run on: compute node
- 
- 
- dnf install -y python3 python3-pip
+```bash title="Run on: compute node"
+dnf install -y python3 python3-pip
+```
  
 
 **Ansible times out on large installations** Increase the Ansible timeout:
 
-Run on: omnia_core container
- 
- 
- ansible slurm_node -m dnf -a "name=large-package state=present" -e "ansible_timeout=600"
+```bash title="Run on: omnia_core container"
+ansible slurm_node -m dnf -a "name=large-package state=present" -e "ansible_timeout=600"
+```
  

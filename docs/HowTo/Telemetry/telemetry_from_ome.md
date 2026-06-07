@@ -22,68 +22,62 @@ OpenManage Enterprise (OME) aggregates hardware health, alerts, and inventory da
 
  1. **Enter the omnia_core container** :
 
-Run on: OIM host
- 
- 
- ssh omnia_core
+```bash title="Run on: OIM host"
+ssh omnia_core
+```
  
 
  1. **Configure OME telemetry** in `omnia_config.yml`:
 
-Run on: omnia_core container
- 
- 
- vi /opt/omnia/input/project_default/omnia_config.yml
+```bash title="Run on: omnia_core container"
+vi /opt/omnia/input/project_default/omnia_config.yml
+```
  
 
-File: /opt/omnia/input/project_default/omnia_config.yml
- 
- 
- ---
- # OME telemetry configuration
- ome_telemetry_enabled: true
- ome_ip: "10.5.1.50"
- ome_port: 443
- ome_username: "omnia_readonly"
- ome_password: "" # Set via credentials utility
- ome_collection_interval: 300 # seconds
- 
- # SFM telemetry configuration (optional)
- sfm_telemetry_enabled: true
- sfm_ip: "10.5.1.51"
- sfm_port: 443
- sfm_username: "omnia_readonly"
- sfm_password: "" # Set via credentials utility
- sfm_collection_interval: 300
+```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml
+---
+# OME telemetry configuration
+ome_telemetry_enabled: true
+ome_ip: "10.5.1.50"
+ome_port: 443
+ome_username: "omnia_readonly"
+ome_password: "" # Set via credentials utility
+ome_collection_interval: 300 # seconds
+
+# SFM telemetry configuration (optional)
+sfm_telemetry_enabled: true
+sfm_ip: "10.5.1.51"
+sfm_port: 443
+sfm_username: "omnia_readonly"
+sfm_password: "" # Set via credentials utility
+sfm_collection_interval: 300
+```
  
 
  1. **Set OME/SFM credentials** using the credential utility:
 
-Run on: omnia_core container
- 
- 
- cd /omnia/utils/credential_utility
- ansible-playbook get_config_credentials.yml --tags telemetry
+```bash title="Run on: omnia_core container"
+cd /omnia/utils/credential_utility
+ansible-playbook get_config_credentials.yml --tags telemetry
+```
  
 
  1. **Verify OME API access** from the K8s cluster:
 
-Run on: K8s control plane node
- 
- 
- curl -sk https://10.5.1.50/api/SessionService/Sessions \
- -X POST \
- -H "Content-Type: application/json" \
- -d '{"UserName":"omnia_readonly","Password":"YourPassword","SessionType":"API"}'
+```bash title="Run on: K8s control plane node"
+curl -sk https://10.5.1.50/api/SessionService/Sessions \
+-X POST \
+-H "Content-Type: application/json" \
+-d '{"UserName":"omnia_readonly","Password":"YourPassword","SessionType":"API"}'
+```
  
 
  1. **Run the telemetry playbook** to deploy the OME/SFM collectors:
 
-Run on: omnia_core container
- 
- 
- cd /omnia
- ansible-playbook telemetry.yml --ask-vault-pass
+```bash title="Run on: omnia_core container"
+cd /omnia
+ansible-playbook telemetry.yml --ask-vault-pass
+```
  
 
 The playbook will:
@@ -97,29 +91,26 @@ The playbook will:
 
  1. **Verify OME/SFM collector pods are running** :
 
-Run on: K8s control plane node
- 
- 
- kubectl get pods -n telemetry | grep -E "ome|sfm"
+```bash title="Run on: K8s control plane node"
+kubectl get pods -n telemetry | grep -E "ome|sfm"
+```
  
 
  1. **Check collector logs** for successful data collection:
 
-Run on: K8s control plane node
- 
- 
- kubectl logs -n telemetry -l app=ome-collector --tail=20
- kubectl logs -n telemetry -l app=sfm-collector --tail=20
+```bash title="Run on: K8s control plane node"
+kubectl logs -n telemetry -l app=ome-collector --tail=20
+kubectl logs -n telemetry -l app=sfm-collector --tail=20
+```
  
 
  1. **Verify OME metrics in VictoriaMetrics** :
 
-Run on: K8s control plane node
- 
- 
- VM_POD=$(kubectl get pod -n telemetry -l app=victoriametrics -o jsonpath='{.items[0].metadata.name}')
- kubectl exec -n telemetry $VM_POD -- \
- curl -s "http://localhost:8428/api/v1/query?query=ome_device_health"
+```bash title="Run on: K8s control plane node"
+VM_POD=$(kubectl get pod -n telemetry -l app=victoriametrics -o jsonpath='{.items[0].metadata.name}')
+kubectl exec -n telemetry $VM_POD -- \
+curl -s "http://localhost:8428/api/v1/query?query=ome_device_health"
+```
  
 
  1. **Check Grafana dashboards** for OME/SFM panels:
@@ -135,28 +126,25 @@ Open Grafana and navigate to the **OME Overview** and **SFM Fabric Health** dash
 
 **OME collector returns "authentication failed"** Verify credentials:
 
-Run on: K8s control plane node
- 
- 
- curl -sk https://10.5.1.50/api/SessionService/Sessions \
- -X POST -H "Content-Type: application/json" \
- -d '{"UserName":"omnia_readonly","Password":"YourPassword","SessionType":"API"}'
+```bash title="Run on: K8s control plane node"
+curl -sk https://10.5.1.50/api/SessionService/Sessions \
+-X POST -H "Content-Type: application/json" \
+-d '{"UserName":"omnia_readonly","Password":"YourPassword","SessionType":"API"}'
+```
  
 
 **OME collector returns "connection refused"** Check network connectivity:
 
-Run on: K8s worker node
- 
- 
- curl -sk https://10.5.1.50/api/ApplicationService/Info
+```bash title="Run on: K8s worker node"
+curl -sk https://10.5.1.50/api/ApplicationService/Info
+```
  
 
 **SFM metrics not appearing** Verify SFM is accessible and the API version is supported:
 
-Run on: K8s worker node
- 
- 
- curl -sk https://10.5.1.51/api/
+```bash title="Run on: K8s worker node"
+curl -sk https://10.5.1.51/api/
+```
  
 
 **Certificate errors with OME/SFM** If using self-signed certificates, configure the collectors to skip TLS verification (development only) or import the CA certificate.

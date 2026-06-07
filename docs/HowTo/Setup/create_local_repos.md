@@ -24,29 +24,26 @@ This ensures all cluster nodes install packages from a consistent, local mirror,
 
  1. **Enter the omnia_core container** :
 
-Run on: OIM host
- 
- 
- ssh omnia_core
+```bash title="Run on: OIM host"
+ssh omnia_core
+```
  
 
  1. **Verify software_config.json is configured** with the desired software stacks:
 
-Run on: omnia_core container
- 
- 
- cat /opt/omnia/input/project_default/software_config.json | python3 -m json.tool
+```bash title="Run on: omnia_core container"
+cat /opt/omnia/input/project_default/software_config.json | python3 -m json.tool
+```
  
 
 Confirm the `softwares` list includes all packages you need (e.g., `slurm`, `cuda`, `openldap`, `apptainer`).
 
  1. **Run the local_repo playbook** :
 
-Run on: omnia_core container
- 
- 
- cd /omnia/local_repo
- ansible-playbook local_repo.yml
+```bash title="Run on: omnia_core container"
+cd /omnia/local_repo
+ansible-playbook local_repo.yml
+```
  
 
 !!! note
@@ -76,49 +73,44 @@ The playbook will:
 
  1. **Monitor synchronization progress** (in a separate terminal):
 
-Run on: OIM host
- 
- 
- podman logs -f pulp
+```bash title="Run on: OIM host"
+podman logs -f pulp
+```
  
 
 ## Verification[¶](#verification "Permanent link")
 
  1. **Check Pulp repository status** via the API:
 
-Run on: OIM host
- 
- 
- curl -s http://localhost:8080/pulp/api/v3/distributions/rpm/rpm/ | python3 -m json.tool
+```bash title="Run on: OIM host"
+curl -s http://localhost:8080/pulp/api/v3/distributions/rpm/rpm/ | python3 -m json.tool
+```
  
 
 Each synced repository should have a distribution with a `base_url`.
 
  1. **List available repositories** from a node's perspective:
 
-Run on: OIM host
- 
- 
- curl -s http://localhost:8080/pulp/content/ | grep -oP 'href="[^"]*"'
+```bash title="Run on: OIM host"
+curl -s http://localhost:8080/pulp/content/ | grep -oP 'href="[^"]*"'
+```
  
 
  1. **Test package availability** by querying a specific repository:
 
-Run on: OIM host
- 
- 
- curl -s http://localhost:8080/pulp/content/baseos/repodata/repomd.xml | head -5
+```bash title="Run on: OIM host"
+curl -s http://localhost:8080/pulp/content/baseos/repodata/repomd.xml | head -5
+```
  
 
 Expected: XML content from the repository metadata.
 
  1. **Verify disk usage** to ensure sync completed:
 
-Run on: OIM host
- 
- 
- df -h /var/lib/containers
- du -sh /var/lib/pulp/
+```bash title="Run on: OIM host"
+df -h /var/lib/containers
+du -sh /var/lib/pulp/
+```
  
 
 ## Next Steps[¶](#next-steps "Permanent link")
@@ -130,49 +122,44 @@ Run on: OIM host
 
 **Sync fails with "authentication required" (RHEL)** Ensure the OIM has an active RHEL subscription:
 
-Run on: OIM host
- 
- 
- subscription-manager status
- subscription-manager repos --list-enabled
+```bash title="Run on: OIM host"
+subscription-manager status
+subscription-manager repos --list-enabled
+```
  
 
 If the subscription is not active, register:
 
-Run on: OIM host
- 
- 
- subscription-manager register --username <rhn-user> --password <rhn-pass>
- subscription-manager attach --auto
+```bash title="Run on: OIM host"
+subscription-manager register --username <rhn-user> --password <rhn-pass>
+subscription-manager attach --auto
+```
  
 
 **Sync fails with network timeout** Check internet connectivity from the Pulp container:
 
-Run on: OIM host
- 
- 
- podman exec pulp curl -I https://dl.fedoraproject.org
+```bash title="Run on: OIM host"
+podman exec pulp curl -I https://dl.fedoraproject.org
+```
  
 
 **Insufficient disk space** Pulp repositories can consume significant storage. Free up space or expand the partition:
 
-Run on: OIM host
- 
- 
- du -sh /var/lib/pulp/*
- # Remove old repository versions if needed
- podman exec pulp pulpcore-manager repository-version-cleanup
+```bash title="Run on: OIM host"
+du -sh /var/lib/pulp/*
+# Remove old repository versions if needed
+podman exec pulp pulpcore-manager repository-version-cleanup
+```
  
 
 **Playbook hangs during sync** Large repositories may take several hours. Check that the Pulp workers are active:
 
-Run on: OIM host
- 
- 
- curl -s http://localhost:8080/pulp/api/v3/status/ | python3 -c "
- import sys, json
- data = json.load(sys.stdin)
- for w in data.get('online_workers', []):
+```bash title="Run on: OIM host"
+curl -s http://localhost:8080/pulp/api/v3/status/ | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+for w in data.get('online_workers', []):
  print(f'{w[\"name\"]}: {w[\"last_heartbeat\"]}')
- "
+"
+```
  

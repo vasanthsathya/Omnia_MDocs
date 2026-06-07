@@ -32,33 +32,30 @@ Additionally, an aggregate of the events taking place during storage, scheduler,
 Tip
 
 To follow a playbook log in real time while a playbook is running, open a second terminal on the OIM host:
- 
- 
- tail -f /opt/omnia/log/core/playbooks/omnia.log
- 
+```bash title="Run on: OIM host
+tail -f /opt/omnia/log/core/playbooks/omnia.log
+```
 
 ### Container logs[¶](#container-logs "Permanent link")
 
 OIM services run as Podman containers. Access their logs with the `podman logs` command:
 
-Run on: OIM host
- 
- 
- # List all running containers
- podman ps
- 
- # View logs for a specific container
- podman logs omnia_core
- podman logs ochami-smd
- podman logs ochami-bss
- podman logs coredhcp
- 
- # Follow logs in real time
- podman logs -f omnia_core
- 
- # View only the last 100 lines
- podman logs --tail 100 omnia_core
- 
+```bash title="Run on: OIM host
+# List all running containers
+podman ps
+
+# View logs for a specific container
+podman logs omnia_core
+podman logs ochami-smd
+podman logs ochami-bss
+podman logs coredhcp
+
+# Follow logs in real time
+podman logs -f omnia_core
+
+# View only the last 100 lines
+podman logs --tail 100 omnia_core
+```
 
 Container | What it logs 
 ---|--- 
@@ -72,15 +69,13 @@ Container | What it logs
 
 OpenCHAMI components write structured JSON logs accessible via Podman:
 
-Run on: OIM host
- 
- 
- # SMD logs (node state changes)
- podman logs ochami-smd 2>&1 | jq '.'
- 
- # BSS logs (boot requests)
- podman logs ochami-bss 2>&1 | jq '.'
- 
+```bash title="Run on: OIM host
+# SMD logs (node state changes)
+podman logs ochami-smd 2>&1 | jq '.'
+
+# BSS logs (boot requests)
+podman logs ochami-bss 2>&1 | jq '.'
+```
 
 ### Slurm logs[¶](#slurm-logs "Permanent link")
 
@@ -92,29 +87,25 @@ Path | Description
 `/var/log/slurm/slurmd.log` | Slurm compute daemon log (on each compute node). 
 `/var/log/slurm/slurmdbd.log` | Slurm database daemon log (job accounting). 
  
-Run on: Slurm nodes
- 
- 
- # On the Slurm control node
- tail -f /var/log/slurm/slurmctld.log
- 
- # On a compute node
- tail -f /var/log/slurm/slurmd.log
- 
+```bash title="Run on: Slurm nodes
+# On the Slurm control node
+tail -f /var/log/slurm/slurmctld.log
+
+# On a compute node
+tail -f /var/log/slurm/slurmd.log
+```
 
 ### Kubernetes logs[¶](#kubernetes-logs "Permanent link")
 
 On Kubernetes cluster nodes, use `kubectl` or `journalctl` to access logs:
 
-Run on: Kubernetes nodes
- 
- 
- # Pod logs
- kubectl logs <pod_name> -n <namespace>
- 
- # Kubelet logs on a specific node
- ssh <kube_node> journalctl -u kubelet -f
- 
+```bash title="Run on: Kubernetes nodes
+# Pod logs
+kubectl logs <pod_name> -n <namespace>
+
+# Kubelet logs on a specific node
+ssh <kube_node> journalctl -u kubelet -f
+```
 
 ## Logrotate configuration[¶](#logrotate-configuration "Permanent link")
 
@@ -122,20 +113,18 @@ Omnia configures `logrotate` to manage log file sizes on the OIM and prevent dis
 
 ### Default settings[¶](#default-settings "Permanent link")
 
-File: /etc/logrotate.d/omnia
- 
- 
- # /etc/logrotate.d/omnia
- /opt/omnia/log/core/playbooks/*.log {
- weekly
- rotate 12
- compress
- delaycompress
- missingok
- notifempty
- create 0640 root root
- }
- 
+```text title="File: /etc/logrotate.d/omnia
+# /etc/logrotate.d/omnia
+/opt/omnia/log/core/playbooks/*.log {
+weekly
+rotate 12
+compress
+delaycompress
+missingok
+notifempty
+create 0640 root root
+}
+```
 
 This configuration:
 
@@ -150,82 +139,74 @@ To adjust the rotation policy (for example, to rotate daily in high-throughput e
 
  1. Edit the logrotate configuration:
 
- 
- 
- vi /etc/logrotate.d/omnia
- 
+```bash title="Run on: OIM host
+vi /etc/logrotate.d/omnia
+```
 
  1. Change `weekly` to `daily` and adjust `rotate` to the desired number of files:
 
- 
- 
- /opt/omnia/log/core/playbooks/*.log {
- daily
- rotate 30
- compress
- delaycompress
- missingok
- notifempty
- create 0640 root root
- }
- 
+```text title="File: /etc/logrotate.d/omnia
+/opt/omnia/log/core/playbooks/*.log {
+daily
+rotate 30
+compress
+delaycompress
+missingok
+notifempty
+create 0640 root root
+}
+```
 
  1. Test the configuration:
 
- 
- 
- logrotate -d /etc/logrotate.d/omnia
- 
+```bash title="Run on: OIM host
+logrotate -d /etc/logrotate.d/omnia
+```
 
  1. Force an immediate rotation (optional):
 
- 
- 
- logrotate -f /etc/logrotate.d/omnia
- 
+```bash title="Run on: OIM host
+logrotate -f /etc/logrotate.d/omnia
+```
 
 ### Slurm logrotate[¶](#slurm-logrotate "Permanent link")
 
 Slurm logs are rotated separately. Omnia installs a Slurm-specific logrotate configuration on the control node:
 
-File: /etc/logrotate.d/slurm
- 
- 
- # /etc/logrotate.d/slurm
- /var/log/slurm/*.log {
- weekly
- rotate 8
- compress
- delaycompress
- missingok
- notifempty
- sharedscripts
- postrotate
- /usr/bin/pkill -HUP slurmctld 2>/dev/null || true
- /usr/bin/pkill -HUP slurmd 2>/dev/null || true
- endscript
- }
- 
+```text title="File: /etc/logrotate.d/slurm
+# /etc/logrotate.d/slurm
+/var/log/slurm/*.log {
+weekly
+rotate 8
+compress
+delaycompress
+missingok
+notifempty
+sharedscripts
+postrotate
+/usr/bin/pkill -HUP slurmctld 2>/dev/null || true
+/usr/bin/pkill -HUP slurmd 2>/dev/null || true
+endscript
+}
+```
 
 ## Sample log output[¶](#sample-log-output "Permanent link")
 
 A sample of the `omnia.log` is provided below:
 
-Sample omnia.log output
- 
- 
- 2021-02-15 15:17:36,877 p=2778 u=omnia n=ansible | [WARNING]: provided hosts
- list is empty, only localhost is available. Note that the implicit localhost does not
- match 'all'
- 2021-02-15 15:17:37,396 p=2778 u=omnia n=ansible | PLAY [Executing omnia roles]
- ************************************************************************************
- 2021-02-15 15:17:37,454 p=2778 u=omnia n=ansible | TASK [Gathering Facts]
- *****************************************************************************************
- 2021-02-15 15:17:38,856 p=2778 u=omnia n=ansible | ok: [localhost]
- 2021-02-15 15:17:38,885 p=2778 u=omnia n=ansible | TASK [common : Mount Path]
- **************************************************************************************
- 2021-02-15 15:17:38,969 p=2778 u=omnia n=ansible | ok: [localhost]
- 
+```text title="Sample omnia.log output
+2021-02-15 15:17:36,877 p=2778 u=omnia n=ansible | [WARNING]: provided hosts
+list is empty, only localhost is available. Note that the implicit localhost does not
+match 'all'
+2021-02-15 15:17:37,396 p=2778 u=omnia n=ansible | PLAY [Executing omnia roles]
+************************************************************************************
+2021-02-15 15:17:37,454 p=2778 u=omnia n=ansible | TASK [Gathering Facts]
+*****************************************************************************************
+2021-02-15 15:17:38,856 p=2778 u=omnia n=ansible | ok: [localhost]
+2021-02-15 15:17:38,885 p=2778 u=omnia n=ansible | TASK [common : Mount Path]
+**************************************************************************************
+2021-02-15 15:17:38,969 p=2778 u=omnia n=ansible | ok: [localhost]
+```
 
 These logs are intended to enable debugging.
 

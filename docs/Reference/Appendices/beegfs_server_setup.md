@@ -24,49 +24,43 @@ Network | 25 GbE or faster | Use dedicated NICs for BeeGFS traffic. 100 GbE reco
 
 ### Step 1: Add BeeGFS repository[¶](#step-1-add-beegfs-repository "Permanent link")
 
-Run on: BeeGFS server
- 
- 
- # Import the BeeGFS GPG key
- rpm --import https://www.beegfs.io/release/beegfs_7.4.3/gpg/GPG-KEY-beegfs
- 
- # Add the repository
- cat > /etc/yum.repos.d/beegfs.repo << 'EOF'
- [beegfs]
- name=BeeGFS
- baseurl=https://www.beegfs.io/release/beegfs_7.4.3/dists/rhel10
- gpgcheck=1
- gpgkey=https://www.beegfs.io/release/beegfs_7.4.3/gpg/GPG-KEY-beegfs
- enabled=1
- EOF
- 
+```bash title="Run on: BeeGFS server
+# Import the BeeGFS GPG key
+rpm --import https://www.beegfs.io/release/beegfs_7.4.3/gpg/GPG-KEY-beegfs
+
+# Add the repository
+cat > /etc/yum.repos.d/beegfs.repo << 'EOF'
+[beegfs]
+name=BeeGFS
+baseurl=https://www.beegfs.io/release/beegfs_7.4.3/dists/rhel10
+gpgcheck=1
+gpgkey=https://www.beegfs.io/release/beegfs_7.4.3/gpg/GPG-KEY-beegfs
+enabled=1
+EOF
+```
 
 ### Step 2: Install management service[¶](#step-2-install-management-service "Permanent link")
 
 On the management node:
 
-Run on: Management node
- 
- 
- dnf install -y beegfs-mgmtd
- mkdir -p /data/beegfs/mgmtd
- /opt/beegfs/sbin/beegfs-setup-mgmtd -p /data/beegfs/mgmtd
- systemctl enable --now beegfs-mgmtd
- 
+```bash title="Run on: Management node
+dnf install -y beegfs-mgmtd
+mkdir -p /data/beegfs/mgmtd
+/opt/beegfs/sbin/beegfs-setup-mgmtd -p /data/beegfs/mgmtd
+systemctl enable --now beegfs-mgmtd
+```
 
 ### Step 3: Install metadata service[¶](#step-3-install-metadata-service "Permanent link")
 
 On each metadata server:
 
-Run on: Metadata server
- 
- 
- dnf install -y beegfs-meta
- mkdir -p /data/beegfs/meta
- /opt/beegfs/sbin/beegfs-setup-meta -p /data/beegfs/meta \
+```bash title="Run on: Metadata server
+dnf install -y beegfs-meta
+mkdir -p /data/beegfs/meta
+/opt/beegfs/sbin/beegfs-setup-meta -p /data/beegfs/meta \
  -s <unique_server_id> -m <mgmtd_hostname>
- systemctl enable --now beegfs-meta
- 
+systemctl enable --now beegfs-meta
+```
 
 Note
 
@@ -76,15 +70,13 @@ Note
 
 On each storage server:
 
-Run on: Storage server
- 
- 
- dnf install -y beegfs-storage
- mkdir -p /data/beegfs/storage
- /opt/beegfs/sbin/beegfs-setup-storage -p /data/beegfs/storage \
+```bash title="Run on: Storage server
+dnf install -y beegfs-storage
+mkdir -p /data/beegfs/storage
+/opt/beegfs/sbin/beegfs-setup-storage -p /data/beegfs/storage \
  -s <unique_server_id> -i <storage_target_id> -m <mgmtd_hostname>
- systemctl enable --now beegfs-storage
- 
+systemctl enable --now beegfs-storage
+```
 
 Note
 
@@ -92,16 +84,14 @@ For multiple storage targets on a single node, run `beegfs-setup-storage` once p
 
 ### Step 5: Verify the server setup[¶](#step-5-verify-the-server-setup "Permanent link")
 
-Run on: BeeGFS server
- 
- 
- # Check registered servers (run from any node with beegfs-ctl)
- beegfs-ctl --listnodes --nodetype=meta
- beegfs-ctl --listnodes --nodetype=storage
- 
- # Check filesystem health
- beegfs-ctl --listtargets --state
- 
+```bash title="Run on: BeeGFS server
+# Check registered servers (run from any node with beegfs-ctl)
+beegfs-ctl --listnodes --nodetype=meta
+beegfs-ctl --listnodes --nodetype=storage
+
+# Check filesystem health
+beegfs-ctl --listtargets --state
+```
 
 ## Network configuration[¶](#network-configuration "Permanent link")
 
@@ -111,15 +101,13 @@ Configuration | Description
 `connNetFilterFile` | File listing allowed subnets, one per line (CIDR notation). Restricts BeeGFS traffic to specific networks. Example: `10.10.0.0/24`. 
 `connRDMAEnabled` | Set to `true` in the BeeGFS config files to enable RDMA (InfiniBand or RoCEv2) for data transfer. Requires compatible NICs. 
  
-Example: BeeGFS network configuration files
- 
- 
- # Example connInterfacesFile (/etc/beegfs/connInterfacesFile)
- enp175s0f0
- 
- # Example connNetFilterFile (/etc/beegfs/connNetFilterFile)
- 10.10.0.0/24
- 
+```text title="Example: BeeGFS network configuration files
+# Example connInterfacesFile (/etc/beegfs/connInterfacesFile)
+enp175s0f0
+
+# Example connNetFilterFile (/etc/beegfs/connNetFilterFile)
+10.10.0.0/24
+```
 
 ## Tuning parameters[¶](#tuning-parameters "Permanent link")
 

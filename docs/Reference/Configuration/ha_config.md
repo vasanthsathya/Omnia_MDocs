@@ -31,15 +31,13 @@ Component | Description
 
 ## Usage example[¶](#usage-example "Permanent link")
 
-File: /opt/omnia/input/project_default/high_availability_config.yml
- 
- 
- ha_enabled: true
- ha_virtual_ip: "10.5.0.250"
- ha_load_balancer: "kube-vip"
- ha_control_plane_port: 6443
- ha_etcd_external: false
- 
+```yaml title="File: /opt/omnia/input/project_default/high_availability_config.yml
+ha_enabled: true
+ha_virtual_ip: "10.5.0.250"
+ha_load_balancer: "kube-vip"
+ha_control_plane_port: 6443
+ha_etcd_external: false
+```
 
 Info
 

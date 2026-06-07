@@ -24,28 +24,25 @@ A complete telemetry verification traces the data flow through every stage:
 
  1. **Check iDRAC collector** is retrieving metrics:
 
-Run on: K8s control plane node
- 
- 
- kubectl logs -n telemetry -l app=idrac-collector --tail=10
+```bash title="Run on: K8s control plane node"
+kubectl logs -n telemetry -l app=idrac-collector --tail=10
+```
  
 
 Look for successful metric retrieval messages.
 
  1. **Check LDMS samplers** are running on compute nodes:
 
-Run on: omnia_core container
- 
- 
- ansible slurm_node -m shell -a "systemctl is-active ldmsd"
+```bash title="Run on: omnia_core container"
+ansible slurm_node -m shell -a "systemctl is-active ldmsd"
+```
  
 
  1. **Query LDMS metrics** locally on a compute node:
 
-Run on: compute node
- 
- 
- ldms_ls -h localhost -p 411 -v
+```bash title="Run on: compute node"
+ldms_ls -h localhost -p 411 -v
+```
  
 
 Should list active metric sets.
@@ -54,86 +51,79 @@ Should list active metric sets.
 
  1. **List Kafka topics** :
 
-Run on: K8s control plane node
- 
- 
- KAFKA_POD=$(kubectl get pod -n telemetry -l app=kafka -o jsonpath='{.items[0].metadata.name}')
- kubectl exec -n telemetry $KAFKA_POD -- kafka-topics.sh --list --bootstrap-server localhost:9092
+```bash title="Run on: K8s control plane node"
+KAFKA_POD=$(kubectl get pod -n telemetry -l app=kafka -o jsonpath='{.items[0].metadata.name}')
+kubectl exec -n telemetry $KAFKA_POD -- kafka-topics.sh --list --bootstrap-server localhost:9092
+```
  
 
  1. **Check topic message counts** :
 
-Run on: K8s control plane node
- 
- 
- kubectl exec -n telemetry $KAFKA_POD -- kafka-run-class.sh kafka.tools.GetOffsetShell \
- --broker-list localhost:9092 --topic omnia-telemetry
+```bash title="Run on: K8s control plane node"
+kubectl exec -n telemetry $KAFKA_POD -- kafka-run-class.sh kafka.tools.GetOffsetShell \
+--broker-list localhost:9092 --topic omnia-telemetry
+```
  
 
 Message offsets should be increasing.
 
  1. **Read sample messages** from a topic:
 
-Run on: K8s control plane node
- 
- 
- kubectl exec -n telemetry $KAFKA_POD -- kafka-console-consumer.sh \
- --bootstrap-server localhost:9092 \
- --topic omnia-telemetry \
- --from-beginning \
- --max-messages 3
+```bash title="Run on: K8s control plane node"
+kubectl exec -n telemetry $KAFKA_POD -- kafka-console-consumer.sh \
+--bootstrap-server localhost:9092 \
+--topic omnia-telemetry \
+--from-beginning \
+--max-messages 3
+```
  
 
 ### Stage 3: Verify Storage (VictoriaMetrics)[¶](#stage-3-verify-storage-victoriametrics "Permanent link")
 
  1. **Check VictoriaMetrics health** :
 
-Run on: K8s control plane node
- 
- 
- VM_POD=$(kubectl get pod -n telemetry -l app=victoriametrics -o jsonpath='{.items[0].metadata.name}')
- kubectl exec -n telemetry $VM_POD -- curl -s http://localhost:8428/health
+```bash title="Run on: K8s control plane node"
+VM_POD=$(kubectl get pod -n telemetry -l app=victoriametrics -o jsonpath='{.items[0].metadata.name}')
+kubectl exec -n telemetry $VM_POD -- curl -s http://localhost:8428/health
+```
  
 
 Expected: `OK`
 
  1. **Query stored metrics** :
 
-Run on: K8s control plane node
- 
- 
- kubectl exec -n telemetry $VM_POD -- \
- curl -s "http://localhost:8428/api/v1/query?query=up" | python3 -m json.tool
+```bash title="Run on: K8s control plane node"
+kubectl exec -n telemetry $VM_POD -- \
+curl -s "http://localhost:8428/api/v1/query?query=up" | python3 -m json.tool
+```
  
 
  1. **Check active time series count** :
 
-Run on: K8s control plane node
- 
- 
- kubectl exec -n telemetry $VM_POD -- \
- curl -s "http://localhost:8428/api/v1/status/tsdb" | python3 -c "
- import sys, json
- data = json.load(sys.stdin)
- print(f'Active time series: {data.get(\"data\", {}).get(\"totalSeries\", \"unknown\")}')
- "
- 
+```bash title="Run on: K8s control plane node"
+kubectl exec -n telemetry $VM_POD -- \
+curl -s "http://localhost:8428/api/v1/status/tsdb" | python3 -c "
+import sys, json
+data = json.load(sys.stdin)
+print(f'Active time series: {data.get(\"data\", {}).get(\"totalSeries\", \"unknown\")}')
+"
+```
 
  1. **Query a specific metric** (e.g., iDRAC temperature):
 
-Run on: K8s control plane node
- 
- kubectl exec -n telemetry $VM_POD -- \
- curl -s "http://localhost:8428/api/v1/query?query=idrac_SystemBoardInletTemp"
+```bash title="Run on: K8s control plane node"
+kubectl exec -n telemetry $VM_POD -- \
+curl -s "http://localhost:8428/api/v1/query?query=idrac_SystemBoardInletTemp"
+```
  
 
 ### Stage 4: Verify Visualization (Grafana)[¶](#stage-4-verify-visualization-grafana "Permanent link")
 
  1. **Get the Grafana external IP** :
 
-Run on: K8s control plane node
- 
- kubectl get svc -n telemetry grafana
+```bash title="Run on: K8s control plane node"
+kubectl get svc -n telemetry grafana
+```
  
 
  2. **Open Grafana** in a browser: `http://<grafana-ip>:3000`
@@ -191,10 +181,10 @@ Visualization | Dashboard shows graphs | Data within last hour
 
  * Check K8s node resources (CPU/memory):
 
-Run on: K8s control plane node
- 
- kubectl top nodes
- kubectl top pods -n telemetry
+```bash title="Run on: K8s control plane node"
+kubectl top nodes
+kubectl top pods -n telemetry
+```
  
 
 **Metrics have stale timestamps** \- Verify NTP is synchronized on all nodes:
@@ -207,8 +197,7 @@ Run on: K8s control plane node
 
 **VictoriaMetrics running out of disk** Check retention settings and disk usage:
 
-Run on: K8s control plane node
- 
- 
- kubectl exec -n telemetry $VM_POD -- df -h /victoria-metrics-data
+```bash title="Run on: K8s control plane node"
+kubectl exec -n telemetry $VM_POD -- df -h /victoria-metrics-data
+```
  

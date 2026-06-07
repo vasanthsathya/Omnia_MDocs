@@ -31,32 +31,27 @@ Both models use:
 
  1. **Configure NFS in omnia_config.yml** :
 
-Run on: omnia_core container
- 
- 
- vi /opt/omnia/input/project_default/omnia_config.yml
- 
+```bash title="Run on: omnia_core container"
+vi /opt/omnia/input/project_default/omnia_config.yml
+```
 
 Set the NFS parameters:
 
-File: /opt/omnia/input/project_default/omnia_config.yml
- 
- 
- ---
- enable_omnia_nfs: true
- nfs_node_group: "slurm_control_node"
- omnia_nfs_path: "/home"
- omnia_nfs_opts: "rw,sync,no_root_squash,no_subtree_check"
+```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml
+---
+enable_omnia_nfs: true
+nfs_node_group: "slurm_control_node"
+omnia_nfs_path: "/home"
+omnia_nfs_opts: "rw,sync,no_root_squash,no_subtree_check"
+```
  
 
  1. **Run the omnia.yml playbook** to deploy NFS:
 
-Run on: omnia_core container
- 
- 
- cd /omnia
- ansible-playbook omnia.yml --ask-vault-pass
- 
+```bash title="Run on: omnia_core container"
+cd /omnia
+ansible-playbook omnia.yml --ask-vault-pass
+```
 
 The playbook will:
 
@@ -71,101 +66,87 @@ The playbook will:
 
  1. **Configure external NFS in omnia_config.yml** :
 
-Run on: omnia_core container
- 
- 
- vi /opt/omnia/input/project_default/omnia_config.yml
- 
+```bash title="Run on: omnia_core container"
+vi /opt/omnia/input/project_default/omnia_config.yml
+```
 
-File: /opt/omnia/input/project_default/omnia_config.yml
- 
- 
- ---
- enable_omnia_nfs: false
- external_nfs_server: "10.5.1.100"
- external_nfs_path: "/ifs/omnia/home"
- external_nfs_mount_point: "/home"
- external_nfs_opts: "rw,hard,intr,nfsvers=3"
+```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml
+---
+enable_omnia_nfs: false
+external_nfs_server: "10.5.1.100"
+external_nfs_path: "/ifs/omnia/home"
+external_nfs_mount_point: "/home"
+external_nfs_opts: "rw,hard,intr,nfsvers=3"
+```
  
 
  1. **Run the omnia.yml playbook** :
 
-Run on: omnia_core container
- 
- 
- cd /omnia
- ansible-playbook omnia.yml --ask-vault-pass
- 
+```bash title="Run on: omnia_core container"
+cd /omnia
+ansible-playbook omnia.yml --ask-vault-pass
+```
 
  1. **(Alternative) Manual NFS mount** on a specific node:
 
-Run on: compute node
- 
- 
- dnf install -y nfs-utils
- mkdir -p /home
- mount -t nfs -o rw,hard,intr,nfsvers=3 10.5.1.100:/ifs/omnia/home /home
+```bash title="Run on: compute node"
+dnf install -y nfs-utils
+mkdir -p /home
+mount -t nfs -o rw,hard,intr,nfsvers=3 10.5.1.100:/ifs/omnia/home /home
+```
  
 
 Add to `/etc/fstab` for persistence:
 
-Run on: compute node
- 
- 
- echo "10.5.1.100:/ifs/omnia/home /home nfs rw,hard,intr,nfsvers=3 0 0" >> /etc/fstab
+```bash title="Run on: compute node"
+echo "10.5.1.100:/ifs/omnia/home /home nfs rw,hard,intr,nfsvers=3 0 0" >> /etc/fstab
+```
  
 
 ## Verification[¶](#verification "Permanent link")
 
  1. **Verify the NFS server is exporting** (internal NFS):
 
-Run on: NFS server node
- 
- 
- exportfs -v
- 
+```bash title="Run on: NFS server node"
+exportfs -v
+```
 
 Expected output:
 
-Expected output on: NFS server node
- 
- 
- /home <network>(rw,sync,wdelay,no_root_squash,no_subtree_check,...)
+```text title="Expected output on: NFS server node
+/home <network>(rw,sync,wdelay,no_root_squash,no_subtree_check,...)
+```
  
 
  1. **Verify NFS is mounted on compute nodes** :
 
-Run on: omnia_core container
- 
- 
- ansible slurm_node -m shell -a "df -h /home"
+```bash title="Run on: omnia_core container"
+ansible slurm_node -m shell -a "df -h /home"
+```
  
 
  1. **Test read/write from a compute node** :
 
-Run on: compute node
- 
- 
- echo "NFS test $(date)" > /home/nfs_test.txt
- cat /home/nfs_test.txt
- rm /home/nfs_test.txt
+```bash title="Run on: compute node"
+echo "NFS test $(date)" > /home/nfs_test.txt
+cat /home/nfs_test.txt
+rm /home/nfs_test.txt
+```
  
 
  1. **Verify permissions** :
 
-Run on: NFS server node
- 
- 
- ls -ld /home
- # Expected: drwxr-xr-x (755)
+```bash title="Run on: NFS server node"
+ls -ld /home
+# Expected: drwxr-xr-x (755)
+```
  
 
  1. **Verify mount persists across reboot** :
 
-Run on: compute node
- 
- 
- grep "/home" /etc/fstab
+```bash title="Run on: compute node"
+grep "/home" /etc/fstab
+```
  
 
 ## Next Steps[¶](#next-steps "Permanent link")
@@ -178,39 +159,35 @@ Run on: compute node
 
 **Mount fails with "access denied"** Verify the NFS export allows the client IP:
 
-Run on: NFS server node
- 
- 
- exportfs -v
- cat /etc/exports
+```bash title="Run on: NFS server node"
+exportfs -v
+cat /etc/exports
+```
  
 
 Ensure the export includes the admin network range:
 
-File: /etc/exports on NFS server node
- 
- 
- /home 10.5.0.0/24(rw,sync,no_root_squash,no_subtree_check)
+```text title="File: /etc/exports on NFS server node
+/home 10.5.0.0/24(rw,sync,no_root_squash,no_subtree_check)
+```
  
 
 **"mount.nfs: Connection timed out"** Check firewall rules on the NFS server:
 
-Run on: NFS server node
- 
- 
- firewall-cmd --add-service=nfs --permanent
- firewall-cmd --add-service=mountd --permanent
- firewall-cmd --add-service=rpc-bind --permanent
- firewall-cmd --reload
+```bash title="Run on: NFS server node"
+firewall-cmd --add-service=nfs --permanent
+firewall-cmd --add-service=mountd --permanent
+firewall-cmd --add-service=rpc-bind --permanent
+firewall-cmd --reload
+```
  
 
 **Stale NFS handles after server restart** Remount on affected nodes:
 
-Run on: affected compute node
- 
- 
- umount -l /home
- mount /home
+```bash title="Run on: affected compute node"
+umount -l /home
+mount /home
+```
  
 
 **Performance is slow** \- Use NFSv3 instead of NFSv4 for HPC workloads (NFSv3 has lower latency). \- Increase the NFS read/write block size:

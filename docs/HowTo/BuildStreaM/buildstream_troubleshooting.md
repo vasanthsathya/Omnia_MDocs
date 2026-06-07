@@ -22,12 +22,11 @@ Navigate to **CI/CD** > **Pipelines** > click the failed pipeline > click the fa
 
  1. **Common validation-stage failures** :
 
-Run on: omnia_core container
- 
- 
- # Manually re-run validation to see errors
- cd /omnia
- ansible-playbook input_validator.yml -v
+```bash title="Run on: omnia_core container"
+# Manually re-run validation to see errors
+cd /omnia
+ansible-playbook input_validator.yml -v
+```
  
 
 Common causes:
@@ -39,11 +38,10 @@ Common causes:
 
  * **Common provision-stage failures** :
 
-Run on: omnia_core container
- 
- 
- # Test BMC connectivity for a specific node
- curl -sk https://<bmc-ip>/redfish/v1/ -u root:<password>
+```bash title="Run on: omnia_core container"
+# Test BMC connectivity for a specific node
+curl -sk https://<bmc-ip>/redfish/v1/ -u root:<password>
+```
  
 
 Common causes:
@@ -54,11 +52,10 @@ Common causes:
 
  * **Common configure-stage failures** :
 
-Run on: omnia_core container
- 
- 
- # Test node connectivity
- ansible all -m ping -v
+```bash title="Run on: omnia_core container"
+# Test node connectivity
+ansible all -m ping -v
+```
  
 
 Common causes:
@@ -71,82 +68,75 @@ Common causes:
 
  1. **GitLab is unresponsive or slow** :
 
-Run on: OIM host
- 
- 
- podman stats gitlab --no-stream
- podman logs gitlab --tail=30
+```bash title="Run on: OIM host"
+podman stats gitlab --no-stream
+podman logs gitlab --tail=30
+```
  
 
 If memory is exhausted, increase the container memory limit or add swap:
 
-Run on: OIM host
- 
- 
- # Check available memory
- free -h
- 
- # Restart GitLab with more memory
- podman stop gitlab
- podman rm gitlab
- # Re-create with --memory=16g flag
+```bash title="Run on: OIM host"
+# Check available memory
+free -h
+
+# Restart GitLab with more memory
+podman stop gitlab
+podman rm gitlab
+# Re-create with --memory=16g flag
+```
  
 
  1. **GitLab "502 Bad Gateway"** :
 
-Run on: OIM host
- 
- 
- # GitLab internal services may be restarting
- podman exec gitlab gitlab-ctl status
- 
- # Restart GitLab services
- podman exec gitlab gitlab-ctl restart
+```bash title="Run on: OIM host"
+# GitLab internal services may be restarting
+podman exec gitlab gitlab-ctl status
+
+# Restart GitLab services
+podman exec gitlab gitlab-ctl restart
+```
  
 
  1. **GitLab database migration errors** :
 
-Run on: OIM host
- 
- 
- podman exec gitlab gitlab-rake db:migrate
- podman exec gitlab gitlab-ctl reconfigure
+```bash title="Run on: OIM host"
+podman exec gitlab gitlab-rake db:migrate
+podman exec gitlab gitlab-ctl reconfigure
+```
  
 
 ### Runner Issues[¶](#runner-issues "Permanent link")
 
  1. **Runner is offline or not picking up jobs** :
 
-Run on: OIM host
- 
- 
- podman exec gitlab-runner gitlab-runner list
- podman exec gitlab-runner gitlab-runner verify
+```bash title="Run on: OIM host"
+podman exec gitlab-runner gitlab-runner list
+podman exec gitlab-runner gitlab-runner verify
+```
  
 
 If the runner is stale, re-register it:
 
-Run on: OIM host
- 
- 
- podman exec gitlab-runner gitlab-runner unregister --all-runners
- podman exec gitlab-runner gitlab-runner register \
- --non-interactive \
- --url "http://<oim-ip>:8082" \
- --token "<new-registration-token>" \
- --executor "shell" \
- --description "omnia-runner"
+```bash title="Run on: OIM host"
+podman exec gitlab-runner gitlab-runner unregister --all-runners
+podman exec gitlab-runner gitlab-runner register \
+--non-interactive \
+--url "http://<oim-ip>:8082" \
+--token "<new-registration-token>" \
+--executor "shell" \
+--description "omnia-runner"
+```
  
 
  1. **Runner fails with "permission denied"** :
 
 Ensure the runner has access to the omnia_core container and playbooks:
 
-Run on: OIM host
- 
- 
- podman exec gitlab-runner ls /omnia/
- # If not mounted, add a volume mount when re-creating the runner container
+```bash title="Run on: OIM host"
+podman exec gitlab-runner ls /omnia/
+# If not mounted, add a volume mount when re-creating the runner container
+```
  
 
  1. **Runner jobs time out** :
@@ -160,32 +150,32 @@ Increase the job timeout in GitLab:
 
  1. **Container registry is unreachable** :
 
-Run on: OIM host
- 
- systemctl status registry.service
- podman logs registry
+```bash title="Run on: OIM host"
+systemctl status registry.service
+podman logs registry
+```
  
 
 Restart the registry:
 
-Run on: OIM host
- 
- systemctl restart registry.service
+```bash title="Run on: OIM host"
+systemctl restart registry.service
+```
  
 
  2. **Image push/pull fails** :
 
-Run on: OIM host
- 
- # Test registry connectivity
- curl -s http://localhost:5000/v2/_catalog
+```bash title="Run on: OIM host"
+# Test registry connectivity
+curl -s http://localhost:5000/v2/_catalog
+```
  
 
 If using HTTPS with self-signed certificates, add the registry to the insecure registries list:
 
-Run on: OIM host
- 
- cat /etc/containers/registries.conf | grep insecure
+```bash title="Run on: OIM host"
+cat /etc/containers/registries.conf | grep insecure
+```
  
 
 ### General Debugging[¶](#general-debugging "Permanent link")
@@ -194,30 +184,30 @@ Run on: OIM host
 
 Edit `.gitlab-ci.yml` to add `-vvv` to playbook commands:
 
-File: .gitlab-ci.yml
- 
- configure_cluster:
+```yaml title="File: .gitlab-ci.yml
+configure_cluster:
  stage: configure
  script:
  - cd /omnia
  - ansible-playbook omnia.yml --ask-vault-pass -vvv
+```
  
 
  2. **Check system resources** on the OIM:
 
-Run on: OIM host
- 
- # Check disk space
- df -h
- 
- # Check memory
- free -h
- 
- # Check running containers
- podman ps -a
- 
- # Check container resource usage
- podman stats --no-stream
+```bash title="Run on: OIM host"
+# Check disk space
+df -h
+
+# Check memory
+free -h
+
+# Check running containers
+podman ps -a
+
+# Check container resource usage
+podman stats --no-stream
+```
  
 
 ## Verification[¶](#verification "Permanent link")
@@ -228,14 +218,13 @@ After resolving issues, verify the pipeline works end-to-end:
  2. **Push the change** and verify the validation stage passes.
  3. **Trigger the full pipeline** and confirm all stages complete.
 
-Run on: omnia_core container
- 
- 
- cd /opt/omnia/buildstream-catalog
- echo "# Test commit $(date)" >> catalog.yml
- git add catalog.yml
- git commit -m "Test pipeline trigger"
- git push origin main
+```bash title="Run on: omnia_core container"
+cd /opt/omnia/buildstream-catalog
+echo "# Test commit $(date)" >> catalog.yml
+git add catalog.yml
+git commit -m "Test pipeline trigger"
+git push origin main
+```
  
 
 ## Next Steps[¶](#next-steps "Permanent link")

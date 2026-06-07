@@ -20,32 +20,28 @@ Column | Required | Description
  
 ## Sample file[¶](#sample-file "Permanent link")
 
-Sample pxe_mapping_file.csv
- 
- 
- FUNCTIONAL_GROUP_NAME,GROUP_NAME,SERVICE_TAG,PARENT_SERVICE_TAG,HOSTNAME,ADMIN_MAC,ADMIN_IP,BMC_MAC,BMC_IP
- slurm_control_node,slurm_head,ABC1234,,slurm-ctrl-01,EC:2A:72:34:56:01,10.5.0.10,,10.3.0.10
- slurm_node,gpu_nodes,DEF5678,,slurm-gpu-01,EC:2A:72:34:56:02,10.5.0.11,,10.3.0.11
- slurm_node,gpu_nodes,GHI9012,,slurm-gpu-02,EC:2A:72:34:56:03,10.5.0.12,,10.3.0.12
- slurm_node,cpu_nodes,JKL3456,,slurm-cpu-01,EC:2A:72:34:56:04,10.5.0.13,,10.3.0.13
- login_node,login,MNO7890,,login-01,EC:2A:72:34:56:05,10.5.0.14,,10.3.0.14
- kube_control_plane,k8s_cp,PQR1234,,kube-cp-01,EC:2A:72:34:56:06,10.5.0.20,,10.3.0.20
- kube_control_plane,k8s_cp,STU5678,,kube-cp-02,EC:2A:72:34:56:07,10.5.0.21,,10.3.0.21
- kube_control_plane,k8s_cp,VWX9012,,kube-cp-03,EC:2A:72:34:56:08,10.5.0.22,,10.3.0.22
- kube_node,k8s_workers,YZA3456,,kube-wk-01,EC:2A:72:34:56:09,10.5.0.23,,10.3.0.23
- kube_node,k8s_workers,BCD7890,,kube-wk-02,EC:2A:72:34:56:0A,10.5.0.24,,10.3.0.24
- auth_server,auth,EFG1234,,auth-01,EC:2A:72:34:56:0B,10.5.0.30,,10.3.0.30
- 
+```text title="Sample pxe_mapping_file.csv
+FUNCTIONAL_GROUP_NAME,GROUP_NAME,SERVICE_TAG,PARENT_SERVICE_TAG,HOSTNAME,ADMIN_MAC,ADMIN_IP,BMC_MAC,BMC_IP
+slurm_control_node,slurm_head,ABC1234,,slurm-ctrl-01,EC:2A:72:34:56:01,10.5.0.10,,10.3.0.10
+slurm_node,gpu_nodes,DEF5678,,slurm-gpu-01,EC:2A:72:34:56:02,10.5.0.11,,10.3.0.11
+slurm_node,gpu_nodes,GHI9012,,slurm-gpu-02,EC:2A:72:34:56:03,10.5.0.12,,10.3.0.12
+slurm_node,cpu_nodes,JKL3456,,slurm-cpu-01,EC:2A:72:34:56:04,10.5.0.13,,10.3.0.13
+login_node,login,MNO7890,,login-01,EC:2A:72:34:56:05,10.5.0.14,,10.3.0.14
+kube_control_plane,k8s_cp,PQR1234,,kube-cp-01,EC:2A:72:34:56:06,10.5.0.20,,10.3.0.20
+kube_control_plane,k8s_cp,STU5678,,kube-cp-02,EC:2A:72:34:56:07,10.5.0.21,,10.3.0.21
+kube_control_plane,k8s_cp,VWX9012,,kube-cp-03,EC:2A:72:34:56:08,10.5.0.22,,10.3.0.22
+kube_node,k8s_workers,YZA3456,,kube-wk-01,EC:2A:72:34:56:09,10.5.0.23,,10.3.0.23
+kube_node,k8s_workers,BCD7890,,kube-wk-02,EC:2A:72:34:56:0A,10.5.0.24,,10.3.0.24
+auth_server,auth,EFG1234,,auth-01,EC:2A:72:34:56:0B,10.5.0.30,,10.3.0.30
+```
 
 ## Annotated breakdown[¶](#annotated-breakdown "Permanent link")
 
 **Slurm control node**
 
-Example: Slurm control node
- 
- 
- slurm_control_node,slurm_head,ABC1234,,slurm-ctrl-01,EC:2A:72:34:56:01,10.5.0.10,,10.3.0.10
- 
+```text title="Example: Slurm control node
+slurm_control_node,slurm_head,ABC1234,,slurm-ctrl-01,EC:2A:72:34:56:01,10.5.0.10,,10.3.0.10
+```
 
  * Runs `slurmctld` and `slurmdbd`.
  * Exactly one node should have this functional group per Slurm cluster.
@@ -53,56 +49,46 @@ Example: Slurm control node
 
 **Slurm compute nodes**
 
-Example: Slurm compute nodes
- 
- 
- slurm_node,gpu_nodes,DEF5678,,slurm-gpu-01,EC:2A:72:34:56:02,10.5.0.11,,10.3.0.11
- slurm_node,cpu_nodes,JKL3456,,slurm-cpu-01,EC:2A:72:34:56:04,10.5.0.13,,10.3.0.13
- 
+```text title="Example: Slurm compute nodes
+slurm_node,gpu_nodes,DEF5678,,slurm-gpu-01,EC:2A:72:34:56:02,10.5.0.11,,10.3.0.11
+slurm_node,cpu_nodes,JKL3456,,slurm-cpu-01,EC:2A:72:34:56:04,10.5.0.13,,10.3.0.13
+```
 
  * Runs `slurmd`.
  * `GROUP_NAME` distinguishes GPU-equipped nodes (`gpu_nodes`) from CPU-only nodes (`cpu_nodes`). This grouping can be used in Slurm partitions.
 
 **Login node**
 
-Example: Login node
- 
- 
- login_node,login,MNO7890,,login-01,EC:2A:72:34:56:05,10.5.0.14,,10.3.0.14
- 
+```text title="Example: Login node
+login_node,login,MNO7890,,login-01,EC:2A:72:34:56:05,10.5.0.14,,10.3.0.14
+```
 
  * Provides interactive SSH access for users to submit jobs.
  * Does not run `slurmd`; configured as a Slurm client only.
 
 **Kubernetes control plane**
 
-Example: Kubernetes control plane
- 
- 
- kube_control_plane,k8s_cp,PQR1234,,kube-cp-01,EC:2A:72:34:56:06,10.5.0.20,,10.3.0.20
- 
+```text title="Example: Kubernetes control plane
+kube_control_plane,k8s_cp,PQR1234,,kube-cp-01,EC:2A:72:34:56:06,10.5.0.20,,10.3.0.20
+```
 
  * Runs the Kubernetes API server, etcd, scheduler, and controller-manager.
  * For HA, use 3 control plane nodes (see [Ha Config](../Configuration/ha_config.md)).
 
 **Kubernetes worker nodes**
 
-Example: Kubernetes worker nodes
- 
- 
- kube_node,k8s_workers,YZA3456,,kube-wk-01,EC:2A:72:34:56:09,10.5.0.23,,10.3.0.23
- 
+```text title="Example: Kubernetes worker nodes
+kube_node,k8s_workers,YZA3456,,kube-wk-01,EC:2A:72:34:56:09,10.5.0.23,,10.3.0.23
+```
 
  * Runs `kubelet` and `kube-proxy`; hosts application pods.
 
 **Multi-node chassis example (C6620)**
 
-Example: Multi-node chassis (C6620)
- 
- 
- slurm_node,cpu_nodes,SLD1234,CHASSIS01,sled-01,EC:2A:72:34:56:10,10.5.0.40,,10.3.0.40
- slurm_node,cpu_nodes,SLD5678,CHASSIS01,sled-02,EC:2A:72:34:56:11,10.5.0.41,,10.3.0.41
- 
+```text title="Example: Multi-node chassis (C6620)
+slurm_node,cpu_nodes,SLD1234,CHASSIS01,sled-01,EC:2A:72:34:56:10,10.5.0.40,,10.3.0.40
+slurm_node,cpu_nodes,SLD5678,CHASSIS01,sled-02,EC:2A:72:34:56:11,10.5.0.41,,10.3.0.41
+```
 
  * `PARENT_SERVICE_TAG` identifies the shared chassis.
  * Each sled has its own service tag, hostname, and network addresses.

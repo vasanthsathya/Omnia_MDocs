@@ -37,26 +37,24 @@ Parameter | Type | Required | Default | Description
  
 ## Usage example[¶](#usage-example "Permanent link")
 
-File: /opt/omnia/input/project_default/build_stream_config.yml
- 
- 
- gitlab_enabled: true
- gitlab_server: "10.5.0.100"
- gitlab_port: 443
- gitlab_external_url: "https://gitlab.hpc.example.com"
- 
- buildstream_catalog_path: "/opt/omnia/buildstream/catalog"
- buildstream_pipeline_branch: "main"
- buildstream_auto_trigger: true
- buildstream_retry_count: 3
- buildstream_timeout: 3600
- 
- runner_executor: "shell"
- runner_concurrent: 4
- runner_tags:
- - omnia
- - buildstream
- 
+```yaml title="File: /opt/omnia/input/project_default/build_stream_config.yml
+gitlab_enabled: true
+gitlab_server: "10.5.0.100"
+gitlab_port: 443
+gitlab_external_url: "https://gitlab.hpc.example.com"
+
+buildstream_catalog_path: "/opt/omnia/buildstream/catalog"
+buildstream_pipeline_branch: "main"
+buildstream_auto_trigger: true
+buildstream_retry_count: 3
+buildstream_timeout: 3600
+
+runner_executor: "shell"
+runner_concurrent: 4
+runner_tags:
+- omnia
+- buildstream
+```
 
 Info
 

@@ -25,193 +25,178 @@ This guide deploys OpenLDAP using Bitnami's container image on a dedicated serve
 
  1. **Log in to the LDAP server host** :
 
-Run on: dedicated LDAP server
- 
- 
- ssh root@<ldap-server-ip>
+```bash title="Run on: dedicated LDAP server"
+ssh root@<ldap-server-ip>
+```
  
 
  1. **Create persistent storage directories** :
 
-Run on: dedicated LDAP server
- 
- 
- mkdir -p /opt/ldap/data
- mkdir -p /opt/ldap/config
+```bash title="Run on: dedicated LDAP server"
+mkdir -p /opt/ldap/data
+mkdir -p /opt/ldap/config
+```
  
 
  1. **Deploy the Bitnami OpenLDAP container** :
 
-Run on: dedicated LDAP server
- 
- 
- podman run -d \
- --name openldap \
- --restart=always \
- -p 389:1389 \
- -p 636:1636 \
- -e LDAP_ADMIN_USERNAME=admin \
- -e LDAP_ADMIN_PASSWORD=YourAdminPassword \
- -e LDAP_ROOT=dc=omnia,dc=example,dc=com \
- -e LDAP_ADMIN_DN=cn=admin,dc=omnia,dc=example,dc=com \
- -e LDAP_CUSTOM_LDIF_DIR=/ldifs \
- -v /opt/ldap/data:/bitnami/openldap:Z \
- -v /opt/ldap/config:/ldifs:Z \
- docker.io/bitnami/openldap:latest
+```bash title="Run on: dedicated LDAP server"
+podman run -d \
+--name openldap \
+--restart=always \
+-p 389:1389 \
+-p 636:1636 \
+-e LDAP_ADMIN_USERNAME=admin \
+-e LDAP_ADMIN_PASSWORD=YourAdminPassword \
+-e LDAP_ROOT=dc=omnia,dc=example,dc=com \
+-e LDAP_ADMIN_DN=cn=admin,dc=omnia,dc=example,dc=com \
+-e LDAP_CUSTOM_LDIF_DIR=/ldifs \
+-v /opt/ldap/data:/bitnami/openldap:Z \
+-v /opt/ldap/config:/ldifs:Z \
+docker.io/bitnami/openldap:latest
+```
  
 
  1. **Create initial LDIF** for organizational structure:
 
-Run on: dedicated LDAP server
- 
- 
- cat <<'EOF' > /opt/ldap/config/01-org.ldif
- dn: ou=People,dc=omnia,dc=example,dc=com
- objectClass: organizationalUnit
- ou: People
- 
- dn: ou=Groups,dc=omnia,dc=example,dc=com
- objectClass: organizationalUnit
- ou: Groups
- EOF
+```bash title="Run on: dedicated LDAP server"
+cat <<'EOF' > /opt/ldap/config/01-org.ldif
+dn: ou=People,dc=omnia,dc=example,dc=com
+objectClass: organizationalUnit
+ou: People
+
+dn: ou=Groups,dc=omnia,dc=example,dc=com
+objectClass: organizationalUnit
+ou: Groups
+EOF
+```
  
 
  1. **Load the initial LDIF** :
 
-Run on: dedicated LDAP server
- 
- 
- podman exec openldap ldapadd -x \
- -D "cn=admin,dc=omnia,dc=example,dc=com" \
- -w YourAdminPassword \
- -f /ldifs/01-org.ldif
+```bash title="Run on: dedicated LDAP server"
+podman exec openldap ldapadd -x \
+-D "cn=admin,dc=omnia,dc=example,dc=com" \
+-w YourAdminPassword \
+-f /ldifs/01-org.ldif
+```
  
 
  1. **Add users and groups** :
 
-Run on: dedicated LDAP server
- 
- 
- cat <<'EOF' > /opt/ldap/config/02-users.ldif
- dn: cn=hpcusers,ou=Groups,dc=omnia,dc=example,dc=com
- objectClass: posixGroup
- cn: hpcusers
- gidNumber: 10000
- 
- dn: uid=hpcuser1,ou=People,dc=omnia,dc=example,dc=com
- objectClass: inetOrgPerson
- objectClass: posixAccount
- objectClass: shadowAccount
- uid: hpcuser1
- cn: HPC User 1
- sn: User1
- uidNumber: 10001
- gidNumber: 10000
- homeDirectory: /home/hpcuser1
- loginShell: /bin/bash
- EOF
- 
- podman exec openldap ldapadd -x \
- -D "cn=admin,dc=omnia,dc=example,dc=com" \
- -w YourAdminPassword \
- -f /ldifs/02-users.ldif
+```bash title="Run on: dedicated LDAP server"
+cat <<'EOF' > /opt/ldap/config/02-users.ldif
+dn: cn=hpcusers,ou=Groups,dc=omnia,dc=example,dc=com
+objectClass: posixGroup
+cn: hpcusers
+gidNumber: 10000
+
+dn: uid=hpcuser1,ou=People,dc=omnia,dc=example,dc=com
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: hpcuser1
+cn: HPC User 1
+sn: User1
+uidNumber: 10001
+gidNumber: 10000
+homeDirectory: /home/hpcuser1
+loginShell: /bin/bash
+EOF
+
+podman exec openldap ldapadd -x \
+-D "cn=admin,dc=omnia,dc=example,dc=com" \
+-w YourAdminPassword \
+-f /ldifs/02-users.ldif
+```
  
 
 Set the user password:
 
-Run on: dedicated LDAP server
- 
- 
- podman exec openldap ldappasswd -x \
- -D "cn=admin,dc=omnia,dc=example,dc=com" \
- -w YourAdminPassword \
- -S "uid=hpcuser1,ou=People,dc=omnia,dc=example,dc=com"
+```bash title="Run on: dedicated LDAP server"
+podman exec openldap ldappasswd -x \
+-D "cn=admin,dc=omnia,dc=example,dc=com" \
+-w YourAdminPassword \
+-S "uid=hpcuser1,ou=People,dc=omnia,dc=example,dc=com"
+```
  
 
 ### Kubernetes Deployment (Helm)[¶](#kubernetes-deployment-helm "Permanent link")
 
  1. **(Alternative) Deploy on K8s** using Helm:
 
-Run on: K8s control plane node
- 
- 
- helm repo add bitnami https://charts.bitnami.com/bitnami
- helm repo update
- 
- helm install openldap bitnami/openldap \
- --namespace auth \
- --create-namespace \
- --set adminUsername=admin \
- --set adminPassword=YourAdminPassword \
- --set root=dc=omnia,dc=example,dc=com \
- --set service.type=LoadBalancer \
- --set persistence.enabled=true \
- --set persistence.size=10Gi
+```bash title="Run on: K8s control plane node"
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+
+helm install openldap bitnami/openldap \
+--namespace auth \
+--create-namespace \
+--set adminUsername=admin \
+--set adminPassword=YourAdminPassword \
+--set root=dc=omnia,dc=example,dc=com \
+--set service.type=LoadBalancer \
+--set persistence.enabled=true \
+--set persistence.size=10Gi
+```
  
 
 ### Configure Omnia Nodes[¶](#configure-omnia-nodes "Permanent link")
 
  1. **Update omnia_config.yml** to point to the external LDAP:
 
-Run on: omnia_core container
- 
- 
- vi /opt/omnia/input/project_default/omnia_config.yml
+```bash title="Run on: omnia_core container"
+vi /opt/omnia/input/project_default/omnia_config.yml
+```
  
 
-File: /opt/omnia/input/project_default/omnia_config.yml
- 
- 
- ---
- auth_type: "external_ldap"
- external_ldap_uri: "ldap://<ldap-server-ip>:389"
- external_ldap_base_dn: "dc=omnia,dc=example,dc=com"
- external_ldap_bind_dn: "cn=admin,dc=omnia,dc=example,dc=com"
+```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml"
+---
+auth_type: "external_ldap"
+external_ldap_uri: "ldap://<ldap-server-ip>:389"
+external_ldap_base_dn: "dc=omnia,dc=example,dc=com"
+external_ldap_bind_dn: "cn=admin,dc=omnia,dc=example,dc=com"
+```
  
 
  1. **Run the auth playbook** to configure SSSD on cluster nodes:
 
-Run on: omnia_core container
- 
- 
- cd /omnia
- ansible-playbook auth.yml --ask-vault-pass
+```bash title="Run on: omnia_core container"
+cd /omnia
+ansible-playbook auth.yml --ask-vault-pass
+```
  
 
 ## Verification[¶](#verification "Permanent link")
 
  1. **Verify the LDAP container is running** :
 
-Run on: dedicated LDAP server
- 
- 
- podman ps --filter name=openldap
+```bash title="Run on: dedicated LDAP server"
+podman ps --filter name=openldap
+```
  
 
  1. **Test LDAP search** :
 
-Run on: OIM host
- 
- 
- ldapsearch -x -H ldap://<ldap-server-ip> \
- -b "dc=omnia,dc=example,dc=com" "(uid=hpcuser1)"
+```bash title="Run on: OIM host"
+ldapsearch -x -H ldap://<ldap-server-ip> \
+-b "dc=omnia,dc=example,dc=com" "(uid=hpcuser1)"
+```
  
 
  1. **Verify user resolution on cluster nodes** :
 
-Run on: compute node
- 
- 
- getent passwd hpcuser1
- id hpcuser1
+```bash title="Run on: compute node"
+getent passwd hpcuser1
+id hpcuser1
+```
  
 
  1. **Test SSH login** :
 
-Run on: any node
- 
- 
- ssh hpcuser1@<compute-node-ip>
+```bash title="Run on: any node"
+ssh hpcuser1@<compute-node-ip>
+```
  
 
 ## Next Steps[¶](#next-steps "Permanent link")
@@ -223,33 +208,29 @@ Run on: any node
 
 **Container fails to start** Check container logs:
 
-Run on: dedicated LDAP server
- 
- 
- podman logs openldap
+```bash title="Run on: dedicated LDAP server"
+podman logs openldap
+```
  
 
 **Port 389 already in use** Check for existing LDAP processes:
 
-Run on: dedicated LDAP server
- 
- 
- ss -tlnp | grep 389
- # Kill or stop the conflicting process
+```bash title="Run on: dedicated LDAP server"
+ss -tlnp | grep 389
+# Kill or stop the conflicting process
+```
  
 
 **SSSD cannot connect to external LDAP** Verify connectivity from a cluster node:
 
-Run on: compute node
- 
- 
- ldapsearch -x -H ldap://<ldap-server-ip> -b "dc=omnia,dc=example,dc=com" "(objectClass=*)" dn
+```bash title="Run on: compute node"
+ldapsearch -x -H ldap://<ldap-server-ip> -b "dc=omnia,dc=example,dc=com" "(objectClass=*)" dn
+```
  
 
 **Users not visible after LDAP add** Clear SSSD cache on cluster nodes:
 
-Run on: omnia_core container
- 
- 
- ansible all -m shell -a "sss_cache -E && systemctl restart sssd"
+```bash title="Run on: omnia_core container"
+ansible all -m shell -a "sss_cache -E && systemctl restart sssd"
+```
  

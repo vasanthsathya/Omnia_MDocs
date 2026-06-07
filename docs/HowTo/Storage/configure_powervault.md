@@ -28,43 +28,38 @@ Omnia configures:
 
  1. **Install iSCSI and multipath packages** on the Slurm controller:
 
-Run on: Slurm control node
- 
- 
- dnf install -y iscsi-initiator-utils device-mapper-multipath
+```bash title="Run on: Slurm control node"
+dnf install -y iscsi-initiator-utils device-mapper-multipath
+```
  
 
  1. **Configure the iSCSI initiator name** :
 
-Run on: Slurm control node
- 
- 
- cat /etc/iscsi/initiatorname.iscsi
+```bash title="Run on: Slurm control node"
+cat /etc/iscsi/initiatorname.iscsi
+```
  
 
 If the initiator name is not set, generate one:
 
-Run on: Slurm control node
- 
- 
- echo "InitiatorName=$(iscsi-iname)" > /etc/iscsi/initiatorname.iscsi
+```bash title="Run on: Slurm control node"
+echo "InitiatorName=$(iscsi-iname)" > /etc/iscsi/initiatorname.iscsi
+```
  
 
  1. **Configure DM-Multipath** :
 
-Run on: Slurm control node
- 
- 
- cat <<'EOF' > /etc/multipath.conf
- defaults {
+```bash title="Run on: Slurm control node"
+cat <<'EOF' > /etc/multipath.conf
+defaults {
  polling_interval 10
  path_grouping_policy multibus
  find_multipaths yes
  no_path_retry 5
  user_friendly_names yes
- }
- 
- devices {
+}
+
+devices {
  device {
  vendor "DellEMC"
  product "ME5"
@@ -73,114 +68,101 @@ Run on: Slurm control node
  failback immediate
  no_path_retry queue
  }
- }
- EOF
- 
- systemctl enable --now multipathd
+}
+EOF
+
+systemctl enable --now multipathd
+```
  
 
  1. **Discover iSCSI targets** on the PowerVault:
 
-Run on: Slurm control node
- 
- 
- iscsiadm -m discovery -t sendtargets -p 10.5.2.100:3260
- iscsiadm -m discovery -t sendtargets -p 10.5.2.101:3260
+```bash title="Run on: Slurm control node"
+iscsiadm -m discovery -t sendtargets -p 10.5.2.100:3260
+iscsiadm -m discovery -t sendtargets -p 10.5.2.101:3260
+```
  
 
 Replace `10.5.2.100` and `10.5.2.101` with your PowerVault iSCSI portal IPs.
 
  1. **Log in to the iSCSI targets** :
 
-Run on: Slurm control node
- 
- 
- iscsiadm -m node --login
+```bash title="Run on: Slurm control node"
+iscsiadm -m node --login
+```
  
 
  1. **Start and enable the iSCSI service** :
 
-Run on: Slurm control node
- 
- 
- systemctl enable --now iscsid
- systemctl enable --now iscsi
+```bash title="Run on: Slurm control node"
+systemctl enable --now iscsid
+systemctl enable --now iscsi
+```
  
 
  1. **Verify multipath devices** :
 
-Run on: Slurm control node
- 
- 
- multipath -ll
- 
+```bash title="Run on: Slurm control node"
+multipath -ll
+```
 
 Expected output shows multipath devices with multiple paths:
 
-Expected output on: Slurm control node
- 
- 
- mpath0 (360000000000000001) dm-0 DellEMC,ME5
- size=500G features='1 queue_if_no_path' hwhandler='0' wp=rw
- |-+- policy='round-robin 0' prio=1 status=active
- | `- 3:0:0:0 sda 8:0 active ready running
- `-+- policy='round-robin 0' prio=1 status=enabled
- `- 4:0:0:0 sdb 8:16 active ready running
+```text title="Expected output on: Slurm control node
+mpath0 (360000000000000001) dm-0 DellEMC,ME5
+size=500G features='1 queue_if_no_path' hwhandler='0' wp=rw
+|-+- policy='round-robin 0' prio=1 status=active
+| `- 3:0:0:0 sda 8:0 active ready running
+`-+- policy='round-robin 0' prio=1 status=enabled
+`- 4:0:0:0 sdb 8:16 active ready running
+```
  
 
  1. **Create a filesystem and mount the LUN** :
 
-Run on: Slurm control node
- 
- 
- mkfs.xfs /dev/mapper/mpath0
- mkdir -p /var/spool/slurm
- mount /dev/mapper/mpath0 /var/spool/slurm
+```bash title="Run on: Slurm control node"
+mkfs.xfs /dev/mapper/mpath0
+mkdir -p /var/spool/slurm
+mount /dev/mapper/mpath0 /var/spool/slurm
+```
  
 
 Add to `/etc/fstab` for persistence:
 
-Run on: Slurm control node
- 
- 
- echo "/dev/mapper/mpath0 /var/spool/slurm xfs defaults,_netdev 0 0" >> /etc/fstab
+```bash title="Run on: Slurm control node"
+echo "/dev/mapper/mpath0 /var/spool/slurm xfs defaults,_netdev 0 0" >> /etc/fstab
+```
  
 
 ## Verification[¶](#verification "Permanent link")
 
  1. **Verify iSCSI sessions** :
 
-Run on: Slurm control node
- 
- 
- iscsiadm -m session
- 
+```bash title="Run on: Slurm control node"
+iscsiadm -m session
+```
 
  1. **Verify multipath status** :
 
-Run on: Slurm control node
- 
- 
- multipath -ll
- 
+```bash title="Run on: Slurm control node"
+multipath -ll
+```
 
 All paths should show `active ready running`.
 
  1. **Verify the mount** :
 
-Run on: Slurm control node
- 
- 
- df -h /var/spool/slurm
+```bash title="Run on: Slurm control node"
+df -h /var/spool/slurm
+```
  
 
  1. **Test I/O performance** :
 
-Run on: Slurm control node
- 
- 
- dd if=/dev/zero of=/var/spool/slurm/test bs=1M count=1024 oflag=direct
- rm /var/spool/slurm/test
+```bash title="Run on: Slurm control node"
+dd if=/dev/zero of=/var/spool/slurm/test bs=1M count=1024 oflag=direct
+rm /var/spool/slurm/test
+```
  
 
 ## Next Steps[¶](#next-steps "Permanent link")
@@ -192,37 +174,33 @@ Run on: Slurm control node
 
 **iSCSI discovery returns no targets** Verify network connectivity to the PowerVault iSCSI ports:
 
-Run on: Slurm control node
- 
- 
- ping -c 3 10.5.2.100
- telnet 10.5.2.100 3260
+```bash title="Run on: Slurm control node"
+ping -c 3 10.5.2.100
+telnet 10.5.2.100 3260
+```
  
 
 **Multipath shows no paths** Check that iSCSI sessions are active:
 
-Run on: Slurm control node
- 
- 
- iscsiadm -m session
- multipath -v3
+```bash title="Run on: Slurm control node"
+iscsiadm -m session
+multipath -v3
+```
  
 
 **Path shows "failed faulty"** Check network connectivity on the failed path:
 
-Run on: Slurm control node
- 
- 
- iscsiadm -m session -P 3 | grep -E "Target|iface|State"
+```bash title="Run on: Slurm control node"
+iscsiadm -m session -P 3 | grep -E "Target|iface|State"
+```
  
 
 **LUN not visible after login** Rescan SCSI buses:
 
-Run on: Slurm control node
- 
- 
- iscsiadm -m session --rescan
- multipath -r
+```bash title="Run on: Slurm control node"
+iscsiadm -m session --rescan
+multipath -r
+```
  
 
 **Performance is below expectations** \- Verify jumbo frames are enabled on the iSCSI network:

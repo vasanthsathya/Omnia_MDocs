@@ -28,29 +28,26 @@ The build process:
 
  1. **Enter the omnia_core container** :
 
-Run on: OIM host
- 
- 
- ssh omnia_core
+```bash title="Run on: OIM host"
+ssh omnia_core
+```
  
 
  1. **Verify the OS ISO is accessible** :
 
-Run on: omnia_core container
- 
- 
- ls -lh /opt/omnia/iso/
+```bash title="Run on: omnia_core container"
+ls -lh /opt/omnia/iso/
+```
  
 
 Ensure the ISO file listed in `provision_config.yml` exists.
 
  1. **Build images for x86_64 nodes** :
 
-Run on: omnia_core container
- 
- 
- cd /omnia
- ansible-playbook build_image_x86_64.yml
+```bash title="Run on: omnia_core container"
+cd /omnia
+ansible-playbook build_image_x86_64.yml
+```
  
 
 !!! note
@@ -65,11 +62,10 @@ Run on: omnia_core container
 
  1. **(If applicable) Build images for aarch64 nodes** :
 
-Run on: omnia_core container
- 
- 
- cd /omnia
- ansible-playbook build_image_aarch64.yml
+```bash title="Run on: omnia_core container"
+cd /omnia
+ansible-playbook build_image_aarch64.yml
+```
  
 
 !!! note
@@ -85,38 +81,34 @@ Run on: omnia_core container
 
  1. **List images in the S3 boot-images bucket** :
 
-Run on: omnia_core container
- 
- 
- s3cmd ls -Hr s3://boot-images
+```bash title="Run on: omnia_core container"
+s3cmd ls -Hr s3://boot-images
+```
  
 
 Expected output shows the image files with their sizes:
 
-Expected output on: omnia_core container
- 
- 
- 2024-01-15 10:30 3145728000 s3://boot-images/x86_64/rhel-8.8/rootfs.img
- 2024-01-15 10:30 8388608 s3://boot-images/x86_64/rhel-8.8/vmlinuz
- 2024-01-15 10:30 52428800 s3://boot-images/x86_64/rhel-8.8/initrd.img
+```text title="Expected output on: omnia_core container"
+2024-01-15 10:30 3145728000 s3://boot-images/x86_64/rhel-8.8/rootfs.img
+2024-01-15 10:30 8388608 s3://boot-images/x86_64/rhel-8.8/vmlinuz
+2024-01-15 10:30 52428800 s3://boot-images/x86_64/rhel-8.8/initrd.img
+```
  
 
  1. **Verify the image is registered with BSS** :
 
-Run on: omnia_core container
- 
- 
- ochami bss list
+```bash title="Run on: omnia_core container"
+ochami bss list
+```
  
 
 The output should show boot configurations referencing the newly built images.
 
  1. **Check the image size is reasonable** :
 
-Run on: omnia_core container
- 
- 
- s3cmd du s3://boot-images
+```bash title="Run on: omnia_core container"
+s3cmd du s3://boot-images
+```
  
 
 A typical RHEL 8.8 image with Slurm and basic packages is 2-4 GB. Images with CUDA or large software stacks can be 5-10 GB.
@@ -130,35 +122,30 @@ A typical RHEL 8.8 image with Slurm and basic packages is 2-4 GB. Images with CU
 
 **Build fails with "ISO not found"** Verify the `iso_file_path` in `provision_config.yml` points to a valid ISO:
 
-Run on: omnia_core container
- 
- 
- cat /opt/omnia/input/project_default/provision_config.yml | grep iso_file_path
- ls -lh /opt/omnia/iso/
+```bash title="Run on: omnia_core container"
+cat /opt/omnia/input/project_default/provision_config.yml | grep iso_file_path
+ls -lh /opt/omnia/iso/
+```
  
 
 **Build fails with "repository not found"** Ensure `local_repo.yml` completed successfully. Check Pulp repositories:
 
-Run on: OIM host
- 
- 
- curl -s http://localhost:8080/pulp/api/v3/distributions/rpm/rpm/ | python3 -m json.tool
+```bash title="Run on: OIM host"
+curl -s http://localhost:8080/pulp/api/v3/distributions/rpm/rpm/ | python3 -m json.tool
+```
  
 
 **S3 upload fails** Verify MinIO is running and accessible:
 
-Run on: omnia_core container
- 
- 
- s3cmd ls
- 
+```bash title="Run on: omnia_core container"
+s3cmd ls
+```
 
 If MinIO is unreachable, restart it:
 
-Run on: OIM host
- 
- 
- systemctl restart minio.service
+```bash title="Run on: OIM host"
+systemctl restart minio.service
+```
  
 
 **Image build is very slow** \- Ensure the OIM has sufficient RAM (64 GB minimum). \- Check disk I/O performance (SSD recommended for image builds). \- Reduce the software stack in `software_config.json` if building a minimal test image.

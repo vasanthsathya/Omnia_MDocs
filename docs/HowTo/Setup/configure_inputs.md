@@ -27,18 +27,16 @@ The most important input files are:
 
  1. **Enter the omnia_core container** :
 
-Run on: OIM host
- 
- 
- ssh omnia_core
+```bash title="Run on: OIM host"
+ssh omnia_core
+```
  
 
  1. **Copy the example templates** to the input directory:
 
-Run on: omnia_core container
- 
- 
- cp /omnia/examples/input_template/* /opt/omnia/input/project_default/
+```bash title="Run on: omnia_core container"
+cp /omnia/examples/input_template/* /opt/omnia/input/project_default/
+```
  
 
 !!! note
@@ -50,28 +48,26 @@ Run on: omnia_core container
 
  1. **Edit the software configuration** :
 
-Run on: omnia_core container
- 
- 
- vi /opt/omnia/input/project_default/software_config.json
+```bash title="Run on: omnia_core container"
+vi /opt/omnia/input/project_default/software_config.json
+```
  
 
 Example `software_config.json`:
 
-File: /opt/omnia/input/project_default/software_config.json
- 
- 
- {
- "cluster_os_type": "rhel",
- "cluster_os_version": "8.8",
- "repo_config": "partial",
- "softwares": [
- {"name": "slurm"},
- {"name": "openldap"},
- {"name": "cuda", "version": "12.2"},
- {"name": "apptainer"}
- ]
- }
+```json title="File: /opt/omnia/input/project_default/software_config.json"
+{
+"cluster_os_type": "rhel",
+"cluster_os_version": "8.8",
+"repo_config": "partial",
+"softwares": [
+{"name": "slurm"},
+{"name": "openldap"},
+{"name": "cuda", "version": "12.2"},
+{"name": "apptainer"}
+]
+}
+```
  
 
 Key parameters:
@@ -94,19 +90,16 @@ Key parameters:
 
  1. **Edit the network specification** :
 
-Run on: omnia_core container
- 
- 
- vi /opt/omnia/input/project_default/network_spec.yml
+```bash title="Run on: omnia_core container"
+vi /opt/omnia/input/project_default/network_spec.yml
+```
  
 
 Example `network_spec.yml`:
 
-File: /opt/omnia/input/project_default/network_spec.yml
- 
- 
- ---
- admin_network:
+```yaml title="File: /opt/omnia/input/project_default/network_spec.yml"
+---
+admin_network:
  nic_name: "eno1"
  static_range: "10.5.0.100-10.5.0.200"
  dynamic_range: "10.5.0.201-10.5.0.254"
@@ -114,63 +107,59 @@ File: /opt/omnia/input/project_default/network_spec.yml
  netmask: "255.255.255.0"
  gateway: "10.5.0.1"
  
- bmc_network:
+bmc_network:
  nic_name: "eno2"
  static_range: "10.3.0.100-10.3.0.200"
  dynamic_range: "10.3.0.201-10.3.0.254"
  subnet: "10.3.0.0"
  netmask: "255.255.255.0"
+```
  
 
  1. **Edit the provision configuration** :
 
-Run on: omnia_core container
- 
- 
- vi /opt/omnia/input/project_default/provision_config.yml
+```bash title="Run on: omnia_core container"
+vi /opt/omnia/input/project_default/provision_config.yml
+```
  
 
 Example `provision_config.yml`:
 
-File: /opt/omnia/input/project_default/provision_config.yml
- 
- 
- ---
- timezone: "America/Chicago"
- language: "en-US"
- iso_file_path: "/opt/omnia/iso/RHEL-8.8-x86_64-dvd.iso"
- default_lease_time: 86400
- pxe_mapping_file_path: "/opt/omnia/input/project_default/pxe_mapping_file.csv"
+```yaml title="File: /opt/omnia/input/project_default/provision_config.yml"
+---
+timezone: "America/Chicago"
+language: "en-US"
+iso_file_path: "/opt/omnia/iso/RHEL-8.8-x86_64-dvd.iso"
+default_lease_time: 86400
+pxe_mapping_file_path: "/opt/omnia/input/project_default/pxe_mapping_file.csv"
+```
  
 
  1. **Edit the Omnia configuration** (for Slurm/K8s parameters):
 
-Run on: omnia_core container
- 
- 
- vi /opt/omnia/input/project_default/omnia_config.yml
+```bash title="Run on: omnia_core container"
+vi /opt/omnia/input/project_default/omnia_config.yml
+```
  
 
 Example `omnia_config.yml`:
 
-File: /opt/omnia/input/project_default/omnia_config.yml
- 
- 
- ---
- mariadb_password: ""
- k8s_version: "1.28"
- k8s_cni: "calico"
- slurm_installation_type: "nfs_share"
- enable_omnia_nfs: true
+```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml"
+---
+mariadb_password: ""
+k8s_version: "1.28"
+k8s_cni: "calico"
+slurm_installation_type: "nfs_share"
+enable_omnia_nfs: true
+```
  
 
  1. **(Optional) Run the input validator** to check your configuration:
 
-Run on: omnia_core container
- 
- 
- cd /omnia
- ansible-playbook input_validator.yml
+```bash title="Run on: omnia_core container"
+cd /omnia
+ansible-playbook input_validator.yml
+```
  
 
 The validator checks for:
@@ -184,26 +173,23 @@ The validator checks for:
 
  1. **List all input files** and confirm they are populated:
 
-Run on: omnia_core container
- 
- 
- ls -la /opt/omnia/input/project_default/
+```bash title="Run on: omnia_core container"
+ls -la /opt/omnia/input/project_default/
+```
  
 
  1. **Review the software configuration** :
 
-Run on: omnia_core container
- 
- 
- cat /opt/omnia/input/project_default/software_config.json | python3 -m json.tool
+```bash title="Run on: omnia_core container"
+cat /opt/omnia/input/project_default/software_config.json | python3 -m json.tool
+```
  
 
  1. **Validate YAML syntax** for each YAML input file:
 
-Run on: omnia_core container
- 
- 
- python3 -c "import yaml; yaml.safe_load(open('/opt/omnia/input/project_default/network_spec.yml'))"
+```bash title="Run on: omnia_core container"
+python3 -c "import yaml; yaml.safe_load(open('/opt/omnia/input/project_default/network_spec.yml'))"
+```
  
 
 No output means the YAML is syntactically valid.
@@ -219,18 +205,16 @@ No output means the YAML is syntactically valid.
 
 **JSON syntax error in software_config.json** Validate JSON syntax:
 
-Run on: omnia_core container
- 
- 
- python3 -m json.tool /opt/omnia/input/project_default/software_config.json
+```bash title="Run on: omnia_core container"
+python3 -m json.tool /opt/omnia/input/project_default/software_config.json
+```
  
 
 **Network range overlap** Ensure `admin_network` and `bmc_network` use different subnets. Static and dynamic ranges within each network must not overlap.
 
 **Template files not found in /omnia/examples/input_template/** Verify the Omnia repository version. Templates are available in v2.1.0.0 and later. Pull the latest code if necessary:
 
-Run on: OIM host
- 
- 
- cd /opt/omnia && git pull
+```bash title="Run on: OIM host"
+cd /opt/omnia && git pull
+```
  

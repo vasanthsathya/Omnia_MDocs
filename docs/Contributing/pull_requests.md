@@ -15,25 +15,25 @@ This guide describes how to submit a pull request (PR) to the Omnia project, wha
 ![Omnia Branch Structure](../assets/images/omnia-branch-structure.png)
 
 1. **Fork and clone** the repository:
-   ```bash
+   ```bash title="Run on: local machine"
    git clone https://github.com/<your_username>/omnia.git
    cd omnia
    ```
 
 2. **Add the upstream remote:**
-   ```bash
+   ```bash title="Run on: local machine"
    git remote add upstream https://github.com/dell/omnia.git
    ```
 
 3. **Keep your fork in sync:**
-   ```bash
+   ```bash title="Run on: local machine"
    git fetch upstream
    git checkout main
    git merge upstream/main
    ```
 
 4. **Create a feature branch** from the latest `main`:
-   ```bash
+   ```bash title="Run on: local machine"
    git checkout -b feature/descriptive-branch-name
    ```
 
@@ -51,7 +51,7 @@ This guide describes how to submit a pull request (PR) to the Omnia project, wha
 Write clear, descriptive commit messages:
 
 **Example: commit message format**
-```
+```text title="Commit message format"
 Short summary of the change (50 characters or less)
 
 More detailed explanation of what changed and why. Wrap at 72 characters.
@@ -63,7 +63,7 @@ Fixes #123
 **Good examples:**
 
 **Example: good commit message**
-```
+```text title="Good commit message example"
 Add GPU auto-detection for AMD ROCm nodes
 
 Omnia now automatically detects AMD GPUs via lspci and installs the
@@ -76,7 +76,7 @@ Fixes #456
 **Bad examples:**
 
 **Example: bad commit message**
-```
+```text title="Bad commit message example"
 fix stuff
 updated files
 WIP
@@ -91,7 +91,7 @@ WIP
 Run the existing test suite before submitting:
 
 **Run on: local machine**
-```bash
+```bash title="Run on: local machine"
 # Ansible lint
 ansible-lint playbooks/
 
@@ -108,7 +108,7 @@ pytest tests/
 Every GitHub push requires a sign-off and a moderator is required to approve pull requests. All contributions have to be certified using the Developer Certificate of Origin (DCO):
 
 **Developer Certificate of Origin (DCO)**
-```
+```text title="Developer Certificate of Origin (DCO)"
 Developer Certificate of Origin
 Version 1.1
 
@@ -145,20 +145,20 @@ it.
 are public and that a record of the contribution (including all
 personal information I submit with it, including my sign-off) is
 maintained indefinitely and may be redistributed consistent with
-this project or the open source license(s) involved.
+this project's or the open source license(s) involved.
 ```
 
 Add the sign-off to every commit using the `-s` flag:
 
 **Run on: local machine**
-```bash
+```bash title="Run on: local machine"
 git commit -s -m "Add GPU auto-detection for AMD ROCm nodes"
 ```
 
 ## Submitting the pull request
 
 1. **Push your branch** to your fork:
-   ```bash
+   ```bash title="Run on: local machine"
    git push origin feature/descriptive-branch-name
    ```
 
@@ -169,7 +169,7 @@ git commit -s -m "Add GPU auto-detection for AMD ROCm nodes"
    - Select `dell/omnia:main` as the target
 
 3. **Fill out the PR description** using this template:
-   ```markdown
+   ```markdown title="PR description template"
    ## Summary
    Brief description of what this PR does.
 

@@ -8,42 +8,40 @@ This page provides complete, annotated `software_config.json` examples for commo
 
 Deploys a traditional HPC cluster with Slurm scheduling, NVIDIA GPU support, and LDMS telemetry on compute nodes. No Kubernetes.
 
-Sample software_config.json: Slurm-only cluster
- 
- 
- [
- {
- "functional_group_name": "slurm_control_node",
- "software": [
- {"name": "slurm", "version": "23.11"},
- {"name": "node_exporter"}
- ]
- },
- {
- "functional_group_name": "slurm_node",
- "software": [
- {"name": "slurm", "version": "23.11"},
- {"name": "nvidia_gpu"},
- {"name": "ldms"},
- {"name": "node_exporter"}
- ]
- },
- {
- "functional_group_name": "login_node",
- "software": [
- {"name": "slurm", "version": "23.11"},
- {"name": "node_exporter"}
- ]
- },
- {
- "functional_group_name": "auth_server",
- "software": [
- {"name": "openldap"},
- {"name": "node_exporter"}
- ]
- }
- ]
- 
+```json title="Sample software_config.json: Slurm-only cluster
+[
+{
+"functional_group_name": "slurm_control_node",
+"software": [
+{"name": "slurm", "version": "23.11"},
+{"name": "node_exporter"}
+]
+},
+{
+"functional_group_name": "slurm_node",
+"software": [
+{"name": "slurm", "version": "23.11"},
+{"name": "nvidia_gpu"},
+{"name": "ldms"},
+{"name": "node_exporter"}
+]
+},
+{
+"functional_group_name": "login_node",
+"software": [
+{"name": "slurm", "version": "23.11"},
+{"name": "node_exporter"}
+]
+},
+{
+"functional_group_name": "auth_server",
+"software": [
+{"name": "openldap"},
+{"name": "node_exporter"}
+]
+}
+]
+```
 
 **Scenario 1 component summary**
 
@@ -58,61 +56,59 @@ Group | Installed Software
 
 Production-grade deployment with Slurm for HPC compute and Kubernetes for platform services, monitoring, and storage.
 
-Sample software_config.json: Slurm + Kubernetes
- 
- 
- [
- {
- "functional_group_name": "slurm_control_node",
- "software": [
- {"name": "slurm", "version": "23.11"},
- {"name": "node_exporter"}
- ]
- },
- {
- "functional_group_name": "slurm_node",
- "software": [
- {"name": "slurm", "version": "23.11"},
- {"name": "nvidia_gpu"},
- {"name": "ldms"},
- {"name": "beegfs_client"},
- {"name": "node_exporter"}
- ]
- },
- {
- "functional_group_name": "login_node",
- "software": [
- {"name": "slurm", "version": "23.11"},
- {"name": "node_exporter"}
- ]
- },
- {
- "functional_group_name": "kube_control_plane",
- "software": [
- {"name": "kubernetes", "version": "1.29"},
- {"name": "calico"},
- {"name": "metallb"},
- {"name": "nfs_csi"},
- {"name": "telemetry"},
- {"name": "node_exporter"}
- ]
- },
- {
- "functional_group_name": "kube_node",
- "software": [
- {"name": "kubernetes", "version": "1.29"},
- {"name": "node_exporter"}
- ]
- },
- {
- "functional_group_name": "auth_server",
- "software": [
- {"name": "openldap"},
- {"name": "node_exporter"}
- ]
- }
- ]
- 
+```json title="Sample software_config.json: Slurm + Kubernetes
+[
+{
+"functional_group_name": "slurm_control_node",
+"software": [
+{"name": "slurm", "version": "23.11"},
+{"name": "node_exporter"}
+]
+},
+{
+"functional_group_name": "slurm_node",
+"software": [
+{"name": "slurm", "version": "23.11"},
+{"name": "nvidia_gpu"},
+{"name": "ldms"},
+{"name": "beegfs_client"},
+{"name": "node_exporter"}
+]
+},
+{
+"functional_group_name": "login_node",
+"software": [
+{"name": "slurm", "version": "23.11"},
+{"name": "node_exporter"}
+]
+},
+{
+"functional_group_name": "kube_control_plane",
+"software": [
+{"name": "kubernetes", "version": "1.29"},
+{"name": "calico"},
+{"name": "metallb"},
+{"name": "nfs_csi"},
+{"name": "telemetry"},
+{"name": "node_exporter"}
+]
+},
+{
+"functional_group_name": "kube_node",
+"software": [
+{"name": "kubernetes", "version": "1.29"},
+{"name": "node_exporter"}
+]
+},
+{
+"functional_group_name": "auth_server",
+"software": [
+{"name": "openldap"},
+{"name": "node_exporter"}
+]
+}
+]
+```
 
 **Scenario 2 component summary**
 
@@ -129,30 +125,28 @@ Group | Installed Software
 
 Deploys a Kubernetes cluster with the full telemetry pipeline for infrastructure monitoring without a job scheduler.
 
-Sample software_config.json: Kubernetes + telemetry only
- 
- 
- [
- {
- "functional_group_name": "kube_control_plane",
- "software": [
- {"name": "kubernetes", "version": "1.29"},
- {"name": "calico"},
- {"name": "metallb"},
- {"name": "nfs_csi"},
- {"name": "telemetry"},
- {"name": "node_exporter"}
- ]
- },
- {
- "functional_group_name": "kube_node",
- "software": [
- {"name": "kubernetes", "version": "1.29"},
- {"name": "node_exporter"}
- ]
- }
- ]
- 
+```json title="Sample software_config.json: Kubernetes + telemetry only
+[
+{
+"functional_group_name": "kube_control_plane",
+"software": [
+{"name": "kubernetes", "version": "1.29"},
+{"name": "calico"},
+{"name": "metallb"},
+{"name": "nfs_csi"},
+{"name": "telemetry"},
+{"name": "node_exporter"}
+]
+},
+{
+"functional_group_name": "kube_node",
+"software": [
+{"name": "kubernetes", "version": "1.29"},
+{"name": "node_exporter"}
+]
+}
+]
+```
 
 **Scenario 3 component summary**
 
@@ -165,35 +159,33 @@ Group | Installed Software
 
 Slurm cluster with AMD Instinct GPU nodes instead of NVIDIA.
 
-Sample software_config.json: AMD GPU compute nodes
- 
- 
- [
- {
- "functional_group_name": "slurm_control_node",
- "software": [
- {"name": "slurm", "version": "23.11"},
- {"name": "node_exporter"}
- ]
- },
- {
- "functional_group_name": "slurm_node",
- "software": [
- {"name": "slurm", "version": "23.11"},
- {"name": "amd_gpu"},
- {"name": "ldms"},
- {"name": "node_exporter"}
- ]
- },
- {
- "functional_group_name": "login_node",
- "software": [
- {"name": "slurm", "version": "23.11"},
- {"name": "node_exporter"}
- ]
- }
- ]
- 
+```json title="Sample software_config.json: AMD GPU compute nodes
+[
+{
+"functional_group_name": "slurm_control_node",
+"software": [
+{"name": "slurm", "version": "23.11"},
+{"name": "node_exporter"}
+]
+},
+{
+"functional_group_name": "slurm_node",
+"software": [
+{"name": "slurm", "version": "23.11"},
+{"name": "amd_gpu"},
+{"name": "ldms"},
+{"name": "node_exporter"}
+]
+},
+{
+"functional_group_name": "login_node",
+"software": [
+{"name": "slurm", "version": "23.11"},
+{"name": "node_exporter"}
+]
+}
+]
+```
 
 Note
 

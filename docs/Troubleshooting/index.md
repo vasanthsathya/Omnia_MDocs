@@ -14,7 +14,7 @@ When you encounter an issue, follow this general diagnostic flow:
 2. **Verify prerequisites.** Many failures stem from unmet prerequisites (missing packages, wrong OS version, misconfigured networks). Re-check the [Prerequisites Checklist](../GetStarted/prerequisites_checklist.md) for your deployment path.
 
 3. **Use the ochami CLI.** For provisioning issues, the `ochami-cli` provides direct access to the OpenCHAMI state manager for inspecting node inventory, boot status, and hardware state:
-   ```bash
+   ```bash title="Run on: omnia_core container"
    ssh omnia_core
    ochami-cli smd components list
    ochami-cli bss bootscript list

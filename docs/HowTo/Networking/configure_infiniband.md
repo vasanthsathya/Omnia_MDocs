@@ -22,60 +22,54 @@ InfiniBand provides the lowest latency and highest bandwidth interconnect for HP
 
  1. **Enter the omnia_core container** :
 
-Run on: OIM host
- 
- 
- ssh omnia_core
+```bash title="Run on: OIM host"
+ssh omnia_core
+```
  
 
  1. **Configure InfiniBand settings** in the network specification:
 
-Run on: omnia_core container
- 
- 
- vi /opt/omnia/input/project_default/network_spec.yml
+```bash title="Run on: omnia_core container"
+vi /opt/omnia/input/project_default/network_spec.yml
+```
  
 
 Add the IB network configuration:
 
-File: /opt/omnia/input/project_default/network_spec.yml
- 
- 
- ---
- ib_network:
+```yaml title="File: /opt/omnia/input/project_default/network_spec.yml
+---
+ib_network:
  ib_nic_name: "ib0"
  static_range: "10.230.0.101-10.230.0.200"
  subnet: "10.230.0.0"
  netmask: "255.255.255.0"
+```
  
 
  1. **Ensure OFED is listed in software_config.json** :
 
-Run on: omnia_core container
- 
- 
- cat /opt/omnia/input/project_default/software_config.json | python3 -m json.tool
+```bash title="Run on: omnia_core container"
+cat /opt/omnia/input/project_default/software_config.json | python3 -m json.tool
+```
  
 
 Verify the `softwares` list includes:
 
-File: /opt/omnia/input/project_default/software_config.json
- 
- 
- {
+```json title="File: /opt/omnia/input/project_default/software_config.json
+{
  "softwares": [
  {"name": "doca_ofed"}
  ]
- }
+}
+```
  
 
  1. **Run the omnia.yml playbook** to deploy InfiniBand:
 
-Run on: omnia_core container
- 
- 
- cd /omnia
- ansible-playbook omnia.yml --ask-vault-pass
+```bash title="Run on: omnia_core container"
+cd /omnia
+ansible-playbook omnia.yml --ask-vault-pass
+```
  
 
 The playbook will:
@@ -87,35 +81,33 @@ The playbook will:
 
  * **(If needed) Manually configure IPoIB on a node** :
 
-Run on: compute node
- 
- 
- # Load InfiniBand modules
- modprobe mlx5_core
- modprobe mlx5_ib
- modprobe ib_ipoib
- 
- # Configure the IPoIB interface
- cat <<'EOF' > /etc/sysconfig/network-scripts/ifcfg-ib0
- DEVICE=ib0
- TYPE=InfiniBand
- BOOTPROTO=static
- IPADDR=10.230.0.101
- NETMASK=255.255.255.0
- ONBOOT=yes
- CONNECTED_MODE=yes
- EOF
- 
- ifup ib0
+```bash title="Run on: compute node"
+# Load InfiniBand modules
+modprobe mlx5_core
+modprobe mlx5_ib
+modprobe ib_ipoib
+
+# Configure the IPoIB interface
+cat <<'EOF' > /etc/sysconfig/network-scripts/ifcfg-ib0
+DEVICE=ib0
+TYPE=InfiniBand
+BOOTPROTO=static
+IPADDR=10.230.0.101
+NETMASK=255.255.255.0
+ONBOOT=yes
+CONNECTED_MODE=yes
+EOF
+
+ifup ib0
+```
  
 
  1. **Configure OpenSM** on the designated subnet manager node:
 
-Run on: OpenSM node (typically the Slurm control node)
- 
- 
- dnf install -y opensm
- systemctl enable --now opensm
+```bash title="Run on: OpenSM node (typically the Slurm control node)"
+dnf install -y opensm
+systemctl enable --now opensm
+```
  
 
 !!! note
@@ -129,84 +121,75 @@ Run on: OpenSM node (typically the Slurm control node)
 
  1. **Verify the IB interface is up** on each compute node:
 
-Run on: compute node
- 
- 
- ip addr show ib0
+```bash title="Run on: compute node"
+ip addr show ib0
+```
  
 
 Expected: the interface shows the assigned IP address and `state UP`.
 
  1. **Check IB port state** :
 
-Run on: compute node
- 
- 
- ibstat
+```bash title="Run on: compute node"
+ibstat
+```
  
 
 Expected output:
 
-Expected output on: compute node
- 
- 
- CA 'mlx5_0'
- Port 1:
- State: Active
- Physical state: LinkUp
- Rate: 200 (HDR)
+```text title="Expected output on: compute node"
+CA 'mlx5_0'
+Port 1:
+State: Active
+Physical state: LinkUp
+Rate: 200 (HDR)
+```
  
 
  1. **Verify OpenSM is running** :
 
-Run on: OpenSM node
- 
- 
- systemctl status opensm
+```bash title="Run on: OpenSM node"
+systemctl status opensm
+```
  
 
  1. **Test IB connectivity** between two compute nodes:
 
-Run on: compute node 1
- 
- 
- ping -c 5 10.230.0.102
+```bash title="Run on: compute node 1"
+ping -c 5 10.230.0.102
+```
  
 
  1. **Test RDMA bandwidth** :
 
 On the server node:
 
-Run on: compute node 1
- 
- 
- ib_write_bw
+```bash title="Run on: compute node 1"
+ib_write_bw
+```
  
 
 On the client node:
 
-Run on: compute node 2
- 
- 
- ib_write_bw 10.230.0.101
+```bash title="Run on: compute node 2"
+ib_write_bw 10.230.0.101
+```
  
 
  1. **Test RDMA latency** :
 
 On the server node:
 
-Run on: compute node 1
- 
- 
- ib_write_lat
+```bash title="Run on: compute node 1"
+ib_write_lat
+```
  
 
 On the client node:
 
-Run on: compute node 2
- 
- 
- ib_write_lat 10.230.0.101
+```bash title="Run on: compute node 2"
+ib_write_lat 10.230.0.101
+```
  
 
 Expected InfiniBand latency: < 2 microseconds.
@@ -220,21 +203,19 @@ Expected InfiniBand latency: < 2 microseconds.
 
 **ib0 interface does not appear** Verify InfiniBand modules are loaded:
 
-Run on: compute node
- 
- 
- lsmod | grep mlx5
- lsmod | grep ib_ipoib
+```bash title="Run on: compute node"
+lsmod | grep mlx5
+lsmod | grep ib_ipoib
+```
  
 
 Load missing modules:
 
-Run on: compute node
- 
- 
- modprobe mlx5_core
- modprobe mlx5_ib
- modprobe ib_ipoib
+```bash title="Run on: compute node"
+modprobe mlx5_core
+modprobe mlx5_ib
+modprobe ib_ipoib
+```
  
 
 **ibstat shows "Down" or "Initializing"** \- Check physical cable connections. \- Verify OpenSM is running somewhere in the fabric. \- Check for firmware issues:
@@ -247,10 +228,9 @@ Run on: compute node
 
 **OpenSM fails to start** Check for port GUID conflicts:
 
-Run on: OpenSM node
- 
- 
- journalctl -u opensm --no-pager -n 30
+```bash title="Run on: OpenSM node"
+journalctl -u opensm --no-pager -n 30
+```
  
 
 **Poor RDMA performance** \- Verify link rate (should be 100/200 Gbps for HDR):
@@ -263,17 +243,15 @@ Run on: OpenSM node
 
  * Check for errors on the IB port:
 
-Run on: compute node
- 
- perfquery
- 
+```bash title="Run on: compute node"
+perfquery
+```
 
  * Ensure `CONNECTED_MODE=yes` in the IPoIB interface configuration.
 
 **IP address conflicts on IB network** Check for duplicate IPs:
 
-Run on: omnia_core container
- 
- 
- ansible slurm_node -m shell -a "ip addr show ib0 | grep inet"
+```bash title="Run on: omnia_core container"
+ansible slurm_node -m shell -a "ip addr show ib0 | grep inet"
+```
  

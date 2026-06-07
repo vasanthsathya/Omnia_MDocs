@@ -8,21 +8,19 @@ This file defines which software packages are installed on each functional group
 
 `software_config.json` is a JSON array of objects. Each object represents one functional group and specifies the software packages to install on nodes belonging to that group.
 
-File: /opt/omnia/input/project_default/software_config.json
- 
- 
- [
- {
- "functional_group_name": "<group_name>",
- "software": [
- {
- "name": "<package_name>",
- "version": "<version>"
- }
- ]
- }
- ]
- 
+```json title="File: /opt/omnia/input/project_default/software_config.json
+[
+{
+"functional_group_name": "<group_name>",
+"software": [
+{
+"name": "<package_name>",
+"version": "<version>"
+}
+]
+}
+]
+```
 
 ## Field reference[¶](#field-reference "Permanent link")
 
@@ -55,37 +53,35 @@ Package Name | Applicable Groups | Description
 
 See [Software Config Json](../SampleFiles/software_config_json.md) for complete annotated examples covering Slurm-only, Slurm + K8s, and telemetry-only scenarios.
 
-File: /opt/omnia/input/project_default/software_config.json
- 
- 
- [
- {
- "functional_group_name": "slurm_control_node",
- "software": [
- {"name": "slurm", "version": "23.11"},
- {"name": "node_exporter"}
- ]
- },
- {
- "functional_group_name": "slurm_node",
- "software": [
- {"name": "slurm", "version": "23.11"},
- {"name": "nvidia_gpu"},
- {"name": "ldms"},
- {"name": "node_exporter"}
- ]
- },
- {
- "functional_group_name": "kube_control_plane",
- "software": [
- {"name": "kubernetes", "version": "1.29"},
- {"name": "calico"},
- {"name": "metallb"},
- {"name": "nfs_csi"}
- ]
- }
- ]
- 
+```json title="File: /opt/omnia/input/project_default/software_config.json
+[
+{
+"functional_group_name": "slurm_control_node",
+"software": [
+{"name": "slurm", "version": "23.11"},
+{"name": "node_exporter"}
+]
+},
+{
+"functional_group_name": "slurm_node",
+"software": [
+{"name": "slurm", "version": "23.11"},
+{"name": "nvidia_gpu"},
+{"name": "ldms"},
+{"name": "node_exporter"}
+]
+},
+{
+"functional_group_name": "kube_control_plane",
+"software": [
+{"name": "kubernetes", "version": "1.29"},
+{"name": "calico"},
+{"name": "metallb"},
+{"name": "nfs_csi"}
+]
+}
+]
+```
 
 Note
 

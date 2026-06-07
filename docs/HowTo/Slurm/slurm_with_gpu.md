@@ -17,16 +17,15 @@ Slurm is configured with **GRES (Generic RESource)** definitions so jobs can req
  * Compute nodes with GPUs are provisioned and in the Slurm cluster.
  * The `software_config.json` includes the GPU software stack:
 
-File: /opt/omnia/input/project_default/software_config.json
- 
- 
- {
- "softwares": [
- {"name": "slurm"},
- {"name": "cuda", "version": "12.2"},
- {"name": "rocm", "version": "6.0"}
- ]
- }
+```json title="File: /opt/omnia/input/project_default/software_config.json
+{
+"softwares": [
+{"name": "slurm"},
+{"name": "cuda", "version": "12.2"},
+{"name": "rocm", "version": "6.0"}
+]
+}
+```
  
 
  * Local repositories are synced with GPU packages (see [Create Local Repos](../Setup/create_local_repos.md)).
@@ -36,49 +35,44 @@ File: /opt/omnia/input/project_default/software_config.json
 
  1. **Enter the omnia_core container** :
 
-Run on: OIM host
- 
- 
- ssh omnia_core
+```bash title="Run on: OIM host"
+ssh omnia_core
+```
  
 
  1. **Verify GPU software is listed in software_config.json** :
 
-Run on: omnia_core container
- 
- 
- cat /opt/omnia/input/project_default/software_config.json | python3 -m json.tool
+```bash title="Run on: omnia_core container"
+cat /opt/omnia/input/project_default/software_config.json | python3 -m json.tool
+```
  
 
  1. **Configure GPU-related parameters in omnia_config.yml** :
 
-Run on: omnia_core container
- 
- 
- vi /opt/omnia/input/project_default/omnia_config.yml
+```bash title="Run on: omnia_core container"
+vi /opt/omnia/input/project_default/omnia_config.yml
+```
  
 
 GPU-related parameters:
 
-File: /opt/omnia/input/project_default/omnia_config.yml
- 
- 
- ---
- # GPU configuration
- cuda_toolkit_path: "/usr/local/cuda"
- rocm_install_path: "/opt/rocm"
- 
- # Slurm GRES configuration (auto-detected if left empty)
- slurm_gres_config: ""
+```yaml title="File: /opt/omnia/input/project_default/omnia_config.yml
+---
+# GPU configuration
+cuda_toolkit_path: "/usr/local/cuda"
+rocm_install_path: "/opt/rocm"
+
+# Slurm GRES configuration (auto-detected if left empty)
+slurm_gres_config: ""
+```
  
 
  1. **Run the omnia.yml playbook** (or re-run if Slurm is already deployed):
 
-Run on: omnia_core container
- 
- 
- cd /omnia
- ansible-playbook omnia.yml --ask-vault-pass
+```bash title="Run on: omnia_core container"
+cd /omnia
+ansible-playbook omnia.yml --ask-vault-pass
+```
  
 
 The playbook will:
@@ -91,10 +85,9 @@ The playbook will:
 
  * **Reconfigure Slurm** to load GRES definitions:
 
-Run on: Slurm control node
- 
- 
- scontrol reconfigure
+```bash title="Run on: Slurm control node"
+scontrol reconfigure
+```
  
 
 ## Verification[¶](#verification "Permanent link")
@@ -103,82 +96,74 @@ Run on: Slurm control node
 
 For NVIDIA:
 
-Run on: GPU compute node
- 
- 
- nvidia-smi
+```bash title="Run on: GPU compute node"
+nvidia-smi
+```
  
 
 Expected output shows GPU model, driver version, and memory usage.
 
 For AMD:
 
-Run on: GPU compute node
- 
- 
- rocm-smi
+```bash title="Run on: GPU compute node"
+rocm-smi
+```
  
 
 For Intel Gaudi:
 
-Run on: GPU compute node
- 
- 
- hl-smi
+```bash title="Run on: GPU compute node"
+hl-smi
+```
  
 
  1. **Check Slurm GRES configuration** :
 
-Run on: Slurm control node
- 
- 
- scontrol show nodes | grep -i gres
+```bash title="Run on: Slurm control node"
+scontrol show nodes | grep -i gres
+```
  
 
 Expected output:
 
-Expected output on: Slurm control node
- 
- 
- Gres=gpu:nvidia_a100:4
- GresUsed=gpu:nvidia_a100:0
+```text title="Expected output on: Slurm control node
+Gres=gpu:nvidia_a100:4
+GresUsed=gpu:nvidia_a100:0
+```
  
 
  1. **Submit a GPU job** :
 
-Run on: Slurm control node
- 
- 
- srun --gres=gpu:1 nvidia-smi
+```bash title="Run on: Slurm control node"
+srun --gres=gpu:1 nvidia-smi
+```
  
 
  1. **Submit a multi-GPU batch job** :
 
-Run on: Slurm control node
- 
- 
- cat <<'EOF' > /tmp/gpu_test.sh
- #!/bin/bash
- #SBATCH --job-name=gpu_test
- #SBATCH --gres=gpu:2
- #SBATCH --nodes=1
- #SBATCH --time=00:05:00
- 
- echo "Running on $(hostname)"
- echo "CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES"
- nvidia-smi
- EOF
- 
- sbatch /tmp/gpu_test.sh
+```bash title="Run on: Slurm control node"
+cat <<'EOF' > /tmp/gpu_test.sh
+#!/bin/bash
+#SBATCH --job-name=gpu_test
+#SBATCH --gres=gpu:2
+#SBATCH --nodes=1
+#SBATCH --time=00:05:00
+
+echo "Running on $(hostname)"
+echo "CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES"
+nvidia-smi
+EOF
+
+sbatch /tmp/gpu_test.sh
+```
  
 
  1. **Verify CUDA toolkit** (NVIDIA):
 
-Run on: GPU compute node
- 
- 
- nvcc --version
- ls /usr/local/cuda/
+```bash title="Run on: GPU compute node"
+nvcc --version
+ls /usr/local/cuda/
+```
  
 
 ## Next Steps[¶](#next-steps "Permanent link")
@@ -199,41 +184,36 @@ Run on: GPU compute node
 
  * Reinstall the driver:
 
-Run on: GPU compute node
- 
- dnf reinstall nvidia-driver cuda-toolkit
- 
+```bash title="Run on: GPU compute node"
+dnf reinstall nvidia-driver cuda-toolkit
+```
 
 **GRES not showing in scontrol** Check `gres.conf` on the compute node:
 
-Run on: GPU compute node
- 
- 
- cat /etc/slurm/gres.conf
+```bash title="Run on: GPU compute node"
+cat /etc/slurm/gres.conf
+```
  
 
 The file should list each GPU device:
 
-Expected content on: GPU compute node
- 
- 
- NodeName=compute01 Name=gpu Type=nvidia_a100 File=/dev/nvidia[0-3]
+```text title="Expected content on: GPU compute node
+NodeName=compute01 Name=gpu Type=nvidia_a100 File=/dev/nvidia[0-3]
+```
  
 
 **"Invalid GRES" error when submitting jobs** Ensure `slurm.conf` on the control node includes the `GresTypes` directive:
 
-Run on: Slurm control node
- 
- 
- grep GresTypes /etc/slurm/slurm.conf
+```bash title="Run on: Slurm control node"
+grep GresTypes /etc/slurm/slurm.conf
+```
  
 
 Expected: `GresTypes=gpu`
 
 **ROCm driver fails to install** Verify the ROCm repository was synced successfully:
 
-Run on: omnia_core container
- 
- 
- curl -s http://localhost:8080/pulp/content/rocm/ | head
+```bash title="Run on: omnia_core container"
+curl -s http://localhost:8080/pulp/content/rocm/ | head
+```
  

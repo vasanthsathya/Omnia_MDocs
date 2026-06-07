@@ -29,48 +29,43 @@ The file must be created **before** running the discovery playbook.
 
  1. **Enter the omnia_core container** :
 
-Run on: OIM host
- 
- 
- ssh omnia_core
+```bash title="Run on: OIM host"
+ssh omnia_core
+```
  
 
 Or alternatively:
 
-Run on: OIM host
- 
- 
- podman exec -it -u root omnia_core bash
+```bash title="Run on: OIM host"
+podman exec -it -u root omnia_core bash
+```
  
 
  1. **Navigate to the input directory** :
 
-Run on: omnia_core container
- 
- 
- cd /opt/omnia/input/project_default
+```bash title="Run on: omnia_core container"
+cd /opt/omnia/input/project_default
+```
  
 
  1. **Create the mapping file** using a text editor:
 
-Run on: omnia_core container
- 
- 
- vi pxe_mapping_file.csv
+```bash title="Run on: omnia_core container"
+vi pxe_mapping_file.csv
+```
  
 
  1. **Add the CSV header and node entries**. The file must contain the following columns in this exact order:
 
-File: /opt/omnia/input/project_default/pxe_mapping_file.csv
- 
- 
- FUNCTIONAL_GROUP_NAME,GROUP_NAME,SERVICE_TAG,PARENT_SERVICE_TAG,HOSTNAME,ADMIN_MAC,ADMIN_IP,BMC_MAC,BMC_IP
- slurm_control_node,slurm_cluster,ABCDEF1,,,aa:bb:cc:dd:ee:01,10.5.0.101,aa:bb:cc:dd:ff:01,10.3.0.101
- slurm_node,slurm_cluster,ABCDEF2,,,aa:bb:cc:dd:ee:02,10.5.0.102,aa:bb:cc:dd:ff:02,10.3.0.102
- slurm_node,slurm_cluster,ABCDEF3,,,aa:bb:cc:dd:ee:03,10.5.0.103,aa:bb:cc:dd:ff:03,10.3.0.103
- login_node,slurm_cluster,ABCDEF4,,,aa:bb:cc:dd:ee:04,10.5.0.104,aa:bb:cc:dd:ff:04,10.3.0.104
- kube_control_plane,k8s_cluster,ABCDEF5,,,aa:bb:cc:dd:ee:05,10.5.0.105,aa:bb:cc:dd:ff:05,10.3.0.105
- kube_node,k8s_cluster,ABCDEF6,,,aa:bb:cc:dd:ee:06,10.5.0.106,aa:bb:cc:dd:ff:06,10.3.0.106
+```text title="File: /opt/omnia/input/project_default/pxe_mapping_file.csv"
+FUNCTIONAL_GROUP_NAME,GROUP_NAME,SERVICE_TAG,PARENT_SERVICE_TAG,HOSTNAME,ADMIN_MAC,ADMIN_IP,BMC_MAC,BMC_IP
+slurm_control_node,slurm_cluster,ABCDEF1,,,aa:bb:cc:dd:ee:01,10.5.0.101,aa:bb:cc:dd:ff:01,10.3.0.101
+slurm_node,slurm_cluster,ABCDEF2,,,aa:bb:cc:dd:ee:02,10.5.0.102,aa:bb:cc:dd:ff:02,10.3.0.102
+slurm_node,slurm_cluster,ABCDEF3,,,aa:bb:cc:dd:ee:03,10.5.0.103,aa:bb:cc:dd:ff:03,10.3.0.103
+login_node,slurm_cluster,ABCDEF4,,,aa:bb:cc:dd:ee:04,10.5.0.104,aa:bb:cc:dd:ff:04,10.3.0.104
+kube_control_plane,k8s_cluster,ABCDEF5,,,aa:bb:cc:dd:ee:05,10.5.0.105,aa:bb:cc:dd:ff:05,10.3.0.105
+kube_node,k8s_cluster,ABCDEF6,,,aa:bb:cc:dd:ee:06,10.5.0.106,aa:bb:cc:dd:ff:06,10.3.0.106
+```
  
 
 ### Column Reference[¶](#column-reference "Permanent link")
@@ -101,36 +96,32 @@ Warning
 
  1. **Validate the CSV format** by checking the header row:
 
-Run on: omnia_core container
- 
- 
- head -1 /opt/omnia/input/project_default/pxe_mapping_file.csv
+```bash title="Run on: omnia_core container"
+head -1 /opt/omnia/input/project_default/pxe_mapping_file.csv
+```
  
 
 Expected output:
 
-Expected output on: omnia_core container
- 
- 
- FUNCTIONAL_GROUP_NAME,GROUP_NAME,SERVICE_TAG,PARENT_SERVICE_TAG,HOSTNAME,ADMIN_MAC,ADMIN_IP,BMC_MAC,BMC_IP
+```text title="Expected output on: omnia_core container"
+FUNCTIONAL_GROUP_NAME,GROUP_NAME,SERVICE_TAG,PARENT_SERVICE_TAG,HOSTNAME,ADMIN_MAC,ADMIN_IP,BMC_MAC,BMC_IP
+```
  
 
  1. **Count the entries** (excluding the header):
 
-Run on: omnia_core container
- 
- 
- tail -n +2 /opt/omnia/input/project_default/pxe_mapping_file.csv | wc -l
+```bash title="Run on: omnia_core container"
+tail -n +2 /opt/omnia/input/project_default/pxe_mapping_file.csv | wc -l
+```
  
 
 The count should match the number of target servers you intend to provision.
 
  1. **Check for formatting issues** (trailing spaces, empty lines):
 
-Run on: omnia_core container
- 
- 
- cat -A /opt/omnia/input/project_default/pxe_mapping_file.csv
+```bash title="Run on: omnia_core container"
+cat -A /opt/omnia/input/project_default/pxe_mapping_file.csv
+```
  
 
 Ensure there are no trailing spaces (`$` should immediately follow the last field value) and no blank lines.

@@ -8,19 +8,17 @@ This file defines all network segments used by the Omnia cluster: admin, BMC, co
 
 `network_spec.yml` contains a single top-level key, `Networks`, which is a YAML list of network definitions.
 
-File: /opt/omnia/input/project_default/network_spec.yml
- 
- 
- Networks:
- - admin_network:
+```yaml title="File: /opt/omnia/input/project_default/network_spec.yml
+Networks:
+- admin_network:
  ...
- - bmc_network:
+- bmc_network:
  ...
- - compute_network:
+- compute_network:
  ...
- - public_network:
+- public_network:
  ...
- 
+```
 
 ## admin_network parameters[¶](#admin_network-parameters "Permanent link")
 
@@ -66,35 +64,33 @@ Parameter | Type | Required | Default | Description
  
 ## Usage example[¶](#usage-example "Permanent link")
 
-File: /opt/omnia/input/project_default/network_spec.yml
- 
- 
- Networks:
- - admin_network:
+```yaml title="File: /opt/omnia/input/project_default/network_spec.yml
+Networks:
+- admin_network:
  oim_nic_name: "eno1"
  netmask_bits: 20
  primary_oim_admin_ip: "10.5.0.100"
  primary_oim_bmc_ip: "10.3.0.5"
  dynamic_range: "10.5.0.101-10.5.0.200"
  dns: "10.5.0.100"
- 
- - bmc_network:
+
+- bmc_network:
  oim_nic_name: "eno2"
  netmask_bits: 24
  dynamic_range: "10.3.0.201-10.3.0.254"
  static_range: "10.3.0.100-10.3.0.200"
- 
- - compute_network:
+
+- compute_network:
  oim_nic_name: "enp175s0f0"
  netmask_bits: 24
  mtu: 9216
- 
- - public_network:
+
+- public_network:
  oim_nic_name: "enp175s0f1"
  netmask_bits: 24
  gateway: "192.168.1.1"
  dns: "8.8.8.8"
- 
+```
 
 Note
 

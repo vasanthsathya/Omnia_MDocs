@@ -24,39 +24,35 @@ When you update the catalog and push changes to GitLab, a CI/CD pipeline automat
 
  1. **Clone the catalog repository** (if not already cloned):
 
-Run on: omnia_core container
- 
- 
- cd /opt/omnia
- git clone http://<oim-ip>:8082/root/buildstream-catalog.git
- cd buildstream-catalog
+```bash title="Run on: omnia_core container"
+cd /opt/omnia
+git clone http://<oim-ip>:8082/root/buildstream-catalog.git
+cd buildstream-catalog
+```
  
 
  1. **Edit the catalog file** :
 
-Run on: omnia_core container
- 
- 
- vi catalog.yml
+```bash title="Run on: omnia_core container"
+vi catalog.yml
+```
  
 
 Example catalog structure:
 
-File: /opt/omnia/buildstream-catalog/catalog.yml
- 
- 
- ---
- catalog_version: "2.1.0"
- cluster_name: "omnia-prod"
- 
- # Operating system
- os:
+```yaml title="File: /opt/omnia/buildstream-catalog/catalog.yml
+---
+catalog_version: "2.1.0"
+cluster_name: "omnia-prod"
+
+# Operating system
+os:
  type: "rhel"
  version: "8.8"
  iso_path: "/opt/omnia/iso/RHEL-8.8-x86_64-dvd.iso"
- 
- # Networks
- networks:
+
+# Networks
+networks:
  admin:
  nic: "eno1"
  subnet: "10.5.0.0/24"
@@ -66,9 +62,9 @@ File: /opt/omnia/buildstream-catalog/catalog.yml
  nic: "eno2"
  subnet: "10.3.0.0/24"
  range: "10.3.0.100-10.3.0.200"
- 
- # Node groups
- node_groups:
+
+# Node groups
+node_groups:
  slurm_control:
  role: "slurm_control_node"
  nodes:
@@ -84,19 +80,20 @@ File: /opt/omnia/buildstream-catalog/catalog.yml
  - service_tag: "ABCDEF3"
  admin_ip: "10.5.0.103"
  bmc_ip: "10.3.0.103"
- 
- # Software stacks
- software:
- - slurm
- - cuda
- - apptainer
- - openldap
- 
- # Telemetry
- telemetry:
+
+# Software stacks
+software:
+- slurm
+- cuda
+- apptainer
+- openldap
+
+# Telemetry
+telemetry:
  enabled: true
  idrac: true
  ldms: true
+```
  
 
  1. **Make your changes**. Common modifications include:
@@ -109,13 +106,12 @@ File: /opt/omnia/buildstream-catalog/catalog.yml
 
  6. **Commit and push the changes** :
 
-Run on: omnia_core container
- 
- 
- cd /opt/omnia/buildstream-catalog
- git add catalog.yml
- git commit -m "Add 2 new compute nodes to slurm cluster"
- git push origin main
+```bash title="Run on: omnia_core container"
+cd /opt/omnia/buildstream-catalog
+git add catalog.yml
+git commit -m "Add 2 new compute nodes to slurm cluster"
+git push origin main
+```
  
 
  1. **Monitor the pipeline** in GitLab:
@@ -145,22 +141,20 @@ In GitLab, navigate to **CI/CD** > **Pipelines**. The latest pipeline should sho
 
  1. **Verify catalog changes were applied** :
 
-Run on: omnia_core container
- 
- 
- # Check if new nodes were provisioned
- ochami node list
- 
- # Check Slurm configuration
- ssh <slurm-control-ip> sinfo
+```bash title="Run on: omnia_core container"
+# Check if new nodes were provisioned
+ochami node list
+
+# Check Slurm configuration
+ssh <slurm-control-ip> sinfo
+```
  
 
  1. **Run the verification stage** to confirm cluster health:
 
-Run on: omnia_core container
- 
- 
- ansible all -m ping
+```bash title="Run on: omnia_core container"
+ansible all -m ping
+```
  
 
 ## Next Steps[¶](#next-steps "Permanent link")
@@ -184,17 +178,15 @@ Fix the catalog and push a new commit.
 
 **Git push is rejected** Check GitLab authentication:
 
-Run on: omnia_core container
- 
- 
- git remote -v
- # Ensure URL is correct and credentials are configured
+```bash title="Run on: omnia_core container"
+git remote -v
+# Ensure URL is correct and credentials are configured
+```
  
 
 **Pipeline not triggered on push** Verify `.gitlab-ci.yml` exists in the repository root and the runner is active:
 
-Run on: OIM host
- 
- 
- podman exec gitlab-runner gitlab-runner list
+```bash title="Run on: OIM host"
+podman exec gitlab-runner gitlab-runner list
+```
  

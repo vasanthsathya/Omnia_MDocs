@@ -24,11 +24,10 @@ Resolution
  6. Save and exit BIOS. The node should now attempt PXE boot on the next restart.
 
 Alternatively, use `racadm` to configure remotely:
- 
- 
- racadm set NIC.NICConfig.1.LegacyBootProto PXE
- racadm set BIOS.BiosBootSettings.BootSeq NIC.Slot.1-1
- 
+```bash title="Run on: BMC via racadm
+racadm set NIC.NICConfig.1.LegacyBootProto PXE
+racadm set BIOS.BiosBootSettings.BootSeq NIC.Slot.1-1
+```
 
 ### Wrong MAC address in mapping file[¶](#wrong-mac-address-in-mapping-file "Permanent link")
 
@@ -44,38 +43,34 @@ Resolution
 
  1. Verify the correct MAC address from iDRAC or the node's BIOS:
 
- 
- 
- # From iDRAC (using racadm)
- racadm getsysinfo | grep "MAC Address"
- 
+```bash title="Run on: BMC via racadm
+# From iDRAC (using racadm)
+racadm getsysinfo | grep "MAC Address"
+```
 
  1. Update the mapping file with the correct MAC:
 
- 
- 
- # /omnia/input/mapping_file.csv
- AA:BB:CC:DD:EE:FF,compute-01,10.5.0.101
- 
+```bash title="File: /omnia/input/mapping_file.csv
+# /omnia/input/mapping_file.csv
+AA:BB:CC:DD:EE:FF,compute-01,10.5.0.101
+```
 
  1. Re-run the discovery playbook:
 
- 
- 
- ssh omnia_core
- cd /omnia
- ansible-playbook playbooks/discovery.yml
- 
+```bash title="Run on: OIM host
+ssh omnia_core
+cd /omnia
+ansible-playbook playbooks/discovery.yml
+```
 
 ### DHCP not serving IP addresses[¶](#dhcp-not-serving-ip-addresses "Permanent link")
 
 Symptom
 
 Nodes attempt PXE boot but fail with a DHCP timeout error:
- 
- 
- PXE-E51: No DHCP or proxyDHCP offers were received
- 
+```text title="PXE DHCP error
+PXE-E51: No DHCP or proxyDHCP offers were received
+```
 
 Cause
 
@@ -88,30 +83,26 @@ Resolution
 
  1. Verify the CoreDHCP container is running:
 
- 
- 
- podman ps | grep coredhcp
- 
+```bash title="Run on: OIM host
+podman ps | grep coredhcp
+```
 
 If it is not running, start it:
- 
- 
- podman start coredhcp
- 
+```bash title="Run on: OIM host
+podman start coredhcp
+```
 
  1. Check CoreDHCP logs for errors:
 
- 
- 
- podman logs coredhcp
- 
+```bash title="Run on: OIM host
+podman logs coredhcp
+```
 
  1. Verify no rogue DHCP server exists on the admin network:
 
- 
- 
- nmap --script broadcast-dhcp-discover -e <admin_nic>
- 
+```bash title="Run on: OIM host
+nmap --script broadcast-dhcp-discover -e <admin_nic>
+```
 
  1. Ensure the OIM's admin NIC is on the correct VLAN and subnet.
 
@@ -120,11 +111,10 @@ If it is not running, start it:
 Symptom
 
 The node receives a DHCP lease but fails to download the boot image:
- 
- 
- PXE-E32: TFTP open timeout
- PXE-T02: TFTP packet timeout
- 
+```text title="PXE TFTP error
+PXE-E32: TFTP open timeout
+PXE-T02: TFTP packet timeout
+```
 
 Cause
 
@@ -136,31 +126,27 @@ Resolution
 
  1. Verify the TFTP container is running:
 
- 
- 
- podman ps | grep tftp
- 
+```bash title="Run on: OIM host
+podman ps | grep tftp
+```
 
  1. Check firewall rules:
 
- 
- 
- firewall-cmd --list-all | grep tftp
- 
+```bash title="Run on: OIM host
+firewall-cmd --list-all | grep tftp
+```
 
 If TFTP is not allowed:
- 
- 
- firewall-cmd --permanent --add-service=tftp
- firewall-cmd --reload
- 
+```bash title="Run on: OIM host
+firewall-cmd --permanent --add-service=tftp
+firewall-cmd --reload
+```
 
  1. Verify boot files exist in the TFTP root:
 
- 
- 
- ls /var/lib/tftpboot/
- 
+```bash title="Run on: OIM host
+ls /var/lib/tftpboot/
+```
 
 ## cloud-init issues[¶](#cloud-init-issues "Permanent link")
 
@@ -178,34 +164,30 @@ Resolution
 
  1. Check cloud-init status on the affected node:
 
- 
- 
- cloud-init status --long
- 
+```bash title="Run on: target node
+cloud-init status --long
+```
 
  1. Review cloud-init logs:
 
- 
- 
- cat /var/log/cloud-init.log
- cat /var/log/cloud-init-output.log
- 
+```bash title="Run on: target node
+cat /var/log/cloud-init.log
+cat /var/log/cloud-init-output.log
+```
 
  1. Verify the data source configuration:
 
- 
- 
- cat /etc/cloud/cloud.cfg.d/
- 
+```bash title="Run on: target node
+cat /etc/cloud/cloud.cfg.d/
+```
 
  1. If cloud-init was disabled, re-enable it:
 
- 
- 
- systemctl enable cloud-init
- cloud-init clean
- reboot
- 
+```bash title="Run on: target node
+systemctl enable cloud-init
+cloud-init clean
+reboot
+```
 
 ## `discovery.yml` failures[¶](#discoveryyml-failures "Permanent link")
 
@@ -223,36 +205,32 @@ Resolution
 
  1. Verify OpenCHAMI services are running:
 
- 
- 
- podman ps | grep ochami
- 
+```bash title="Run on: OIM host
+podman ps | grep ochami
+```
 
  1. Test BMC connectivity:
 
- 
- 
- # Ping the BMC IP
- ping <bmc_ip>
- 
- # Test Redfish API access
- curl -k -u <user>:<pass> https://<bmc_ip>/redfish/v1/Systems
- 
+```bash title="Run on: OIM host
+# Ping the BMC IP
+ping <bmc_ip>
+
+# Test Redfish API access
+curl -k -u <user>:<pass> https://<bmc_ip>/redfish/v1/Systems
+```
 
  1. Verify BMC credentials in the configuration:
 
- 
- 
- ssh omnia_core
- ansible-vault view /omnia/input/credentials.yml
- 
+```bash title="Run on: OIM host
+ssh omnia_core
+ansible-vault view /omnia/input/credentials.yml
+```
 
  1. Check discovery logs for detailed errors:
 
- 
- 
- cat /opt/omnia/log/core/playbooks/discovery.log
- 
+```bash title="Run on: OIM host
+cat /opt/omnia/log/core/playbooks/discovery.log
+```
 
 ## Nodes not appearing after discovery[¶](#nodes-not-appearing-after-discovery "Permanent link")
 
@@ -270,33 +248,29 @@ Resolution
 
  1. Check the OpenCHAMI inventory:
 
- 
- 
- ssh omnia_core
- ochami-cli smd components list
- 
+```bash title="Run on: OIM host
+ssh omnia_core
+ochami-cli smd components list
+```
 
  1. Verify the node's BMC is responsive:
 
- 
- 
- ping <bmc_ip>
- curl -k -u <user>:<pass> https://<bmc_ip>/redfish/v1/Systems
- 
+```bash title="Run on: OIM host
+ping <bmc_ip>
+curl -k -u <user>:<pass> https://<bmc_ip>/redfish/v1/Systems
+```
 
  1. Re-run discovery for the specific node by power-cycling it via iDRAC:
 
- 
- 
- racadm -r <bmc_ip> -u <user> -p <pass> serveraction powercycle
- 
+```bash title="Run on: OIM host
+racadm -r <bmc_ip> -u <user> -p <pass> serveraction powercycle
+```
 
  1. Monitor the discovery log in real time:
 
- 
- 
- tail -f /opt/omnia/log/core/playbooks/discovery.log
- 
+```bash title="Run on: OIM host
+tail -f /opt/omnia/log/core/playbooks/discovery.log
+```
 
 Info
 

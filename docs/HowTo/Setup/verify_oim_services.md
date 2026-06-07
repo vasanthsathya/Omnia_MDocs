@@ -24,34 +24,30 @@ This guide helps you verify each service is healthy and troubleshoot any that ar
 
  1. **Check the omnia_core service** :
 
-Run on: OIM host
- 
- 
- systemctl status omnia_core.service
+```bash title="Run on: OIM host"
+systemctl status omnia_core.service
+```
  
 
 Expected: `Active: active (running)`
 
  1. **List the complete omnia.target dependency tree** :
 
-Run on: OIM host
- 
- 
- systemctl list-dependencies omnia.target
+```bash title="Run on: OIM host"
+systemctl list-dependencies omnia.target
+```
  
 
 Expected output:
 
-Expected output on: OIM host
- 
- 
- omnia.target
- ├─minio.service
- ├─omnia_auth.service
- ├─omnia_core.service
- ├─pulp.service
- ├─registry.service
- └─openchami.target
+```text title="Expected output on: OIM host"
+omnia.target
+├─minio.service
+├─omnia_auth.service
+├─omnia_core.service
+├─pulp.service
+├─registry.service
+└─openchami.target
  ├─bss.service
  ├─coredhcp.service
  ├─cloud-init-server.service
@@ -61,81 +57,74 @@ Expected output on: OIM host
  ├─opaal.service
  ├─smd.service
  └─tftpd.service
+```
  
 
  1. **Check each top-level service individually** :
 
-Run on: OIM host
- 
- 
- for svc in minio omnia_auth omnia_core pulp registry; do
+```bash title="Run on: OIM host"
+for svc in minio omnia_auth omnia_core pulp registry; do
  echo "=== $svc ==="
  systemctl is-active ${svc}.service
- done
+done
+```
  
 
  1. **Check OpenCHAMI sub-services** :
 
-Run on: OIM host
- 
- 
- for svc in bss coredhcp cloud-init-server dnsmasq hydra image-server opaal smd tftpd; do
+```bash title="Run on: OIM host"
+for svc in bss coredhcp cloud-init-server dnsmasq hydra image-server opaal smd tftpd; do
  echo "=== $svc ==="
  systemctl is-active ${svc}.service
- done
+done
+```
  
 
  1. **Verify running Podman containers** :
 
-Run on: OIM host
- 
- 
- podman ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+```bash title="Run on: OIM host"
+podman ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
+```
  
 
  1. **Test the OpenCHAMI CLI** :
 
-Run on: OIM host
- 
- 
- ssh omnia_core
+```bash title="Run on: OIM host"
+ssh omnia_core
+```
  
 
-Run on: omnia_core container
- 
- 
- ochami --help
+```bash title="Run on: omnia_core container"
+ochami --help
+```
  
 
 Useful `ochami` commands:
 
-Run on: omnia_core container
- 
- 
- # List discovered nodes
- ochami node list
- 
- # Check SMD status
- ochami smd status
- 
- # List boot configurations
- ochami bss list
+```bash title="Run on: omnia_core container"
+# List discovered nodes
+ochami node list
+
+# Check SMD status
+ochami smd status
+
+# List boot configurations
+ochami bss list
+```
  
 
  1. **Test MinIO / S3 access** :
 
-Run on: omnia_core container
- 
- 
- s3cmd ls
+```bash title="Run on: omnia_core container"
+s3cmd ls
+```
  
 
  1. **Test Pulp accessibility** :
 
-Run on: OIM host
- 
- 
- curl -s http://localhost:8080/pulp/api/v3/status/ | python3 -m json.tool
+```bash title="Run on: OIM host"
+curl -s http://localhost:8080/pulp/api/v3/status/ | python3 -m json.tool
+```
  
 
 Expected: a JSON response with `"online_workers"` and `"versions"`.
@@ -144,10 +133,9 @@ Expected: a JSON response with `"online_workers"` and `"versions"`.
 
 All services should report `active (running)`. Use this summary check:
 
-Run on: OIM host
- 
- 
- systemctl is-active omnia.target
+```bash title="Run on: OIM host"
+systemctl is-active omnia.target
+```
  
 
 Expected output: `active`
@@ -156,17 +144,16 @@ If any service is `inactive` or `failed`, note which one and refer to the Troubl
 
 **Quick health summary script** :
 
-Run on: OIM host
- 
- 
- echo "=== Omnia Service Health ==="
- echo "omnia.target: $(systemctl is-active omnia.target)"
- echo "omnia_core: $(systemctl is-active omnia_core.service)"
- echo "openchami.target:$(systemctl is-active openchami.target)"
- echo "pulp: $(systemctl is-active pulp.service)"
- echo "minio: $(systemctl is-active minio.service)"
- echo "registry: $(systemctl is-active registry.service)"
- echo "omnia_auth: $(systemctl is-active omnia_auth.service)"
+```bash title="Run on: OIM host"
+echo "=== Omnia Service Health ==="
+echo "omnia.target: $(systemctl is-active omnia.target)"
+echo "omnia_core: $(systemctl is-active omnia_core.service)"
+echo "openchami.target:$(systemctl is-active openchami.target)"
+echo "pulp: $(systemctl is-active pulp.service)"
+echo "minio: $(systemctl is-active minio.service)"
+echo "registry: $(systemctl is-active registry.service)"
+echo "omnia_auth: $(systemctl is-active omnia_auth.service)"
+```
  
 
 ## Next Steps[¶](#next-steps "Permanent link")
@@ -179,55 +166,49 @@ Run on: OIM host
 
 **A service shows "inactive (dead)"** Restart the specific service:
 
-Run on: OIM host
- 
- 
- systemctl restart <service-name>.service
- journalctl -u <service-name>.service --no-pager -n 50
+```bash title="Run on: OIM host"
+systemctl restart <service-name>.service
+journalctl -u <service-name>.service --no-pager -n 50
+```
  
 
 **OpenCHAMI services fail with connection errors** Verify the SMD service is running first, as other OpenCHAMI services depend on it:
 
-Run on: OIM host
- 
- 
- systemctl restart smd.service
- sleep 10
- systemctl restart openchami.target
+```bash title="Run on: OIM host"
+systemctl restart smd.service
+sleep 10
+systemctl restart openchami.target
+```
  
 
 **Pulp API returns connection refused** Check that the Pulp container is running and listening on port 8080:
 
-Run on: OIM host
- 
- 
- podman logs pulp
- ss -tlnp | grep 8080
+```bash title="Run on: OIM host"
+podman logs pulp
+ss -tlnp | grep 8080
+```
  
 
 **MinIO not accessible** Verify MinIO container status and port binding:
 
-Run on: OIM host
- 
- 
- podman logs minio
- ss -tlnp | grep 9000
+```bash title="Run on: OIM host"
+podman logs minio
+ss -tlnp | grep 9000
+```
  
 
 **omnia.target not found** Re-run the `prepare_oim.yml` playbook to regenerate systemd unit files:
 
-Run on: omnia_core container
- 
- 
- cd /omnia/prepare_oim
- ansible-playbook prepare_oim.yml --ask-vault-pass
+```bash title="Run on: omnia_core container"
+cd /omnia/prepare_oim
+ansible-playbook prepare_oim.yml --ask-vault-pass
+```
  
 
 **Container images missing** Rebuild the container images:
 
-Run on: OIM host
- 
- 
- cd /opt/omnia
- bash build_images.sh core
+```bash title="Run on: OIM host"
+cd /opt/omnia
+bash build_images.sh core
+```
  

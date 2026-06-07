@@ -47,11 +47,10 @@ Omnia uses a **single OIM** as the management and control point for the entire c
  * Deploy the OIM on hardware with redundant power supplies and RAID storage.
  * Take regular backups of the OIM configuration:
 
- 
- 
- # Back up critical Omnia configuration
- tar czf /backup/omnia_config_$(date +%Y%m%d).tar.gz /omnia/input/
- 
+```bash title="Run on: OIM host
+# Back up critical Omnia configuration
+tar czf /backup/omnia_config_$(date +%Y%m%d).tar.gz /omnia/input/
+```
 
  * Minimize OIM reboots (see [Best Practices Checklist](../Operations/best_practices_checklist.md)).
  * Document the OIM rebuild procedure for disaster recovery.

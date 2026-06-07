@@ -26,34 +26,30 @@ Key features:
 
  1. **Install Helm** on a K8s control-plane node (if not already installed):
 
-Run on: K8s control plane node
- 
- 
- curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
- helm version
+```bash title="Run on: K8s control plane node"
+curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+helm version
+```
  
 
  1. **Create a namespace** for the CSI driver:
 
-Run on: K8s control plane node
- 
- 
- kubectl create namespace csi-powerscale
+```bash title="Run on: K8s control plane node"
+kubectl create namespace csi-powerscale
+```
  
 
  1. **Create the PowerScale secret** with cluster connection details:
 
-Run on: K8s control plane node
- 
- 
- cat <<'EOF' > /tmp/powerscale-secret.yaml
- apiVersion: v1
- kind: Secret
- metadata:
+```yaml title="Run on: K8s control plane node"
+cat <<'EOF' > /tmp/powerscale-secret.yaml
+apiVersion: v1
+kind: Secret
+metadata:
  name: isilon-creds
  namespace: csi-powerscale
- type: Opaque
- stringData:
+type: Opaque
+stringData:
  config: |
  isilonClusters:
  - clusterName: "cluster1"
@@ -64,9 +60,10 @@ Run on: K8s control plane node
  isDefault: true
  isiPath: "/ifs/csi"
  isiVolumePathPermissions: "0755"
- EOF
- 
- kubectl apply -f /tmp/powerscale-secret.yaml
+EOF
+
+kubectl apply -f /tmp/powerscale-secret.yaml
+```
  
 
 !!! warning
@@ -77,108 +74,100 @@ Run on: K8s control plane node
  after applying.
  
 
-Run on: K8s control plane node
- 
- 
- rm -f /tmp/powerscale-secret.yaml
+```bash title="Run on: K8s control plane node"
+rm -f /tmp/powerscale-secret.yaml
+```
  
 
  1. **Add the Dell CSI Helm repository** :
 
-Run on: K8s control plane node
- 
- 
- helm repo add dell https://dell.github.io/helm-charts
- helm repo update
+```bash title="Run on: K8s control plane node"
+helm repo add dell https://dell.github.io/helm-charts
+helm repo update
+```
  
 
  1. **Install the PowerScale CSI driver** :
 
-Run on: K8s control plane node
- 
- 
- helm install isilon dell/csi-isilon \
- --namespace csi-powerscale \
- --set controller.replicas=2 \
- --set isiAuthType=1 \
- --version 2.8.0
+```bash title="Run on: K8s control plane node"
+helm install isilon dell/csi-isilon \
+--namespace csi-powerscale \
+--set controller.replicas=2 \
+--set isiAuthType=1 \
+--version 2.8.0
+```
  
 
 Execution time: **2-5 minutes**.
 
  1. **Create a StorageClass** for dynamic provisioning:
 
-Run on: K8s control plane node
- 
- 
- cat <<'EOF' | kubectl apply -f -
- apiVersion: storage.k8s.io/v1
- kind: StorageClass
- metadata:
+```yaml title="Run on: K8s control plane node"
+cat <<'EOF' | kubectl apply -f -
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
  name: powerscale-nfs
- provisioner: csi-isilon.dellemc.com
- reclaimPolicy: Delete
- allowVolumeExpansion: true
- parameters:
+provisioner: csi-isilon.dellemc.com
+reclaimPolicy: Delete
+allowVolumeExpansion: true
+parameters:
  AccessZone: "System"
  IsiPath: "/ifs/csi"
  IsiVolumePathPermissions: "0755"
  RootClientEnabled: "false"
- mountOptions:
- - nfsvers=3
- EOF
+mountOptions:
+- nfsvers=3
+EOF
+```
  
 
 ## Verification[¶](#verification "Permanent link")
 
  1. **Verify CSI driver pods are running** :
 
-Run on: K8s control plane node
- 
- 
- kubectl get pods -n csi-powerscale
+```bash title="Run on: K8s control plane node"
+kubectl get pods -n csi-powerscale
+```
  
 
 Expected: controller pods (2 replicas) and node pods (one per worker) in `Running` state.
 
  1. **Verify the StorageClass was created** :
 
-Run on: K8s control plane node
- 
- 
- kubectl get storageclass powerscale-nfs
+```bash title="Run on: K8s control plane node"
+kubectl get storageclass powerscale-nfs
+```
  
 
  1. **Test dynamic provisioning** by creating a PVC:
 
-Run on: K8s control plane node
- 
- 
- cat <<'EOF' | kubectl apply -f -
- apiVersion: v1
- kind: PersistentVolumeClaim
- metadata:
+```yaml title="Run on: K8s control plane node"
+cat <<'EOF' | kubectl apply -f -
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
  name: test-pvc
- spec:
+spec:
  accessModes:
  - ReadWriteMany
  resources:
  requests:
  storage: 5Gi
  storageClassName: powerscale-nfs
- EOF
- 
- kubectl get pvc test-pvc
+EOF
+
+kubectl get pvc test-pvc
+```
  
 
 The PVC should transition from `Pending` to `Bound`.
 
  1. **Clean up the test PVC** :
 
-Run on: K8s control plane node
- 
- 
- kubectl delete pvc test-pvc
+```bash title="Run on: K8s control plane node"
+kubectl delete pvc test-pvc
+```
  
 
 ## Next Steps[¶](#next-steps "Permanent link")
@@ -190,42 +179,37 @@ Run on: K8s control plane node
 
 **CSI pods stuck in CrashLoopBackOff** Check the driver logs:
 
-Run on: K8s control plane node
- 
- 
- kubectl logs -n csi-powerscale -l app=isilon-controller --tail=50
+```bash title="Run on: K8s control plane node"
+kubectl logs -n csi-powerscale -l app=isilon-controller --tail=50
+```
  
 
 **PVC stuck in Pending** Check the CSI provisioner events:
 
-Run on: K8s control plane node
- 
- 
- kubectl describe pvc test-pvc
- kubectl get events -n csi-powerscale
+```bash title="Run on: K8s control plane node"
+kubectl describe pvc test-pvc
+kubectl get events -n csi-powerscale
+```
  
 
 **Authentication failure to PowerScale** Verify the secret credentials:
 
-Run on: K8s control plane node
- 
- 
- kubectl get secret isilon-creds -n csi-powerscale -o jsonpath='{.data.config}' | base64 -d
+```bash title="Run on: K8s control plane node"
+kubectl get secret isilon-creds -n csi-powerscale -o jsonpath='{.data.config}' | base64 -d
+```
  
 
 Test API connectivity:
 
-Run on: K8s worker node
- 
- 
- curl -sk https://10.5.1.100:8080/platform/latest/protocols/nfs/exports
+```bash title="Run on: K8s worker node"
+curl -sk https://10.5.1.100:8080/platform/latest/protocols/nfs/exports
+```
  
 
 **Mount failure on worker nodes** Ensure NFS client packages are installed:
 
-Run on: K8s worker node
- 
- 
- dnf install -y nfs-utils
- showmount -e 10.5.1.100
+```bash title="Run on: K8s worker node"
+dnf install -y nfs-utils
+showmount -e 10.5.1.100
+```
  

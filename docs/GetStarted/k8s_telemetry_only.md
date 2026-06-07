@@ -34,45 +34,42 @@ Complete the [Prerequisites Checklist](prerequisites_checklist.md) before procee
 
 ## Step 1 -- Deploy the omnia_core Container[¶](#step-1-deploy-the-omnia_core-container "Permanent link")
 
-Run on OIM (as root)
- 
- 
- cd /opt
- git clone https://github.com/dell/omnia.git
- cd omnia
- 
- # Build container images
- bash build_images.sh
- 
- # Install and start the omnia_core container
- bash omnia.sh --install
- 
- # Verify
- systemctl status omnia_core
+```bash title="Run on OIM (as root)"
+cd /opt
+git clone https://github.com/dell/omnia.git
+cd omnia
+
+# Build container images
+bash build_images.sh
+
+# Install and start the omnia_core container
+bash omnia.sh --install
+
+# Verify
+systemctl status omnia_core
+```
  
 
-Run on OIM (as root)
- 
- 
- # Test container access
- ssh omnia_core
- exit
+```bash title="Run on OIM (as root)"
+# Test container access
+ssh omnia_core
+exit
+```
  
 
 ## Step 2 -- Create the Mapping File[¶](#step-2-create-the-mapping-file "Permanent link")
 
 The mapping file for this path contains **only** Kubernetes roles -- no Slurm functional groups.
 
-Run on OIM (as root)
- 
- 
- cat > /opt/omnia/input/project_default/mapping.csv << 'EOF'
- FUNCTIONAL_GROUP_NAME,GROUP_NAME,SERVICE_TAG,PARENT_SERVICE_TAG,HOSTNAME,ADMIN_MAC,ADMIN_IP,BMC_MAC,BMC_IP
- service_kube_control_plane,kube,SVCTAG01,,kube-cp01,24:6E:96:BB:01:01,10.5.0.201,,10.3.0.201
- service_kube_control_plane,kube,SVCTAG02,,kube-cp02,24:6E:96:BB:01:02,10.5.0.202,,10.3.0.202
- service_kube_control_plane,kube,SVCTAG03,,kube-cp03,24:6E:96:BB:01:03,10.5.0.203,,10.3.0.203
- service_kube_node,kube,SVCTAG04,,kube-wk01,24:6E:96:BB:02:01,10.5.0.204,,10.3.0.204
- EOF
+```bash title="Run on OIM (as root)"
+cat > /opt/omnia/input/project_default/mapping.csv << 'EOF'
+FUNCTIONAL_GROUP_NAME,GROUP_NAME,SERVICE_TAG,PARENT_SERVICE_TAG,HOSTNAME,ADMIN_MAC,ADMIN_IP,BMC_MAC,BMC_IP
+service_kube_control_plane,kube,SVCTAG01,,kube-cp01,24:6E:96:BB:01:01,10.5.0.201,,10.3.0.201
+service_kube_control_plane,kube,SVCTAG02,,kube-cp02,24:6E:96:BB:01:02,10.5.0.202,,10.3.0.202
+service_kube_control_plane,kube,SVCTAG03,,kube-cp03,24:6E:96:BB:01:03,10.5.0.203,,10.3.0.203
+service_kube_node,kube,SVCTAG04,,kube-wk01,24:6E:96:BB:02:01,10.5.0.204,,10.3.0.204
+EOF
+```
  
 
 Warning
@@ -87,16 +84,15 @@ You can monitor additional servers (that are not part of this K8s cluster) via i
 
 Since this deployment has no Slurm, use the `with_service_k8s` template and remove any Slurm-specific settings.
 
-Run on OIM (inside omnia_core container)
- 
- 
- ssh omnia_core
- 
- # Copy the template with K8s support
- cp -r /opt/omnia/examples/input_template/bare_metal_slurm/x86_64/with_service_k8s/* \
- /opt/omnia/input/project_default/
- 
- ls -la /opt/omnia/input/project_default/
+```bash title="Run on OIM (inside omnia_core container)"
+ssh omnia_core
+
+# Copy the template with K8s support
+cp -r /opt/omnia/examples/input_template/bare_metal_slurm/x86_64/with_service_k8s/* \
+/opt/omnia/input/project_default/
+
+ls -la /opt/omnia/input/project_default/
+```
  
 
 Key files for this deployment:
@@ -114,11 +110,10 @@ You can safely ignore `omnia_config.yml` for this path since Slurm will not be d
 
 ## Step 4 -- Set Credentials[¶](#step-4-set-credentials "Permanent link")
 
-Run on OIM (inside omnia_core container)
- 
- 
- cd /opt/omnia
- ansible-playbook credentials_utility.yml
+```bash title="Run on OIM (inside omnia_core container)"
+cd /opt/omnia
+ansible-playbook credentials_utility.yml
+```
  
 
 You will be prompted for:
@@ -131,57 +126,51 @@ You will be prompted for:
 
 ### **5a. Edit** `network_spec.yml`[¶](#5a-edit-network_specyml "Permanent link")
 
-Run on OIM (inside omnia_core container)
- 
- 
- vi /opt/omnia/input/project_default/network_spec.yml
+```bash title="Run on OIM (inside omnia_core container)"
+vi /opt/omnia/input/project_default/network_spec.yml
+```
  
 
-Example network_spec.yml
- 
- 
- admin_network:
+```yaml title="Example network_spec.yml"
+admin_network:
  nic: eno2
  cidr: 10.5.0.0/16
  static_range: 10.5.0.200-10.5.0.250
  gateway: 10.5.0.1
- 
- bmc_network:
+
+bmc_network:
  nic: eno2
  cidr: 10.3.0.0/16
  static_range: 10.3.0.200-10.3.0.250
+```
  
 
 ### **5b. Edit** `provision_config.yml`[¶](#5b-edit-provision_configyml "Permanent link")
 
-Run on OIM (inside omnia_core container)
- 
- 
- vi /opt/omnia/input/project_default/provision_config.yml
+```bash title="Run on OIM (inside omnia_core container)"
+vi /opt/omnia/input/project_default/provision_config.yml
+```
  
 
-Example provision_config.yml
- 
- 
- iso_path: /opt/isos/RHEL-8.8-x86_64-dvd.iso
- timezone: America/Chicago
- domain_name: omnia.local
+```yaml title="Example provision_config.yml"
+iso_path: /opt/isos/RHEL-8.8-x86_64-dvd.iso
+timezone: America/Chicago
+domain_name: omnia.local
+```
  
 
 ### **5c. Edit** `ha_config.yml`[¶](#5c-edit-ha_configyml "Permanent link")
 
-Run on OIM (inside omnia_core container)
- 
- 
- vi /opt/omnia/input/project_default/ha_config.yml
+```bash title="Run on OIM (inside omnia_core container)"
+vi /opt/omnia/input/project_default/ha_config.yml
+```
  
 
-Example ha_config.yml
- 
- 
- # Virtual IP for K8s API HA -- must be unused on the admin network
- k8s_vip: 10.5.0.250
- k8s_vip_interface: eno2
+```yaml title="Example ha_config.yml"
+# Virtual IP for K8s API HA -- must be unused on the admin network
+k8s_vip: 10.5.0.250
+k8s_vip_interface: eno2
+```
  
 
 Warning
@@ -190,23 +179,21 @@ The `k8s_vip` must not conflict with any IP in `mapping.csv` or in the `static_r
 
 ### **5d. Run** `prepare_oim.yml`[¶](#5d-run-prepare_oimyml "Permanent link")
 
-Run on OIM (inside omnia_core container)
- 
- 
- cd /opt/omnia
- ansible-playbook prepare_oim.yml -i /opt/omnia/input/project_default/mapping.csv
+```bash title="Run on OIM (inside omnia_core container)"
+cd /opt/omnia
+ansible-playbook prepare_oim.yml -i /opt/omnia/input/project_default/mapping.csv
+```
  
 
 ## Step 6 -- Verify OIM Services[¶](#step-6-verify-oim-services "Permanent link")
 
-Run on OIM (inside omnia_core container)
- 
- 
- systemctl list-dependencies omnia.target
- 
- for svc in dhcpd tftp.socket httpd nfs-server; do
+```bash title="Run on OIM (inside omnia_core container)"
+systemctl list-dependencies omnia.target
+
+for svc in dhcpd tftp.socket httpd nfs-server; do
  echo -n "$svc: "; systemctl is-active $svc
- done
+done
+```
  
 
 All services must show `active`.
@@ -215,37 +202,35 @@ All services must show `active`.
 
 Edit the telemetry configuration before creating local repos and deploying the cluster, so that all required telemetry packages are included in the local repository sync.
 
-Run on OIM (inside omnia_core container)
- 
- 
- vi /opt/omnia/input/project_default/telemetry_config.yml
+```bash title="Run on OIM (inside omnia_core container)"
+vi /opt/omnia/input/project_default/telemetry_config.yml
+```
  
 
-Example telemetry_config.yml
- 
- 
- # Enable iDRAC hardware telemetry via Redfish
- idrac_telemetry: true
- 
- # Enable LDMS OS-level metric collection
- # Set to true if you want CPU/memory/GPU metrics from monitored nodes
- ldms_telemetry: true
- 
- # Grafana settings
- grafana_port: 3000
- 
- # VictoriaMetrics time-series database
- victoriametrics_retention: 30d
- 
- # Kafka message broker
- kafka_enabled: true
- 
- # List of additional iDRAC BMC IPs to monitor (beyond nodes in mapping.csv)
- # Uncomment and add IPs to monitor servers not managed by this Omnia deployment
- # additional_idrac_targets:
- # - 10.3.0.50
- # - 10.3.0.51
- # - 10.3.0.52
+```yaml title="Example telemetry_config.yml"
+# Enable iDRAC hardware telemetry via Redfish
+idrac_telemetry: true
+
+# Enable LDMS OS-level metric collection
+# Set to true if you want CPU/memory/GPU metrics from monitored nodes
+ldms_telemetry: true
+
+# Grafana settings
+grafana_port: 3000
+
+# VictoriaMetrics time-series database
+victoriametrics_retention: 30d
+
+# Kafka message broker
+kafka_enabled: true
+
+# List of additional iDRAC BMC IPs to monitor (beyond nodes in mapping.csv)
+# Uncomment and add IPs to monitor servers not managed by this Omnia deployment
+# additional_idrac_targets:
+# - 10.3.0.50
+# - 10.3.0.51
+# - 10.3.0.52
+```
  
 
 Tip
@@ -254,11 +239,10 @@ The `additional_idrac_targets` field lets you monitor servers that are not part 
 
 ## Step 8 -- Create Local Repositories[¶](#step-8-create-local-repositories "Permanent link")
 
-Run on OIM (inside omnia_core container)
- 
- 
- cd /opt/omnia
- ansible-playbook local_repo.yml
+```bash title="Run on OIM (inside omnia_core container)"
+cd /opt/omnia
+ansible-playbook local_repo.yml
+```
  
 
 Warning
@@ -267,43 +251,39 @@ This step downloads Kubernetes packages, container images for the telemetry stac
 
 ## Step 9 -- Build Node Images[¶](#step-9-build-node-images "Permanent link")
 
-Run on OIM (inside omnia_core container)
- 
- 
- cd /opt/omnia
- ansible-playbook build_image_x86_64.yml
- 
- # Verify the image was created
- s3cmd ls s3://omnia-images/
+```bash title="Run on OIM (inside omnia_core container)"
+cd /opt/omnia
+ansible-playbook build_image_x86_64.yml
+
+# Verify the image was created
+s3cmd ls s3://omnia-images/
+```
  
 
 ## Step 10 -- Discover and Provision Nodes[¶](#step-10-discover-and-provision-nodes "Permanent link")
 
 Power on your 4 target nodes with PXE boot priority, then run discovery.
 
-Run on OIM (inside omnia_core container)
- 
- 
- cd /opt/omnia
- ansible-playbook discovery.yml
+```bash title="Run on OIM (inside omnia_core container)"
+cd /opt/omnia
+ansible-playbook discovery.yml
+```
  
 
-Run on OIM (inside omnia_core container)
- 
- 
- # Verify all 4 nodes are reachable
- ansible all -m ping -i /opt/omnia/inventories/project_default/inventory
+```bash title="Run on OIM (inside omnia_core container)"
+# Verify all 4 nodes are reachable
+ansible all -m ping -i /opt/omnia/inventories/project_default/inventory
+```
  
 
 Expected: all 4 nodes return `pong`.
 
 ## Step 11 -- Deploy Service Kubernetes Cluster[¶](#step-11-deploy-service-kubernetes-cluster "Permanent link")
 
-Run on OIM (inside omnia_core container)
- 
- 
- cd /opt/omnia
- ansible-playbook k8s.yml
+```bash title="Run on OIM (inside omnia_core container)"
+cd /opt/omnia
+ansible-playbook k8s.yml
+```
  
 
 This playbook:
@@ -314,31 +294,28 @@ This playbook:
  * Deploys `kube-vip` for API server HA.
  * Installs Calico CNI and MetalLB.
 
-Run on OIM (inside omnia_core container)
- 
- 
- # Verify the K8s cluster
- export KUBECONFIG=/opt/omnia/k8s/admin.conf
- kubectl get nodes
+```bash title="Run on OIM (inside omnia_core container)"
+# Verify the K8s cluster
+export KUBECONFIG=/opt/omnia/k8s/admin.conf
+kubectl get nodes
+```
  
 
 Expected output (all nodes `Ready`):
 
-Expected output
- 
- 
- NAME STATUS ROLES AGE VERSION
- kube-cp01 Ready control-plane 10m v1.28.x
- kube-cp02 Ready control-plane 8m v1.28.x
- kube-cp03 Ready control-plane 8m v1.28.x
- kube-wk01 Ready <none> 6m v1.28.x
+```text title="Expected output"
+NAME STATUS ROLES AGE VERSION
+kube-cp01 Ready control-plane 10m v1.28.x
+kube-cp02 Ready control-plane 8m v1.28.x
+kube-cp03 Ready control-plane 8m v1.28.x
+kube-wk01 Ready <none> 6m v1.28.x
+```
  
 
-Run on OIM (inside omnia_core container)
- 
- 
- # Verify all system pods are healthy
- kubectl get pods -n kube-system
+```bash title="Run on OIM (inside omnia_core container)"
+# Verify all system pods are healthy
+kubectl get pods -n kube-system
+```
  
 
 All pods should be `Running` or `Completed`.
@@ -351,11 +328,10 @@ If `kube-vip` pods are in `CrashLoopBackOff`, verify that the `k8s_vip` in `ha_c
 
 With the K8s cluster operational, deploy the full telemetry pipeline.
 
-Run on OIM (inside omnia_core container)
- 
- 
- cd /opt/omnia
- ansible-playbook telemetry.yml
+```bash title="Run on OIM (inside omnia_core container)"
+cd /opt/omnia
+ansible-playbook telemetry.yml
+```
  
 
 `telemetry.yml` deploys these components as Kubernetes workloads:
@@ -368,32 +344,29 @@ Kafka | StatefulSet | Message broker that buffers and routes metrics from collec
 VictoriaMetrics | StatefulSet | Time-series database optimized for high-throughput metric ingestion. Data retained per `victoriametrics_retention` setting. 
 Grafana | Deployment | Visualization and dashboarding. Ships with pre-built Omnia dashboards for hardware and OS metrics. 
  
-Run on OIM (inside omnia_core container)
- 
- 
- # Verify all telemetry pods are running
- export KUBECONFIG=/opt/omnia/k8s/admin.conf
- kubectl get pods -n omnia-telemetry
+```bash title="Run on OIM (inside omnia_core container)"
+# Verify all telemetry pods are running
+export KUBECONFIG=/opt/omnia/k8s/admin.conf
+kubectl get pods -n omnia-telemetry
+```
  
 
 Expected output (all pods `Running` or `Completed`):
 
-Expected output
- 
- 
- NAME READY STATUS RESTARTS AGE
- grafana-6b8c4f7d9-xk2p4 1/1 Running 0 5m
- victoriametrics-0 1/1 Running 0 5m
- kafka-0 1/1 Running 0 5m
- idrac-collector-5d9f8b7c6-m3n7q 1/1 Running 0 5m
- ldms-aggregator-7f4b9c8d2-p2r4s 1/1 Running 0 5m
+```text title="Expected output"
+NAME READY STATUS RESTARTS AGE
+grafana-6b8c4f7d9-xk2p4 1/1 Running 0 5m
+victoriametrics-0 1/1 Running 0 5m
+kafka-0 1/1 Running 0 5m
+idrac-collector-5d9f8b7c6-m3n7q 1/1 Running 0 5m
+ldms-aggregator-7f4b9c8d2-p2r4s 1/1 Running 0 5m
+```
  
 
-Run on OIM (inside omnia_core container)
- 
- 
- # Get the Grafana service endpoint
- kubectl get svc -n omnia-telemetry grafana
+```bash title="Run on OIM (inside omnia_core container)"
+# Get the Grafana service endpoint
+kubectl get svc -n omnia-telemetry grafana
+```
  
 
 ## Step 13 -- Verify the Telemetry Pipeline[¶](#step-13-verify-the-telemetry-pipeline "Permanent link")
@@ -413,17 +386,16 @@ You should see pre-built dashboards in the **Omnia** folder:
 
 **13b. Verify data flow**
 
-Run on OIM (inside omnia_core container)
- 
- 
- export KUBECONFIG=/opt/omnia/k8s/admin.conf
- 
- # Check Kafka topics are receiving data
- kubectl exec -n omnia-telemetry kafka-0 -- \
- kafka-topics.sh --list --bootstrap-server localhost:9092
- 
- # Check VictoriaMetrics has ingested metrics
- curl -s "http://10.5.0.250:8428/api/v1/query?query=up" | python3 -m json.tool
+```bash title="Run on OIM (inside omnia_core container)"
+export KUBECONFIG=/opt/omnia/k8s/admin.conf
+
+# Check Kafka topics are receiving data
+kubectl exec -n omnia-telemetry kafka-0 -- \
+kafka-topics.sh --list --bootstrap-server localhost:9092
+
+# Check VictoriaMetrics has ingested metrics
+curl -s "http://10.5.0.250:8428/api/v1/query?query=up" | python3 -m json.tool
+```
  
 
 Tip
@@ -436,12 +408,11 @@ If Grafana dashboards show "No Data":
 
 **13c. Verify iDRAC metrics specifically**
 
-Run on OIM (inside omnia_core container)
- 
- 
- # Query VictoriaMetrics for iDRAC temperature metrics
- curl -s "http://10.5.0.250:8428/api/v1/query?query=idrac_inlet_temperature" \
- | python3 -m json.tool
+```bash title="Run on OIM (inside omnia_core container)"
+# Query VictoriaMetrics for iDRAC temperature metrics
+curl -s "http://10.5.0.250:8428/api/v1/query?query=idrac_inlet_temperature" \
+| python3 -m json.tool
+```
  
 
 You should see metric results with labels identifying each server by service tag and BMC IP.

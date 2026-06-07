@@ -32,20 +32,18 @@ Ensure that SELinux is set to `permissive` or `enforcing` with the appropriate c
 
  1. **Log in to the OIM** as `root` or a user with `sudo` privileges:
 
-Run on: OIM host
- 
- 
- ssh root@<oim-ip-address>
+```bash title="Run on: OIM host"
+ssh root@<oim-ip-address>
+```
  
 
  1. **Clone the Omnia repository** from Dell's artifact repository:
 
-Run on: OIM host
- 
- 
- cd /opt
- git clone https://github.com/dell/omnia.git
- cd omnia
+```bash title="Run on: OIM host"
+cd /opt
+git clone https://github.com/dell/omnia.git
+cd omnia
+```
  
 
 !!! note
@@ -60,20 +58,18 @@ Run on: OIM host
 
  1. **Build the container images** using the provided build script:
 
-Run on: OIM host
- 
- 
- bash build_images.sh core
+```bash title="Run on: OIM host"
+bash build_images.sh core
+```
  
 
 This builds the `omnia_core` container image locally. The build process takes approximately 10-15 minutes depending on network speed and hardware.
 
  1. **Install the omnia_core service** :
 
-Run on: OIM host
- 
- 
- bash omnia.sh --install
+```bash title="Run on: OIM host"
+bash omnia.sh --install
+```
  
 
 This script:
@@ -85,64 +81,57 @@ This script:
 
  * **Verify the service is running** :
 
-Run on: OIM host
- 
- 
- systemctl status omnia_core.service
+```bash title="Run on: OIM host"
+systemctl status omnia_core.service
+```
  
 
 Expected output:
 
-Expected output on: OIM host
- 
- 
- ● omnia_core.service - Omnia Core Container
- Loaded: loaded (/etc/systemd/system/omnia_core.service; enabled; vendor preset: disabled)
- Active: active (running) since ...
+```text title="Expected output on: OIM host"
+● omnia_core.service - Omnia Core Container
+Loaded: loaded (/etc/systemd/system/omnia_core.service; enabled; vendor preset: disabled)
+Active: active (running) since ...
+```
  
 
 ## Verification[¶](#verification "Permanent link")
 
  1. **Check the container is running** :
 
-Run on: OIM host
- 
- 
- podman ps --filter name=omnia_core
+```bash title="Run on: OIM host"
+podman ps --filter name=omnia_core
+```
  
 
 You should see a running container named `omnia_core`.
 
  1. **Enter the omnia_core container** and verify Ansible is available:
 
-Run on: OIM host
- 
- 
- podman exec -it -u root omnia_core bash
+```bash title="Run on: OIM host"
+podman exec -it -u root omnia_core bash
+```
  
 
-Run on: omnia_core container
- 
- 
- ansible --version
+```bash title="Run on: omnia_core container"
+ansible --version
+```
  
 
  1. **Verify playbooks are accessible** :
 
-Run on: omnia_core container
- 
- 
- ls /omnia/*.yml
+```bash title="Run on: omnia_core container"
+ls /omnia/*.yml
+```
  
 
 You should see the key playbooks: `omnia_startup.yml`, `input_validator.yml`, `credentials_utility.yml`, `prepare_oim.yml`, `local_repo.yml`, `discovery.yml`, and others.
 
  1. **Verify input directory exists** :
 
-Run on: omnia_core container
- 
- 
- ls /opt/omnia/input/project_default/
+```bash title="Run on: omnia_core container"
+ls /opt/omnia/input/project_default/
+```
  
 
 ## Next Steps[¶](#next-steps "Permanent link")
@@ -155,42 +144,37 @@ Run on: omnia_core container
 
 **Container fails to start** Check the Podman logs for detailed error output:
 
-Run on: OIM host
- 
- 
- podman logs omnia_core
+```bash title="Run on: OIM host"
+podman logs omnia_core
+```
  
 
 **systemd service not found** Re-run the installation script:
 
-Run on: OIM host
- 
- 
- bash omnia.sh --install
+```bash title="Run on: OIM host"
+bash omnia.sh --install
+```
  
 
 **Build fails with network errors** Ensure the OIM has internet access and DNS is configured correctly:
 
-Run on: OIM host
- 
- 
- ping -c 3 github.com
- cat /etc/resolv.conf
+```bash title="Run on: OIM host"
+ping -c 3 github.com
+cat /etc/resolv.conf
+```
  
 
 **Podman not installed** Install Podman from the default OS repositories:
 
-Run on: OIM host
- 
- 
- dnf install -y podman
- systemctl enable --now podman.socket
+```bash title="Run on: OIM host"
+dnf install -y podman
+systemctl enable --now podman.socket
+```
  
 
 **Insufficient disk space** Check available disk space. At least 256 GB is required:
 
-Run on: OIM host
- 
- 
- df -h /opt
+```bash title="Run on: OIM host"
+df -h /opt
+```
  

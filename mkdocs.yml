@@ -32,55 +32,55 @@ nav:
     - BuildStreaM Deployment: GetStarted/buildstream_deployment.md
   - How-to Guides:
     - HowTo/index.md
-    - Authentication:
-      - HowTo/Authentication/deploy_external_ldap.md
-      - HowTo/Authentication/replicate_ldap.md
-      - HowTo/Authentication/setup_openldap.md
-      - HowTo/Authentication/setup_openldap_proxy.md
-    - BuildStreaM:
-      - HowTo/BuildStreaM/deploy_gitlab.md
-      - HowTo/BuildStreaM/update_catalog_pipeline.md
-      - HowTo/BuildStreaM/buildstream_troubleshooting.md
-    - Containers:
-      - HowTo/Containers/deploy_additional_packages.md
-      - HowTo/Containers/use_apptainer.md
+    - Setup:
+      - HowTo/Setup/prepare_oim.md
+      - HowTo/Setup/configure_inputs.md
+      - HowTo/Setup/configure_credentials.md
+      - HowTo/Setup/create_local_repos.md
+      - HowTo/Setup/deploy_omnia_core.md
+      - HowTo/Setup/discover_nodes.md
+      - HowTo/Setup/create_mapping_file.md
+      - HowTo/Setup/pxe_boot_nodes.md
+      - HowTo/Setup/build_cluster_images.md
+      - HowTo/Setup/verify_oim_services.md
+      - HowTo/Setup/verify_cluster.md
+    - Slurm:
+      - HowTo/Slurm/setup_slurm.md
+      - HowTo/Slurm/build_slurm_repo.md
+      - HowTo/Slurm/slurm_with_gpu.md
+      - HowTo/Slurm/add_slurm_nodes.md
+      - HowTo/Slurm/remove_slurm_nodes.md
+      - HowTo/Slurm/slurm_config_backup.md
+      - HowTo/Slurm/run_hpc_benchmarks.md
     - Kubernetes:
       - HowTo/Kubernetes/setup_service_k8s.md
       - HowTo/Kubernetes/configure_ha.md
       - HowTo/Kubernetes/deploy_powerscale_csi.md
-    - Networking:
-      - HowTo/Networking/configure_infiniband.md
-      - HowTo/Networking/configure_roce.md
-    - Setup:
-      - HowTo/Setup/prepare_oim.md
-      - HowTo/Setup/configure_credentials.md
-      - HowTo/Setup/configure_inputs.md
-      - HowTo/Setup/create_mapping_file.md
-      - HowTo/Setup/create_local_repos.md
-      - HowTo/Setup/build_cluster_images.md
-      - HowTo/Setup/deploy_omnia_core.md
-      - HowTo/Setup/discover_nodes.md
-      - HowTo/Setup/pxe_boot_nodes.md
-      - HowTo/Setup/verify_cluster.md
-      - HowTo/Setup/verify_oim_services.md
-    - Slurm:
-      - HowTo/Slurm/setup_slurm.md
-      - HowTo/Slurm/build_slurm_repo.md
-      - HowTo/Slurm/add_slurm_nodes.md
-      - HowTo/Slurm/remove_slurm_nodes.md
-      - HowTo/Slurm/slurm_config_backup.md
-      - HowTo/Slurm/slurm_with_gpu.md
-      - HowTo/Slurm/run_hpc_benchmarks.md
     - Storage:
       - HowTo/Storage/configure_nfs.md
       - HowTo/Storage/configure_powervault.md
+    - Networking:
+      - HowTo/Networking/configure_infiniband.md
+      - HowTo/Networking/configure_roce.md
+    - Authentication:
+      - HowTo/Authentication/setup_openldap.md
+      - HowTo/Authentication/setup_openldap_proxy.md
+      - HowTo/Authentication/deploy_external_ldap.md
+      - HowTo/Authentication/replicate_ldap.md
     - Telemetry:
       - HowTo/Telemetry/setup_telemetry.md
+      - HowTo/Telemetry/verify_telemetry.md
+      - HowTo/Telemetry/telemetry_from_ome.md
+      - HowTo/Telemetry/configure_ldms.md
       - HowTo/Telemetry/configure_external_kafka.md
       - HowTo/Telemetry/configure_external_victoria.md
-      - HowTo/Telemetry/configure_ldms.md
-      - HowTo/Telemetry/telemetry_from_ome.md
-      - HowTo/Telemetry/verify_telemetry.md
+    - Containers:
+      - HowTo/Containers/use_apptainer.md
+      - HowTo/Containers/deploy_additional_packages.md
+    - BuildStreaM:
+      - HowTo/BuildStreaM/deploy_gitlab.md
+      - HowTo/BuildStreaM/update_catalog_pipeline.md
+      - HowTo/BuildStreaM/buildstream_troubleshooting.md
   - Operations:
     - Operations/index.md
     - Add/Remove Nodes: Operations/add_remove_nodes.md
