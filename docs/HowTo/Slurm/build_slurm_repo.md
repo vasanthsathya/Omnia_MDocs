@@ -19,95 +19,95 @@ By default, Omnia installs Slurm from pre-built RPM packages in the local Pulp r
 
 1. **Install build dependencies** on the build hosts:
 
-```bash title="Run on: build host (OIM or dedicated build server)"
-dnf groupinstall -y "Development Tools"
-dnf install -y rpm-build munge-devel munge-libs pam-devel \
-perl-ExtUtils-MakeMaker readline-devel openssl-devel \
-mariadb-devel hwloc-devel lua-devel numactl-devel \
-http-parser-devel json-c-devel libcurl-devel
-```
+    ```bash title="Run on: build host (OIM or dedicated build server)"
+    dnf groupinstall -y "Development Tools"
+    dnf install -y rpm-build munge-devel munge-libs pam-devel \
+    perl-ExtUtils-MakeMaker readline-devel openssl-devel \
+    mariadb-devel hwloc-devel lua-devel numactl-devel \
+    http-parser-devel json-c-devel libcurl-devel
+    ```
 
 2. **Create the RPM build directory structure**:
 
-```bash title="Run on: build host"
-mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
-```
+    ```bash title="Run on: build host"
+    mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+    ```
 
 3. **Download the Slurm source tarball**:
 
-```bash title="Run on: build host"
-cd ~/rpmbuild/SOURCES
-wget https://download.schedmd.com/slurm/slurm-23.11.4.tar.bz2
-```
+    ```bash title="Run on: build host"
+    cd ~/rpmbuild/SOURCES
+    wget https://download.schedmd.com/slurm/slurm-23.11.4.tar.bz2
+    ```
 
-!!! note
-    Replace the version number with your desired Slurm version.
+    !!! note
+        Replace the version number with your desired Slurm version.
 
 4. **Extract the spec file**:
 
-```bash title="Run on: build host"
-tar xjf slurm-23.11.4.tar.bz2 --strip-components=1 -C /tmp slurm-23.11.4/slurm.spec
-cp /tmp/slurm.spec ~/rpmbuild/SPECS/
-```
+    ```bash title="Run on: build host"
+    tar xjf slurm-23.11.4.tar.bz2 --strip-components=1 -C /tmp slurm-23.11.4/slurm.spec
+    cp /tmp/slurm.spec ~/rpmbuild/SPECS/
+    ```
 
 5. **Build the RPMs**:
 
-```bash title="Run on: build host"
-rpmbuild -ba ~/rpmbuild/SPECS/slurm.spec
-```
+    ```bash title="Run on: build host"
+    rpmbuild -ba ~/rpmbuild/SPECS/slurm.spec
+    ```
 
 6. **Create a local repository** from the built RPMs:
 
-```bash title="Run on: build host"
-dnf install -y createrepo_c
-mkdir -p /opt/omnia/custom_repos/slurm
-cp ~/rpmbuild/RPMS/x86_64/slurm-*.rpm /opt/omnia/custom_repos/slurm/
-createrepo_c /opt/omnia/custom_repos/slurm/
-```
+    ```bash title="Run on: build host"
+    dnf install -y createrepo_c
+    mkdir -p /opt/omnia/custom_repos/slurm
+    cp ~/rpmbuild/RPMS/x86_64/slurm-*.rpm /opt/omnia/custom_repos/slurm/
+    createrepo_c /opt/omnia/custom_repos/slurm/
+    ```
 
 7. **Upload to Pulp** (from the omnia_core container):
 
-```bash title="Run on: omnia_core container"
-# Create a Pulp repository for custom Slurm RPMs
-pulp rpm repository create --name slurm-custom
+    ```bash title="Run on: omnia_core container"
+    # Create a Pulp repository for custom Slurm RPMs
+    pulp rpm repository create --name slurm-custom
 
-# Upload RPMs
-for rpm in /opt/omnia/custom_repos/slurm/*.rpm; do
- pulp rpm content upload --file "\$rpm" --repository slurm-custom
-done
+    # Upload RPMs
+    for rpm in /opt/omnia/custom_repos/slurm/*.rpm; do
+    pulp rpm content upload --file "\$rpm" --repository slurm-custom
+    done
 
-# Create a publication and distribution
-pulp rpm publication create --repository slurm-custom
-pulp rpm distribution create --name slurm-custom \
---base-path slurm-custom \
---repository slurm-custom
-```
+    # Create a publication and distribution
+    pulp rpm publication create --repository slurm-custom
+    pulp rpm distribution create --name slurm-custom \
+    --base-path slurm-custom \
+    --repository slurm-custom
+    ```
 
 8. **List the custom repository contents**:
 
-```bash title="Run on: build host"
-ls -la /opt/omnia/custom_repos/slurm/
-```
+    ```bash title="Run on: build host"
+    ls -la /opt/omnia/custom_repos/slurm/
+    ```
 
 9. **Verify the repository metadata**:
 
-```bash title="Run on: build host"
-ls /opt/omnia/custom_repos/slurm/repodata/
-```
+    ```bash title="Run on: build host"
+    ls /opt/omnia/custom_repos/slurm/repodata/
+    ```
 
 You should see `repomd.xml` and related files.
 
 10. **Test package availability via Pulp**:
 
-```bash title="Run on: OIM host"
-curl -s http://localhost:8080/pulp/content/slurm-custom/repodata/repomd.xml | head
-```
+    ```bash title="Run on: OIM host"
+    curl -s http://localhost:8080/pulp/content/slurm-custom/repodata/repomd.xml | head
+    ```
 
 11. **Verify RPM versions**:
 
-```bash title="Run on: build host"
-rpm -qip ~/rpmbuild/RPMS/x86_64/slurm-23*.rpm | grep -E "^(Name|Version)"
-```
+    ```bash title="Run on: build host"
+    rpm -qip ~/rpmbuild/RPMS/x86_64/slurm-23*.rpm | grep -E "^(Name|Version)"
+    ```
 
 ## Next Steps
 
