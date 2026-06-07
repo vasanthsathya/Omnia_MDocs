@@ -111,7 +111,15 @@ Upgrade from Omnia 1.x to 2.x is not supported due to architectural changes.
 
 ## Omnia Community Members[¶](#omnia-community-members "Permanent link")
 
-[![Dell Technologies](assets/images/delltech.png)](https://www.dell.com) [![Intel](https://upload.wikimedia.org/wikipedia/commons/0/0e/Intel_logo_%282020%2C_light_blue%29.svg)](https://www.intel.com) [![University of Pisa](assets/images/pisa.png)](https://www.unipi.it) ![Community Member](https://user-images.githubusercontent.com/83095575/117071024-64956c80-ace3-11eb-9d90-2dac7daef11c.png) ![VIZIAS](https://images.squarespace-cdn.com/content/v1/660f1a48587dbb2769709a33/9ac5520f-a308-4751-80f4-415d07a23473/VIZIAS+Blue.png) ![Community Member](https://user-images.githubusercontent.com/5414112/153955170-0a4b199a-54f0-42af-939c-03eac76881c0.png) [![Liqid](assets/images/Liqid.png)](https://www.liqid.com)
+<div class="community-logos" style="display: flex; flex-wrap: wrap; align-items: center; gap: 2rem; margin: 1rem 0;">
+  <a href="https://www.dell.com"><img src="assets/images/delltech.png" alt="Dell Technologies" style="height: 60px;"></a>
+  <a href="https://www.intel.com"><img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Intel_logo_%282020%2C_light_blue%29.svg" alt="Intel" style="height: 40px;"></a>
+  <a href="https://www.unipi.it"><img src="assets/images/pisa.png" alt="University of Pisa" style="height: 60px;"></a>
+  <img src="https://user-images.githubusercontent.com/83095575/117071024-64956c80-ace3-11eb-9d90-2dac7daef11c.png" alt="Community Member" style="height: 60px;">
+  <img src="https://images.squarespace-cdn.com/content/v1/660f1a48587dbb2769709a33/9ac5520f-a308-4751-80f4-415d07a23473/VIZIAS+Blue.png" alt="VIZIAS" style="height: 60px;">
+  <img src="https://user-images.githubusercontent.com/5414112/153955170-0a4b199a-54f0-42af-939c-03eac76881c0.png" alt="Community Member" style="height: 60px;">
+  <a href="https://www.liqid.com"><img src="assets/images/Liqid.png" alt="Liqid" style="height: 50px;"></a>
+</div>
 
 * * *
 
