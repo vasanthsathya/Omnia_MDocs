@@ -29,15 +29,11 @@ perl-ExtUtils-MakeMaker readline-devel openssl-devel \
 mariadb-devel hwloc-devel lua-devel numactl-devel \
 http-parser-devel json-c-devel libcurl-devel
 ```
- 
-
  2. **Create the RPM build directory structure** :
 
 ```bash title="Run on: build host"
 mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 ```
- 
-
  3. **Download the Slurm source tarball** :
 
 ```bash title="Run on: build host"
@@ -45,7 +41,6 @@ cd ~/rpmbuild/SOURCES
 wget https://download.schedmd.com/slurm/slurm-23.11.4.tar.bz2
 ```
  
-
 !!! note
     Replace the version number with your desired Slurm version.
 
@@ -55,16 +50,13 @@ wget https://download.schedmd.com/slurm/slurm-23.11.4.tar.bz2
 tar xjf slurm-23.11.4.tar.bz2 --strip-components=1 -C /tmp slurm-23.11.4/slurm.spec
 cp /tmp/slurm.spec ~/rpmbuild/SPECS/
 ```
- 
-
  5. **Build the RPMs** :
 
 ```bash title="Run on: build host"
 rpmbuild -ba ~/rpmbuild/SPECS/slurm.spec
 ```
  
-
-This process takes **10-30 minutes** depending on hardware. The resulting RPMs will be in `~/rpmbuild/RPMS/x86_64/`.
+ This process takes **10-30 minutes** depending on hardware. The resulting RPMs will be in `~/rpmbuild/RPMS/x86_64/`.
 
  6. **Create a local repository** from the built RPMs:
 
@@ -74,8 +66,6 @@ mkdir -p /opt/omnia/custom_repos/slurm
 cp ~/rpmbuild/RPMS/x86_64/slurm-*.rpm /opt/omnia/custom_repos/slurm/
 createrepo_c /opt/omnia/custom_repos/slurm/
 ```
- 
-
  7. **Upload to Pulp** (from the omnia_core container):
 
 ```bash title="Run on: omnia_core container"
