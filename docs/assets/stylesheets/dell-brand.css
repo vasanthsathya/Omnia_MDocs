@@ -460,6 +460,29 @@
   visibility: visible;
 }
 
+/* Force hide text-based headerlinks (¶ symbol) */
+.md-typeset h1 .headerlink,
+.md-typeset h2 .headerlink,
+.md-typeset h3 .headerlink,
+.md-typeset h4 .headerlink,
+.md-typeset h5 .headerlink,
+.md-typeset h6 .headerlink,
+.md-nav .headerlink {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+.md-typeset h1:hover .headerlink,
+.md-typeset h2:hover .headerlink,
+.md-typeset h3:hover .headerlink,
+.md-typeset h4:hover .headerlink,
+.md-typeset h5:hover .headerlink,
+.md-typeset h6:hover .headerlink,
+.md-nav:hover .headerlink {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
 /* ── Smooth scrolling ─────────────────────────────────────── */
 html {
   scroll-behavior: smooth;
