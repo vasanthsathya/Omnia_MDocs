@@ -15,29 +15,69 @@ The project is hosted on [GitHub](https://github.com/dell/omnia), where you can:
 
 <div class="grid cards">
 
-- **[:fontawesome-solid-book: Overview](Overview/index.md)**
+<ul>
 
-    Architecture, components, network topologies, and design concepts. Start here if you are new to Omnia.
+<li>
 
-- **[:fontawesome-solid-rocket: Get Started](GetStarted/index.md)**
+<p><strong><a href="Overview/index.md">Overview</a></strong></p>
 
-    End-to-end tutorials that take you from a bare set of PowerEdge servers to a fully operational cluster. Choose from Slurm-only, full deployment, Kubernetes + telemetry, or BuildStreaM paths.
+<hr />
 
-- **[:fontawesome-solid-wrench: How-to Guides](HowTo/index.md)**
+<p>Architecture, components, network topologies, and design concepts. Start here if you are new to Omnia.</p>
 
-    Task-oriented procedures for provisioning, configuring Slurm, Kubernetes, storage, networking, authentication, telemetry, and BuildStreaM.
+</li>
 
-- **[:fontawesome-solid-book-open: Reference](Reference/index.md)**
+<li>
 
-    Configuration parameters, support matrices, playbook references, API documentation, and network port listings.
+<p><strong><a href="GetStarted/index.md">Get Started</a></strong></p>
 
-- **[:fontawesome-solid-gears: Operations & Maintenance](Operations/index.md)**
+<hr />
 
-    Day-2 operations: adding and removing nodes, re-provisioning, OIM cleanup, log management, security hardening, and best practices.
+<p>End-to-end tutorials that take you from a bare set of PowerEdge servers to a fully operational cluster. Choose from Slurm-only, full deployment, Kubernetes + telemetry, or BuildStreaM paths.</p>
 
-- **[:fontawesome-solid-bug: Troubleshooting](Troubleshooting/index.md)**
+</li>
 
-    Symptom-driven guides for diagnosing and resolving issues with provisioning, Slurm, Kubernetes, telemetry, authentication, and more.
+<li>
+
+<p><strong><a href="HowTo/index.md">How-to Guides</a></strong></p>
+
+<hr />
+
+<p>Task-oriented procedures for provisioning, configuring Slurm, Kubernetes, storage, networking, authentication, telemetry, and BuildStreaM.</p>
+
+</li>
+
+<li>
+
+<p><strong><a href="Reference/index.md">Reference</a></strong></p>
+
+<hr />
+
+<p>Configuration parameters, support matrices, playbook references, API documentation, and network port listings.</p>
+
+</li>
+
+<li>
+
+<p><strong><a href="Operations/index.md">Operations & Maintenance</a></strong></p>
+
+<hr />
+
+<p>Day-2 operations: adding and removing nodes, re-provisioning, OIM cleanup, log management, security hardening, and best practices.</p>
+
+</li>
+
+<li>
+
+<p><strong><a href="Troubleshooting/index.md">Troubleshooting</a></strong></p>
+
+<hr />
+
+<p>Symptom-driven guides for diagnosing and resolving issues with provisioning, Slurm, Kubernetes, telemetry, authentication, and more.</p>
+
+</li>
+
+</ul>
 
 </div>
 
