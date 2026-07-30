@@ -17,6 +17,10 @@ build:
     - libgdk-pixbuf2.0-0
     - libffi-dev
     - shared-mime-info
+  # Set environment variables to disable MkDocs 2.0 warning
+  environment:
+    NO_MKDOCS_2_WARNING: "1"
+    DISABLE_MKDOCS_2_WARNING: "true"
 
 # Build documentation in the docs/ directory with MkDocs
 mkdocs:

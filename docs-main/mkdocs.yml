@@ -39,11 +39,11 @@ theme:
 # Plugins
 plugins:
   - search
-  - mkdocs-glightbox
-  - mkdocs-macros-plugin
-  - mkdocs-redirects
-  - mkdocs-with-pdf
-  - mkdocs-swagger-ui-tag
+  - glightbox
+  - macros
+  - redirects
+  - with-pdf
+  - swagger-ui-tag
   - mike:
       version_selector: true
       css_dir: stylesheets
