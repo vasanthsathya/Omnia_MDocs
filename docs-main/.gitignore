@@ -4,4 +4,3 @@ docs/obsidian
 build
 target
 venv/
-mkdocs.yml

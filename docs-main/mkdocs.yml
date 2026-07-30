@@ -1,0 +1,128 @@
+site_name: BE Networks Verity Documentation
+site_url: https://docs.be-net.com
+site_description: Documentation for BE Networks Verity network management platform
+site_author: BE Networks
+
+# Repository
+repo_url: https://github.com/BE-Network/docs
+repo_name: BE-Network/docs
+
+# Copyright
+copyright: Copyright &copy; BE Networks
+
+# Theme
+theme:
+  name: material
+  language: en
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+# Plugins
+plugins:
+  - search
+  - mkdocs-glightbox
+  - mkdocs-macros-plugin
+  - mkdocs-redirects
+  - mkdocs-with-pdf
+  - mkdocs-swagger-ui-tag
+  - mike:
+      version_selector: true
+      css_dir: stylesheets
+
+# Extensions
+markdown_extensions:
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.details
+  - attr_list
+  - md_in_html
+  - admonition
+  - toc:
+      permalink: true
+
+# Navigation
+nav:
+  - Home: index.md
+  - Quick Start: quickstart.md
+  - Installation:
+    - Prerequisites: install-prerequisites.md
+    - VMware: install-vmware.md
+    - Proxmox: install-proxmox.md
+    - KVM: install-kvm.md
+    - Initial Setup: initial-setup.md
+  - Administration:
+    - Admin Guide: admin.md
+    - User Management: acl.md
+    - High Availability: high-availability.md
+    - NTP Administration: ntp-administration.md
+  - Network Operations:
+    - Operations Overview: operations-overview.md
+    - Fabrics: fabrics.md
+    - Devices: devices.md
+    - Adding Devices: adding-devices.md
+    - Device Management: device-management-fabric.md
+    - Gateways: gateways.md
+    - Services: services.md
+  - Campus:
+    - Campus Read First: campus/campus-read-first.md
+    - Campus Navigation: campus/campus-navigation.md
+    - Campus Topology: campus/campus-topology.md
+    - Campus Templates: campus/campus-templates.md
+    - Campus ZTP SONiC: campus/Campus-ZTP-SONIC.md
+    - Working with ONTs: campus/working-with-onts.md
+  - Advanced:
+    - Architecture: architecture.md
+    - API: api.md
+    - API Spec: api-spec.md
+    - Multitenancy: multitenancy.md
+    - Inter-Site Routing: inter-site-routing.md
+    - Inter-Tenant Routing: inter-tenant-routing.md
+    - Spine Plane: spine-plane.md
+    - Switchpoint: switchpoint.md
+  - Monitoring:
+    - Alarms: alarms.md
+    - Alarm List: alarm-list.md
+    - Observe: observe.md
+    - Reports: reports.md
+    - Debug: debug.md
+  - Templates:
+    - Layer 1 Templates: layer-1-templates.md
+    - Layer 2 Templates: layer-2-templates.md
+    - Layer 3 Templates: layer-3-templates.md
+    - Diagnostics Templates: diagnostics-templates.md
+  - Reference:
+    - Icon Reference: icon-reference.md
+    - Device Color Codes: device-color-codes.md
+    - Reserved Ranges: reserved-ranges.md
+    - Parameters: parameters_dc_6.2.md
+  - Help:
+    - How to Use Docs: how-to-use-the-docs.md
+    - Navigation: navigation.md
+    - Help: help.md
+    - Downloads: downloads.md
+    - Changelog: changelog.md
