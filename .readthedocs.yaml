@@ -9,6 +9,14 @@ build:
   os: ubuntu-22.04
   tools:
     python: "3.10"
+  # Install system dependencies required by WeasyPrint
+  apt_packages:
+    - libcairo2
+    - libpango-1.0-0
+    - libpangocairo-1.0-0
+    - libgdk-pixbuf2.0-0
+    - libffi-dev
+    - shared-mime-info
 
 # Build documentation in the docs/ directory with MkDocs
 mkdocs:
