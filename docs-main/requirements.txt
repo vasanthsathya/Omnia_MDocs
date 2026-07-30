@@ -10,7 +10,7 @@ mkdocs-swagger-ui-tag
 # mkdocs-with-pdf and was previously unpinned, so CI installed the latest
 # release. weasyprint >= 63 regressed PDF pagination and silently truncates
 # the generated PDF mid-document (verified: 69.0 stops at ~88 pages, 62.3
-# renders the full ~362). pydyf is pinned to the version weasyprint 62.3 expects.
+# renders the full ~362). pydyf version must be compatible with weasyprint 69.0.
 weasyprint==69.0
-pydyf==0.10.0
+pydyf>=0.11.0
 mkdocs-unused-files
