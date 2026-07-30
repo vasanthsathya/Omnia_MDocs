@@ -1,0 +1,22 @@
+FCA Import,,v1,,,,,,,,
+DEVICE ROLE,FABRIC,POD,SU,RAIL,SSG,SLOT,HOST,IP,SDLC,Chassis ID
+Leaf,PGA-Complex,0,0,0,,,,,,48:b0:2d:c2:2b:d6
+Leaf,PGA-Complex,0,0,1,,,,,,48:b0:2d:fa:5f:54
+Leaf,PGA-Complex,0,0,2,,,,,,48:b0:2d:0d:2d:00
+Leaf,PGA-Complex,0,0,3,,,,,,48:b0:2d:3a:6f:6e
+Leaf,PGA-Complex,0,1,0,,,,,,48:b0:2d:dd:f5:6a
+Leaf,PGA-Complex,0,1,1,,,,,,48:b0:2d:8d:a1:4b
+Leaf,PGA-Complex,0,1,2,,,,,,48:b0:2d:29:18:f6
+Leaf,PGA-Complex,0,1,3,,,,,,48:b0:2d:93:a5:67
+Spine,PGA-Complex,0,,0,,0,,,,48:b0:2d:e0:1d:3a
+Spine,PGA-Complex,0,,0,,1,,,,48:b0:2d:b8:35:80
+Spine,PGA-Complex,0,,0,,2,,,,48:b0:2d:95:23:b7
+Spine,PGA-Complex,0,,0,,3,,,,48:b0:2d:8c:6d:c2
+HGX,PGA-Complex,0,0,,,,0,192.168.200.11,SDLC,
+HGX,PGA-Complex,0,0,,,,1,192.168.200.12,SDLC,
+HGX,PGA-Complex,0,0,,,,2,192.168.200.13,SDLC,
+HGX,PGA-Complex,0,0,,,,3,192.168.200.14,SDLC,
+HGX,PGA-Complex,0,1,,,,0,192.168.200.15,SDLC,
+HGX,PGA-Complex,0,1,,,,1,192.168.200.16,SDLC,
+HGX,PGA-Complex,0,1,,,,2,192.168.200.17,SDLC,
+HGX,PGA-Complex,0,1,,,,3,192.168.200.18,SDLC,

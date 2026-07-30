@@ -1,0 +1,193 @@
+.md-sidebar--secondary {
+  order: 0;
+}
+
+.img {
+  height: auto;
+  width: auto;
+  border: 1px solid #9f9f9f;
+  transition: transform ease-in-out 0.3s;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+a.md-logo img {
+  border: none;
+  box-shadow:none;
+}
+
+.logo {
+  width: 50%;
+}
+
+.md-header {
+  background-color: #0089C6;
+}
+.clean {
+  box-shadow:none;
+  border:none;
+}
+.btn {
+  box-shadow:none;
+  border:none;
+  height:16px !important;
+  width:16px !important;
+  vertical-align: text-bottom;
+  margin-bottom: 1px;
+}
+.btn-large {
+  box-shadow:none;
+  border:none;
+  height:90px !important;
+  width:90px !important;
+  vertical-align: text-bottom;
+  margin-bottom: 1px;
+}
+.api-btn {
+  box-shadow:none;
+  border:none;
+  height:16px !important;
+  vertical-align: text-bottom;
+  margin-bottom: 1px;
+}
+
+.pop {
+  box-shadow:none;
+  border: 1px solid #58a65c;
+  vertical-align: text-bottom;
+  margin-bottom: 1px;
+  border-radius: 4px;
+  height:24px !important;
+  width:24px !important;
+}
+.dark-blue {
+  color: #2c648f;
+}
+/* below used for alternation rows in tables */
+th, td {
+  border: 1px solid var(--md-typeset-table-color);
+  border-spacing: 0;
+  border-bottom: none;
+  border-left: none;
+  border-top: none;
+}
+
+.md-typeset__table {
+  line-height: 1;
+  text-align: center;
+}
+
+.md-typeset__table table:not([class]) {
+  font-size: .74rem;
+  border-right: none;
+}
+
+.md-typeset__table table:not([class]) td,
+.md-typeset__table table:not([class]) th {
+  padding: 9px;
+}
+
+/* light mode alternating table bg colors */
+.md-typeset__table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+
+/* dark mode alternating table bg colors */
+[data-md-color-scheme="slate"] .md-typeset__table tr:nth-child(2n) {
+  background-color: hsla(var(--md-hue),25%,25%,1)
+}
+.headerlink {
+  font-size: 24px;
+}
+
+
+:root {
+  --md-admonition-icon--api: url('data:image/svg+xml;charset=utf-8,<svg width="800px" height="800px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><rect width="24" height="24" fill="none"/><path d="M20,6H4A2,2,0,0,0,2,8v8a2,2,0,0,0,2,2H20a2,2,0,0,0,2-2V8A2,2,0,0,0,20,6ZM9.29,14.8,9,13.73H7.16L6.87,14.8H5.17L7,9.07H9.09L11,14.8Zm6.34-3.14a1.7,1.7,0,0,1-.36.64,1.82,1.82,0,0,1-.67.44,2.75,2.75,0,0,1-1,.17h-.44V14.8H11.6V9.09h2a2.43,2.43,0,0,1,1.62.47,1.67,1.67,0,0,1,.55,1.35A2.36,2.36,0,0,1,15.63,11.66Zm2.58,3.14H16.66V9.09h1.55ZM8.45,11.53l.24.93H7.48l.24-.93c0-.13.08-.28.12-.47s.09-.38.13-.57a4.63,4.63,0,0,0,.1-.48c0,.13.07.29.11.5l.15.58Zm5.59-1a.57.57,0,0,1,.16.43.75.75,0,0,1-.11.42.59.59,0,0,1-.27.22.9.9,0,0,1-.37.07h-.31V10.34h.4A.63.63,0,0,1,14,10.51Z" fill-rule="evenodd"/></svg>')
+}
+.md-typeset .admonition.api,
+.md-typeset details.api {
+  border-color: #3b87c1;
+}
+.md-typeset .api > .admonition-title,
+.md-typeset .api > summary {
+  background-color: #e1effb
+}
+.md-typeset .api > .admonition-title::before,
+.md-typeset .api > summary::before {
+  background-color: #da5f38;
+  -webkit-mask-image: var(--md-admonition-icon--api);
+          mask-image: var(--md-admonition-icon--api);
+}
+.make-text-green{
+  color: #58a65c;
+  font-weight: bold;
+}
+
+.make-text-red{
+  color: #d9534f;
+  font-weight: bold;
+}
+
+.make-text-orange{
+  color: #f0ad4e;
+  font-weight: bold;
+}
+
+/* Bundled Roboto + Roboto Mono (static instances committed under
+   stylesheets/fonts/) so weasyprint embeds the same fonts in the PDF on every
+   build machine. Without this the renderer falls back to a system font that
+   differs per OS — Helvetica Neue on macOS, DejaVu Serif on the Linux CI. */
+@font-face { font-family: "Roboto"; font-style: normal; font-weight: 400; src: url("fonts/Roboto-Regular.ttf"); }
+@font-face { font-family: "Roboto"; font-style: normal; font-weight: 700; src: url("fonts/Roboto-Bold.ttf"); }
+@font-face { font-family: "Roboto"; font-style: italic; font-weight: 400; src: url("fonts/Roboto-Italic.ttf"); }
+@font-face { font-family: "Roboto"; font-style: italic; font-weight: 700; src: url("fonts/Roboto-BoldItalic.ttf"); }
+@font-face { font-family: "Roboto Mono"; font-style: normal; font-weight: 400; src: url("fonts/RobotoMono-Regular.ttf"); }
+@font-face { font-family: "Roboto Mono"; font-style: normal; font-weight: 700; src: url("fonts/RobotoMono-Bold.ttf"); }
+
+/* PDF fix: weasyprint renders the Material admonition icon (an absolutely
+   positioned ::before) on top of the title text. Make it flow inline instead.
+   Uses inline-block (well-supported by weasyprint) rather than flexbox. */
+@media print {
+  /* Roboto for all text, Roboto Mono for code examples, in the generated PDF.
+     '*' overrides Material's per-OS system fallback (which would otherwise be
+     Helvetica Neue on macOS / DejaVu Serif on Linux CI); the second rule
+     re-asserts mono on the syntax-highlight <span>s nested inside <pre>/<code>. */
+  * {
+    font-family: "Roboto", sans-serif !important;
+  }
+  pre, pre *, code, code *, kbd, kbd *, samp, samp * {
+    font-family: "Roboto Mono", monospace !important;
+  }
+
+  .md-typeset .admonition-title,
+  .md-typeset details > summary {
+    padding-left: 0.6rem !important;
+  }
+
+  .md-typeset .admonition-title::before,
+  .md-typeset details > summary::before {
+    position: static !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+    margin-right: 0.4rem !important;
+  }
+
+  /* PDF fix: weasyprint cannot split an image across pages. An image taller
+     than the page content area (A4 247mm - margins) stalls layout and silently
+     truncates the rest of the PDF. Cap image height so every image fits. */
+  .md-typeset img {
+    max-height: 230mm !important;
+  }
+}
+
+@page {
+    size: a4 portrait;
+    margin: 25mm 10mm 25mm 10mm;
+    counter-increment: page;
+    font-family: "Roboto","Helvetica Neue",Helvetica,Arial,sans-serif;
+    white-space: pre;
+    color: grey;
+    @top-left {
+        content: '© 2026 BE Networks';
+    }
+
+}

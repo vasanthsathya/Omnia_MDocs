@@ -1,0 +1,77 @@
+name: Semgrep (SAST)
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 3 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+  security-events: write
+  id-token: write
+
+jobs:
+  semgrep:
+    name: Semgrep
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@v2
+        with:
+          egress-policy: audit
+
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.x'
+
+      - name: Install Semgrep
+        run: |
+          python -m pip install --upgrade pip
+          pip install semgrep
+
+      - name: Run Semgrep
+        id: semgrep
+        run: |
+          set +e
+          semgrep \
+            --config p/security-audit \
+            --exclude-rule generic.html-templates.security.var-in-href.var-in-href \
+            --sarif \
+            --output semgrep.sarif \
+            --error \
+            --metrics=off
+          rc=$?
+          echo "exit_code=$rc" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Upload Semgrep SARIF (artifact)
+        if: always() && hashFiles('semgrep.sarif') != ''
+        uses: actions/upload-artifact@v7
+        with:
+          name: semgrep-sarif
+          path: semgrep.sarif
+          retention-days: 30
+
+      - name: Enforce Semgrep findings
+        if: steps.semgrep.outputs.exit_code != '0'
+        run: |
+          echo "Semgrep found issues (exit code ${{ steps.semgrep.outputs.exit_code }})."
+          exit 1
+
+      - name: List SARIF outputs
+        if: always()
+        run: |
+          ls -la . || true
+
+

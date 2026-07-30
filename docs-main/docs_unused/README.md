@@ -1,0 +1,1 @@
+This directory is for documents that are left in the docs directory but that are unused. These may be documents that were used temporarily. 
