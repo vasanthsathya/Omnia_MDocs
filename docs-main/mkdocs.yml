@@ -42,7 +42,7 @@ plugins:
   - glightbox
   - macros
   - redirects
-  - with-pdf
+  - with-pdf  # Re-enabled for Read the Docs
   - swagger-ui-tag
   - mike:
       version_selector: true
